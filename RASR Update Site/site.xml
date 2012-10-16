@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/ATF_Recorder_Feature_1.0.0.201210161500.jar" id="ATF_Recorder_Feature" version="1.0.0.201210161500"/>
+   <feature url="features/RASR_Feature_0.0.1.jar" id="RASR_Feature" version="0.0.1"/>
 </site>

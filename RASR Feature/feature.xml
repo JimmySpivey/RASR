@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="ATF_Recorder_Feature"
-      label="ATF_Recorder"
-      version="1.0.0.qualifier">
+      id="RASR_Feature"
+      label="Roll and Scroll Recorder"
+      version="0.0.1"
+      provider-name="OSEHRA">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -26,7 +27,7 @@
    </requires>
 
    <plugin
-         id="ATF_Recorder_Plugin"
+         id="RASR_Plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ATFRecorderPlugin
-Bundle-SymbolicName: ATF_Recorder_Plugin;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Name: Roll and Scroll Recorder
+Bundle-SymbolicName: RASR_Plugin;singleton:=true
+Bundle-Version: 0.0.1
 Bundle-Activator: com.jcraft.eclipse.jcterm.JCTermPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.ui,
  com.jcraft.eclipse.jsch.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: OSEHRA
