@@ -7,10 +7,12 @@ http://www.osehra.org/wiki/vista-system-test-platform-project
 
 Current installation instructions:
 
-Prerequisites:
+Prerequisites to fully run the plugin and have it update (add new tests) to the Automated Testing Framework:
 -Eclipse 3.7 (Indigo) 32bit
+-Modified OSEHRA-Automated-Testing repo (found at: https://github.com/JimDeanSpivey/ATF-RASR). (temporary, will rely on main OSEHRA repo)
+-Property file modified to point to your cloned ATF-RASR repo (temporary, will be user defined through GUI).
 
-
+Plugin Installation instructions
 1) Clone this repository
 2) In Eclipse, go to Help -> Install New Software... -> Add..
 	Enter any name
