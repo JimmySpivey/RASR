@@ -1,0 +1,35 @@
+'''
+Created on $header.dateFormated
+
+@author: $header.username
+##put desc here
+'''
+import os
+import sys
+sys.path = ['./Scripts'] + ['./dataFiles'] + ['./helpers'] + ['./TestSuies'] + sys.path
+import TestHelper
+import $testSuite.name_suite
+
+def main():
+    test_suite_name = os.path.basename(__file__).split('.')[0]
+    test_suite_driver = TestHelper.TestSuiteDriver()
+    test_suite_details = test_suite_driver.generate_test_suite_details(test_suite_name)
+
+    try:
+        test_suite_driver.pre_test_suite_run(test_suite_details)
+
+        #Begin Tests
+        #End Tests
+
+        test_suite_driver.post_test_suite_run(test_suite_details)
+    except Exception, e:
+        test_suite_driver.exception_handling(test_suite_details, e)
+    else:
+        test_suite_driver.try_else_handling(test_suite_details)
+    finally:
+        test_suite_driver.finally_handling(test_suite_details)
+
+    test_suite_driver.end_method_handling(test_suite_details)
+
+if __name__ == '__main__':
+  main()

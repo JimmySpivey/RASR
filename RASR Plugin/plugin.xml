@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            category="atf"
+            class="com.jcraft.eclipse.jcterm.JCTermView"
+            icon="icons/Crystal_Clear_app_terminal16.png"
+            id="com.jcraft.eclipse.jcterm.view"
+            name="ATF Recorder Plugin">
+      </view>
+      <category
+            id="atf"
+            name="Automated Testing">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+
+</plugin>

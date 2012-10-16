@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ATFRecorderPlugin
+Bundle-SymbolicName: ATF_Recorder_Plugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.jcraft.eclipse.jcterm.JCTermPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.jcraft.jsch;bundle-version="0.1.31",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.jsch.core;bundle-version="1.1.300",
+ com.jcraft.eclipse.jsch.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
