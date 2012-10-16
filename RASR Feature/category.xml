@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <category-def name="org.osehra.eclipse.atf" label="ATF Recorder">
+   <category-def name="org.osehra.eclipse.atf" label="RASR Recorder">
       <description>
-         TODO: insert wiki URL.
+         http://www.osehra.org/wiki/vista-system-test-platform-project
       </description>
    </category-def>
 </site>

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="ATF_Recorder_Feature"
-      label="ATF_Recorder"
-      version="1.0.0.qualifier">
+      id="RASR_Feature"
+      label="Roll and Scroll Recorder"
+      version="0.0.1"
+      provider-name="OSEHRA"
+      nl="en">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://www.osehra.org/wiki/vista-system-test-platform-project">
+      [Enter description here.]
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright url="http://www.osehra.org/">
       [Enter Copyright Description here.]
    </copyright>
 
-   <license url="http://www.example.com/license">
+   <license url="http://www.osehra.org/">
       [Enter License Description here.]
    </license>
 
@@ -26,10 +28,11 @@
    </requires>
 
    <plugin
-         id="ATF_Recorder_Plugin"
+         id="RASR_Plugin"
+         nl="en"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.0.1"
          unpack="false"/>
 
 </feature>
