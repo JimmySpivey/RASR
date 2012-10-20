@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <category-def name="org.osehra.eclipse.atf" label="ATF Recorder">
+   <category-def name="org.osehra.eclipse.atf" label="RAS Recorder">
       <description>
          TODO: insert wiki URL.
       </description>

@@ -27,7 +27,7 @@
    </requires>
 
    <plugin
-         id="RASR_Plugin"
+         id="ATF_Recorder_Plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"
