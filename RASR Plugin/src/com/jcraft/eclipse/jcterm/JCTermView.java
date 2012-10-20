@@ -281,7 +281,7 @@ public class JCTermView extends ViewPart{
     }
 
     makeAction();
-    setPartName("JCTerm"); //$NON-NLS-1$
+    setPartName("RAS Recorder"); //$NON-NLS-1$
   }
 
   private void makeAction(){
