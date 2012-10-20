@@ -16,8 +16,7 @@ Plugin Installation instructions
 1) Clone this repository
 2) In Eclipse, go to Help -> Install New Software... -> Add..
 	Enter any name
-	Enter http://eclipse.jcraft.com/ for the Location.
-	Click OK (You do not need to install any of the Jcraft plugins, the update site is added only to resolve our dependencies)
+	Enter http://eclipse.jcraft.com/ for the Location. Install the JCTerm plugin.
 3) On the Install Screen (from step 2), click Add... again
 	Click Local...
 	Enter any name.

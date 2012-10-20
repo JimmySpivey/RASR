@@ -451,7 +451,7 @@ public class JCTermView extends ViewPart{
         if(JCTermView.this.connection!=null)
           JCTermView.this.connection.close();
         JCTermView.this.connection=null;
-        setPartName("JCTerm");
+        setPartName("RAS Recorder");
       }
     });
     setFocus();
