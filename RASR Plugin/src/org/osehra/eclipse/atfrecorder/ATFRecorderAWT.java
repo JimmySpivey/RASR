@@ -75,7 +75,11 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 
 		  private List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
 		  
-		  private final Object[] colors= {Color.black, Color.red, Color.green,
+		  public List<RecordableEvent> getRecordableEvents() {
+			return recordableEvents;
+		}
+
+		private final Object[] colors= {Color.black, Color.red, Color.green,
 		      Color.yellow, Color.blue, Color.magenta, Color.cyan, Color.white};
 
 		  public ATFRecorderAWT(){

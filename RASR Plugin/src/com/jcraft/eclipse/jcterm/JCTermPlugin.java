@@ -93,6 +93,7 @@ public class JCTermPlugin extends AbstractUIPlugin{
   private void initializeImages(){
     createImageDescriptor(IUIConstants.IMG_TERMINAL32);
     createImageDescriptor(IUIConstants.IMG_TERMINAL16);
+    createImageDescriptor(IUIConstants.IMG_SAVEADD16);
   }
 
   public void saveLocation(String key, String location){

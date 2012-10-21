@@ -1,10 +1,9 @@
 package org.osehra.eclipse.atfrecorder.codegen;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -44,18 +43,35 @@ import org.osehra.python.codegen.PythonScriptEditor;
  */
 
 public class ATFCodeGenerator {
+
+	private Properties getPropertiesFromClasspath(String propFileName) throws IOException {
+	    // loading xmlProfileGen.properties from the classpath
+	    Properties props = new Properties();
+	    InputStream inputStream = this.getClass().getClassLoader()
+	        .getResourceAsStream(propFileName);
+
+	    if (inputStream == null) {
+	        throw new FileNotFoundException("property file '" + propFileName
+	            + "' not found in the classpath");
+	    }
+
+	    props.load(inputStream);
+
+	    return props;
+	}
 	
 	public void addTest(List<RecordableEvent> recordableEvents,
 			String testSuiteName, String testName, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
-		//TODO: move to util class
-		Properties properties = new Properties() ;
-		URL url =  ClassLoader.getSystemResource("atfRecorder.properties");
-		properties.load(new FileInputStream(new File(url.getFile())));
 
+		Properties properties = getPropertiesFromClasspath("atfRecorder.properties");
 		String dir = properties.getProperty("atf.location");
 		
-		File driverFile = new File(dir+"FunctTest\\tests\\"+testSuiteName+"_driver.py");
-		File testsFile = new File(dir+"FunctTest\\TestSuites\\"+testSuiteName+"_suite.py");
+		//TODO: add package directory name as parm
+		String packageDir= "SSH Demo";
+		
+		//TODO: get correct file seperator as per OS
+		File driverFile = new File(dir+"FunctionalTest\\RAS\\VistA-FOIA\\Packages\\" +packageDir+ "\\"+testSuiteName+"_test.py"); 
+		File testsFile = new File(dir+"FunctionalTest\\RAS\\VistA-FOIA\\Packages\\" +packageDir+ "\\"+testSuiteName+"_suite.py");
 		
 		if (isNewTestSuite) {
 			driverFile.createNewFile();
@@ -97,7 +113,14 @@ public class ATFCodeGenerator {
 		statements.add("    vista = test_driver.connect_VistA(test_suite_details)");
 		for (RecordableEvent recordAbleEvent : recordableEvents) {
 			if (recordAbleEvent.getType() == RecordableEventType.EXPECT) {
-				statements.add("    vista.wait('" +recordAbleEvent.getRecordedValue()+"')"); //TODO: escape actual newlines with /r and /n
+				String recorded = recordAbleEvent.getRecordedValue().trim();
+				int lastCR = recorded.lastIndexOf("\r");
+				int lastLF = recorded.lastIndexOf("\n");
+				if (lastCR != -1 || lastLF != -1)
+					recorded = recorded.substring(Math.max(lastCR, lastLF) + 1);
+				//recorded = recorded.replaceAll("\r", "");
+				//recorded = recorded.replaceAll("\n", "");
+				statements.add("    vista.wait('" +recorded+"')");
 			} else if (recordAbleEvent.getType() == RecordableEventType.SEND) {
 				statements.add("    vista.write('" +recordAbleEvent.getRecordedValue()+"')"); 
 			}

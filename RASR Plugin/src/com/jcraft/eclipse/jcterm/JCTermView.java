@@ -20,9 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -55,7 +52,6 @@ import com.jcraft.eclipse.jsch.core.JSchSession;
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.JCTermPanelG2D;
 import com.jcraft.jcterm.JCTermSWT;
-import com.jcraft.jcterm.JCTermSwing;
 import com.jcraft.jcterm.Sftp;
 import com.jcraft.jcterm.Term;
 import com.jcraft.jsch.Channel;
@@ -286,9 +282,18 @@ public class JCTermView extends ViewPart{
 
   private void makeAction(){
     IActionBars bars=getViewSite().getActionBars();
+    
+    //Save Button
+    com.jcraft.eclipse.jcterm.internal.SaveTestAction saveTestAction=new com.jcraft.eclipse.jcterm.internal.SaveTestAction(
+    		(ATFRecorderAWT) term);
+        bars.getToolBarManager().add(saveTestAction);
+    
+    //Connect Menu (TODO: change to button)
     com.jcraft.eclipse.jcterm.internal.OpenConnectionAction openConnection=new com.jcraft.eclipse.jcterm.internal.OpenConnectionAction(
-        this);
+    		this);
     bars.getToolBarManager().add(openConnection);
+    
+
   }
 
   public void openConnection(int mode, String location){

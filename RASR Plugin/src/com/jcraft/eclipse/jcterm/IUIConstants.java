@@ -20,4 +20,6 @@ public interface IUIConstants{
   // images
   public final String IMG_TERMINAL32="Crystal_Clear_app_terminal32.png"; //$NON-NLS-1$
   public final String IMG_TERMINAL16="Crystal_Clear_app_terminal16.png"; //$NON-NLS-1$
+ 
+  public final String IMG_SAVEADD16="save_add2.png";
 }
