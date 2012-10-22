@@ -228,7 +228,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		  }
 
 		  public void processKeyEvent(KeyEvent e){
-		    System.out.println(e);
+		    //System.out.println(e);
 		    int id=e.getID();
 		    if(id==KeyEvent.KEY_PRESSED){ 
 		      /*keyPressed(e);*/
@@ -246,8 +246,6 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 
 		  public boolean keyTypedCode(int keycode){
 		    byte[] code=null;
-		    
-		    
 		    
 		    switch(keycode){
 		      case KeyEvent.VK_CONTROL:
@@ -319,11 +317,11 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		  public void keyTyped(KeyEvent e){
 		    int keycode=e.getKeyCode();
 		    char keychar=e.getKeyChar();
-		    //System.out.println(e);
+		    System.out.println(e);
 		    
-		    disableScreenRecording = true;
+		    disableScreenRecording = true; //TODO: this isn't air-tight, user could enter any key while we are still waiting for the current screen to come back
 
-		    //not sure why this bug exists, but if the enter key is pressed it is seen as a character not a key code
+		    //not sure why this bug exists from JCTerm, but if the enter key is pressed it is seen as a character not a key code
 		    if (keychar == '\n') {
 		    	keycode = KeyEvent.VK_ENTER;
 		    	//TODO: save last 20 characters to python expect/command list. BUT first crop out the echo'ed command
@@ -336,10 +334,26 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		    	currentCommand = "";
 		    }
 		    
+		    if (keychar == '\b' || keychar == 0x7F) { //backspace or delete pressed
+		    	keychar = 0x7F;
+		    	e.setKeyChar((char) 0x7F); //map backspace to delete key
+		    	
+		    	if (currentCommand.length() != 0) {
+			    	//System.out.println("removing char: " +currentCommand.substring(currentCommand.length() - 1));
+			    	currentCommand = currentCommand.substring(0, currentCommand.length() - 1);
+			    	//System.out.println(currentCommand);
+		    	}
+
+		    }
+		    
 		    if(keyTypedCode(keycode)) 
 		      return;
 		    
-		    currentCommand += keychar;
+		    if (keychar != 0x7F) { //don't add the delete char to our command, but do add it to the terminal out stream
+			    //System.out.println("adding keychar: " +keychar);
+			    currentCommand += keychar;
+		    }
+
 		    
 		    if((keychar&0xff00)==0){
 		      obuffer[0]=(byte)(e.getKeyChar());
