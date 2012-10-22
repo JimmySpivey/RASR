@@ -68,16 +68,19 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 
 		  private Splash splash=null;
 		  
-		  //Added for ATF
+		  //Added for Recording
 		  private String currentScreen = "";
 		  private boolean disableScreenRecording = false; //set to true to disable echoing commands into screen
 		  private String currentCommand = "";
-
 		  private List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
 		  
 		  public List<RecordableEvent> getRecordableEvents() {
 			return recordableEvents;
-		}
+		  }
+		  
+		  public void resetRecorder() {
+			  recordableEvents.clear();
+		  }
 
 		private final Object[] colors= {Color.black, Color.red, Color.green,
 		      Color.yellow, Color.blue, Color.magenta, Color.cyan, Color.white};
