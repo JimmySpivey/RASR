@@ -13,7 +13,7 @@ import org.osehra.python.codegen.LineNotFoundException;
 import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
 
-public class SaveTestAction extends Action { // implements IMenuCreator{
+public class SaveTestAction extends Action {
 
 	// private JCTermView term;
 	private IAction saveTest;

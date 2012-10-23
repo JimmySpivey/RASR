@@ -22,4 +22,5 @@ public interface IUIConstants{
   public final String IMG_TERMINAL16="Crystal_Clear_app_terminal16.png"; //$NON-NLS-1$
  
   public final String IMG_SAVEADD16="save_add2.png";
+  public final String IMG_TEXT_X_PYTHON="text_x_python.png";
 }
