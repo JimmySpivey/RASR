@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import java.util.Properties;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordableEventType;
 import org.osehra.python.codegen.LineNotFoundException;
+import org.osehra.python.codegen.PythonGenerator;
 import org.osehra.python.codegen.PythonScriptEditor;
 
 /*
@@ -60,7 +62,7 @@ public class ATFCodeGenerator {
 	    return props;
 	}
 	
-	public void addTest(List<RecordableEvent> recordableEvents,
+	public void addTestToATF(List<RecordableEvent> recordableEvents,
 			String testSuiteName, String testName, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
 		Properties properties = getPropertiesFromClasspath("atfRecorder.properties");
@@ -81,28 +83,28 @@ public class ATFCodeGenerator {
 		}
 		
 		//1) append test to _tests.py file
-		
-		/*
-    testname = sys._getframe().f_code.co_name
-    test_driver = TestHelper.TestDriver(testname)
-
-    test_driver.pre_test_run(test_suite_details)
-
-    try:
-        vista = test_driver.connect_VistA(test_suite_details)
-
-        test_driver.post_test_run(test_suite_details)
-    except TestHelper.TestError, e:
-        test_driver.exception_handling(e)
-    else:
-        test_driver.try_else_handling(test_suite_details)
-    finally:
-        test_driver.finally_handling(test_suite_details)
-    test_driver.end_method_handling(test_suite_details)
-
-		 */
-		
 		PythonScriptEditor testFileEditor = new PythonScriptEditor(testsFile);
+		List<String> statements = generateFunctionStatements(recordableEvents);
+		testFileEditor.appendFunction("def " +testName+ "(test_suite_details):", statements);
+		
+		//2) insert method call to test in _driver.py file
+		PythonScriptEditor driverFileEditor = new PythonScriptEditor(driverFile);
+		//TODO: don't rely on comments regex, add it to the last test function call
+		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#End Tests$");
+	}
+	
+	public String getRecordedAsString(List<RecordableEvent> recordableEvents) throws IOException {
+		
+		PythonGenerator pg = new PythonGenerator();
+		StringWriter sw = new StringWriter();
+		List<String> statements = generateFunctionStatements(recordableEvents);
+		
+		pg.appendFunction("RASR_GENERATED_TEST", statements, sw);
+		
+		return sw.toString();		
+	}
+
+	private List<String> generateFunctionStatements(List<RecordableEvent> recordableEvents) {
 		List<String> statements = new ArrayList<String>();
 		statements.add("testname = sys._getframe().f_code.co_name");
 		statements.add("test_driver = TestHelper.TestDriver(testname)");
@@ -135,12 +137,7 @@ public class ATFCodeGenerator {
 		statements.add("    test_driver.finally_handling(test_suite_details)");
 		statements.add("test_driver.end_method_handling(test_suite_details)");
 		
-		testFileEditor.appendFunction("def " +testName+ "(test_suite_details):", statements);
-		
-		//2) insert method call to test in _driver.py file
-		PythonScriptEditor driverFileEditor = new PythonScriptEditor(driverFile);
-		//TODO: don't rely on comments, add it to the last test function call
-		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#End Tests$");
+		return statements;
 	}
 
 }

@@ -283,12 +283,17 @@ public class JCTermView extends ViewPart{
   private void makeAction(){
     IActionBars bars=getViewSite().getActionBars();
     
-    //Save Button
+    //Display Code Button
+    org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction displayCodeAction=new org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction(
+    		(ATFRecorderAWT) term);
+        bars.getToolBarManager().add(displayCodeAction);
+    
+    //Save Test Button
     org.osehra.eclipse.atfrecorder.internal.SaveTestAction saveTestAction=new org.osehra.eclipse.atfrecorder.internal.SaveTestAction(
     		(ATFRecorderAWT) term);
         bars.getToolBarManager().add(saveTestAction);
     
-    //Connect Menu (TODO: change to button)
+    //Connect Menu (TODO: change to button?)
     com.jcraft.eclipse.jcterm.internal.OpenConnectionAction openConnection=new com.jcraft.eclipse.jcterm.internal.OpenConnectionAction(
     		this);
     bars.getToolBarManager().add(openConnection);

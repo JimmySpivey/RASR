@@ -28,7 +28,7 @@ public class SaveTestAction extends Action {
 			public void run() {
 				//TODO: load these parms from user dialog prompt before tests are ran
 				try {
-					atfCodeGen.addTest(atfRecorderAwt.getRecordableEvents(), "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), false);
+					atfCodeGen.addTestToATF(atfRecorderAwt.getRecordableEvents(), "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), false);
 					atfRecorderAwt.resetRecorder();
 				} catch (FileNotFoundException e) {
 					// TODO Should inform user if File isn't found.

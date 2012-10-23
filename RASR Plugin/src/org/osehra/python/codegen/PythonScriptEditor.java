@@ -5,17 +5,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PythonScriptEditor {
+public class PythonScriptEditor extends PythonGenerator {
 
 	private File file;
-
-	private final int INDENT_AMOUNT = 4;
-	private String currentIndent = "";
 
 	public PythonScriptEditor(File file) {
 		this.file = file;
@@ -35,39 +33,7 @@ public class PythonScriptEditor {
 
 		FileWriter writer = new FileWriter(file, true);
 
-		resetIndent();
-		appendLine(writer, "\n");
-		appendLine(writer, functSignature);
-		increaseIndent();
-
-		for (String statement : statements)
-			appendLine(writer, statement);
-		resetIndent();
-
-		writer.flush();
-		writer.close();
-	}
-
-	private void increaseIndent() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < INDENT_AMOUNT; i++)
-			sb.append(' ');
-		currentIndent += sb.toString();
-	}
-
-	private void resetIndent() {
-		currentIndent = "";
-	}
-
-	/**
-	 * Appends a single line to at the very end of the python file
-	 * 
-	 * @param comment
-	 * @throws InvalidEditStateException
-	 * @throws IOException
-	 */
-	private void appendLine(FileWriter writer, String line) throws IOException {
-		writer.append(rightTrim(currentIndent + line) + "\n");
+		super.appendFunction(functSignature, statements, writer);
 	}
 
 	/**
@@ -83,25 +49,15 @@ public class PythonScriptEditor {
 		writer.flush();
 		writer.close();
 	}
-
-	private String rightTrim(String str) {
-		
-		if (str.length() == 0)
-			return str;
-		
-		int end = str.length() - 1;
-		if (str.charAt(end) != ' ' && str.charAt(end) != '\t')
-			return str;
-
-		int i = end;
-		for (i = end; i >= 0; i--) {
-			if (str.charAt(end) != ' ' && str.charAt(end) != '\t')
-				break;
-		}
-
-		return str.substring(0, i+1);
-	}
-
+	
+	/**
+	 * Edit the python file by inserting lines in the position before the regex matches.
+	 * 
+	 * @param lines
+	 * @param insertAtRegex
+	 * @throws IOException
+	 * @throws LineNotFoundException
+	 */
 	public void insertLines(List<String> lines, String insertAtRegex)
 			throws IOException, LineNotFoundException {
 		Pattern lineSeekPattern = Pattern.compile(insertAtRegex);

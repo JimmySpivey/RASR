@@ -20,7 +20,7 @@ public class TestATFCodeGeneratorTest {
 		recordableEvents.add(new RecordedExpectEvent("ACCESS CODE:"));
 		recordableEvents.add(new RecordedSendEvent("01vehu"));
 		
-		atfCodeGen.addTest(recordableEvents , "rasr_demo", "new_test", false);
+		atfCodeGen.addTestToATF(recordableEvents , "rasr_demo", "new_test", false);
 		
 		//TODO: stub a property file for a temp directory location.
 		//TODO: move stub file to temp location
