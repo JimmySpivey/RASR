@@ -284,7 +284,7 @@ public class JCTermView extends ViewPart{
     IActionBars bars=getViewSite().getActionBars();
     
     //Save Button
-    com.jcraft.eclipse.jcterm.internal.SaveTestAction saveTestAction=new com.jcraft.eclipse.jcterm.internal.SaveTestAction(
+    org.osehra.eclipse.atfrecorder.internal.SaveTestAction saveTestAction=new org.osehra.eclipse.atfrecorder.internal.SaveTestAction(
     		(ATFRecorderAWT) term);
         bars.getToolBarManager().add(saveTestAction);
     

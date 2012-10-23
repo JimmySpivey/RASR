@@ -1,4 +1,4 @@
-package com.jcraft.eclipse.jcterm.internal;
+package org.osehra.eclipse.atfrecorder.internal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
