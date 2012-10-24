@@ -4,6 +4,10 @@
 
    <extension
          point="org.eclipse.ui.views">
+      <category
+            id="atf"
+            name="Automated Testing">
+      </category>
       <view
             allowMultiple="true"
             category="atf"
@@ -12,10 +16,13 @@
             id="com.jcraft.eclipse.jcterm.view"
             name="RAS Recorder">
       </view>
-      <category
-            id="atf"
-            name="Automated Testing">
-      </category>
+      <view
+            category="atf"
+            class="org.osehra.eclipse.atfrecorder.views.ExpectedValueView"
+            icon="icons/sample.gif"
+            id="org.osehra.eclipse.atfrecorder.views.ExpectedValueView"
+            name="Expected Value">
+      </view>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
