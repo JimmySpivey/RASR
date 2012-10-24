@@ -41,7 +41,7 @@ public class DisplayCodeAction extends Action {
 		setText("Display Test");
 		setToolTipText("Display Test");
 		setImageDescriptor(JCTermPlugin
-				.getImageDescriptor(IUIConstants.IMG_TEXT_X_PYTHON));
+				.getImageDescriptor(IUIConstants.IMG_OLD_EDIT_FIND16));
 	}
 
 	public void run() {

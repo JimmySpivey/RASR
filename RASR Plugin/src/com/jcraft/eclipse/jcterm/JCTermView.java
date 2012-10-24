@@ -108,173 +108,78 @@ public class JCTermView extends ViewPart{
   Frame frame=null;
 
   public void createPartControl(Composite parent){
-
-    switch(ui){
-      case ATFRECORDERAWT:
     	  
-    	  System.out.println("Using new ATF Recorder Part Control");
-    	  
-          container=new Composite(parent, SWT.EMBEDDED|SWT.NO_BACKGROUND);
-          frame=org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
+	  System.out.println("Using new ATF Recorder Part Control");
+	  
+      container=new Composite(parent, SWT.EMBEDDED|SWT.NO_BACKGROUND);
+      frame=org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
 
-          container.addControlListener(new ControlListener(){
-            public void controlMoved(ControlEvent e){
+      container.addControlListener(new ControlListener(){
+        public void controlMoved(ControlEvent e){
+        }
+
+        public void controlResized(ControlEvent e){
+          Rectangle bounds=container.getBounds();
+          if(bounds.width==0||bounds.height==0)
+            return;
+          if(term!=null&&term instanceof ATFRecorderAWT)
+            ((ATFRecorderAWT)term).setSize(bounds.width, bounds.height);
+        }
+
+      });
+      container.addKeyListener(new KeyListener(){
+        public void keyPressed(KeyEvent e){
+          //System.out.println("keyPressed: "+e);
+          int code=-1;
+          switch(e.keyCode){
+            case 9: // TAB
+              code=9;
+              break;
+            case SWT.ARROW_DOWN:
+              code=java.awt.event.KeyEvent.VK_DOWN;
+              break;
+            case SWT.ARROW_UP:
+              code=java.awt.event.KeyEvent.VK_UP;
+            case SWT.ARROW_LEFT:
+              code=java.awt.event.KeyEvent.VK_LEFT;
+              break;
+            case SWT.ARROW_RIGHT:
+              code=java.awt.event.KeyEvent.VK_RIGHT;
+              break;
+          }
+          if(code!=-1){
+            if(term instanceof ATFRecorderAWT){
+              ((ATFRecorderAWT)term).keyTypedCode(code);
+              ((ATFRecorderAWT)term).requestFocusInWindow();
             }
+          }
+        }
 
-            public void controlResized(ControlEvent e){
-              Rectangle bounds=container.getBounds();
-              if(bounds.width==0||bounds.height==0)
-                return;
-              if(term!=null&&term instanceof ATFRecorderAWT)
-                ((ATFRecorderAWT)term).setSize(bounds.width, bounds.height);
-            }
+        public void keyReleased(KeyEvent e){
+        }
+      });
 
-          });
-          container.addKeyListener(new KeyListener(){
-            public void keyPressed(KeyEvent e){
-              //System.out.println("keyPressed: "+e);
-              int code=-1;
-              switch(e.keyCode){
-                case 9: // TAB
-                  code=9;
-                  break;
-                case SWT.ARROW_DOWN:
-                  code=java.awt.event.KeyEvent.VK_DOWN;
-                  break;
-                case SWT.ARROW_UP:
-                  code=java.awt.event.KeyEvent.VK_UP;
-                case SWT.ARROW_LEFT:
-                  code=java.awt.event.KeyEvent.VK_LEFT;
-                  break;
-                case SWT.ARROW_RIGHT:
-                  code=java.awt.event.KeyEvent.VK_RIGHT;
-                  break;
-              }
-              if(code!=-1){
-                if(term instanceof ATFRecorderAWT){
-                  ((ATFRecorderAWT)term).keyTypedCode(code);
-                  ((ATFRecorderAWT)term).requestFocusInWindow();
-                }
-              }
-            }
+      container.addFocusListener(new FocusListener(){
+        public void focusGained(FocusEvent e){
+          // System.out.println("focusGained: "+e);
+          frame.requestFocus();
+          if(term instanceof ATFRecorderAWT){
+            ((ATFRecorderAWT)term).requestFocusInWindow();
+          }
+        }
 
-            public void keyReleased(KeyEvent e){
-            }
-          });
+        public void focusLost(FocusEvent e){
+        }
+      });
 
-          container.addFocusListener(new FocusListener(){
-            public void focusGained(FocusEvent e){
-              // System.out.println("focusGained: "+e);
-              frame.requestFocus();
-              if(term instanceof ATFRecorderAWT){
-                ((ATFRecorderAWT)term).requestFocusInWindow();
-              }
-            }
+      frame.setFocusable(true);
+      frame.setFocusableWindowState(true);
 
-            public void focusLost(FocusEvent e){
-            }
-          });
+      term=new ATFRecorderAWT();
+      frame.add((ATFRecorderAWT)term);
+      frame.pack();
 
-          frame.setFocusable(true);
-          frame.setFocusableWindowState(true);
-
-          term=new ATFRecorderAWT();
-          frame.add((ATFRecorderAWT)term);
-          frame.pack();
-
-          frame.addKeyListener((java.awt.event.KeyListener)term);
-
-          break;
-    	  
-    	  
-      //ORIGINAL JCTERM CODE BELOW
-//      case JCTERMAWT:
-//    	  
-//        container=new Composite(parent, SWT.EMBEDDED|SWT.NO_BACKGROUND);
-//        frame=org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
-//
-//        container.addControlListener(new ControlListener(){
-//          public void controlMoved(ControlEvent e){
-//          }
-//
-//          public void controlResized(ControlEvent e){
-//            Rectangle bounds=container.getBounds();
-//            if(bounds.width==0||bounds.height==0)
-//              return;
-//            if(term!=null&&term instanceof JCTermPanelG2D)
-//              ((JCTermPanelG2D)term).setSize(bounds.width, bounds.height);
-//          }
-//
-//        });
-//        container.addKeyListener(new KeyListener(){
-//          public void keyPressed(KeyEvent e){
-//            //System.out.println("keyPressed: "+e);
-//            int code=-1;
-//            switch(e.keyCode){
-//              case 9: // TAB
-//                code=9;
-//                break;
-//              case SWT.ARROW_DOWN:
-//                code=java.awt.event.KeyEvent.VK_DOWN;
-//                break;
-//              case SWT.ARROW_UP:
-//                code=java.awt.event.KeyEvent.VK_UP;
-//              case SWT.ARROW_LEFT:
-//                code=java.awt.event.KeyEvent.VK_LEFT;
-//                break;
-//              case SWT.ARROW_RIGHT:
-//                code=java.awt.event.KeyEvent.VK_RIGHT;
-//                break;
-//            }
-//            if(code!=-1){
-//              if(term instanceof JCTermPanelG2D){
-//                ((JCTermPanelG2D)term).keyTypedCode(code);
-//                ((JCTermPanelG2D)term).requestFocusInWindow();
-//              }
-//            }
-//          }
-//
-//          public void keyReleased(KeyEvent e){
-//          }
-//        });
-//
-//        container.addFocusListener(new FocusListener(){
-//          public void focusGained(FocusEvent e){
-//            // System.out.println("focusGained: "+e);
-//            frame.requestFocus();
-//            if(term instanceof JCTermPanelG2D){
-//              ((JCTermPanelG2D)term).requestFocusInWindow();
-//            }
-//          }
-//
-//          public void focusLost(FocusEvent e){
-//          }
-//        });
-//
-//        frame.setFocusable(true);
-//        frame.setFocusableWindowState(true);
-//
-//        term=new JCTermPanelG2D();
-//        frame.add((JCTermPanelG2D)term);
-//        frame.pack();
-//
-//        frame.addKeyListener((java.awt.event.KeyListener)term);
-//
-//        break;
-//
-//      case JCTERMSWING:
-//
-//        JRootPane root=new JRootPane();
-//        frame.add(root);
-//        term=new JCTermSwing();
-//        root.getContentPane().add((JPanel)term);
-//
-//        break;
-//
-//      case JCTERMSWT:
-//      default:
-//        term=new JCTermSWT(parent);
-    }
+      frame.addKeyListener((java.awt.event.KeyListener)term);
 
     makeAction();
     setPartName("RAS Recorder"); //$NON-NLS-1$
@@ -284,9 +189,9 @@ public class JCTermView extends ViewPart{
     IActionBars bars=getViewSite().getActionBars();
     
     //Display Code Button
-    org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction displayCodeAction=new org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction(
-    		(ATFRecorderAWT) term);
-        bars.getToolBarManager().add(displayCodeAction);
+//    org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction displayCodeAction=new org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction(
+//    		(ATFRecorderAWT) term);
+//        bars.getToolBarManager().add(displayCodeAction);
     
     //Save Test Button
     org.osehra.eclipse.atfrecorder.internal.SaveTestAction saveTestAction=new org.osehra.eclipse.atfrecorder.internal.SaveTestAction(

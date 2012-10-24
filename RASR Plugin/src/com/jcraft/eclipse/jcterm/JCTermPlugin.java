@@ -94,7 +94,7 @@ public class JCTermPlugin extends AbstractUIPlugin{
     createImageDescriptor(IUIConstants.IMG_TERMINAL32);
     createImageDescriptor(IUIConstants.IMG_TERMINAL16);
     createImageDescriptor(IUIConstants.IMG_SAVEADD16);
-    createImageDescriptor(IUIConstants.IMG_TEXT_X_PYTHON);
+    createImageDescriptor(IUIConstants.IMG_OLD_EDIT_FIND16);
   }
 
   public void saveLocation(String key, String location){
