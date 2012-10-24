@@ -1,15 +1,38 @@
 package org.osehra.eclipse.atfrecorder.views;
 
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
+import java.util.Map;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.ISourceProvider;
+import org.eclipse.ui.ISourceProviderListener;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.ISourceProviderService;
+import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
 
 /**
@@ -30,7 +53,7 @@ import org.eclipse.swt.SWT;
  * <p>
  */
 
-public class ExpectedValueView extends ViewPart {
+public class ExpectedValueView extends ViewPart implements ISourceProviderListener {
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -99,6 +122,17 @@ public class ExpectedValueView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		
+
+		
+		//register our Listener View (so it can get updates to the current screen)
+		ISourceProviderService service = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
+		
+		//debug/delete this
+		ISourceProvider[] blah = service.getSourceProviders();
+		
+		ISourceProvider screenStateProvider = service.getSourceProvider("org.osehra.rasr.sourceprovider.screen");
+		screenStateProvider.addSourceProviderListener(this);
 	}
 
 	private void hookContextMenu() {
@@ -186,5 +220,17 @@ public class ExpectedValueView extends ViewPart {
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+
+	@Override
+	public void sourceChanged(int arg0, Map arg1) {
+		System.out.println("source changed via map");
+		
+	}
+
+	@Override
+	public void sourceChanged(int arg0, String arg1, Object arg2) {
+		System.out.println("Source changed via string and object");
+		
 	}
 }

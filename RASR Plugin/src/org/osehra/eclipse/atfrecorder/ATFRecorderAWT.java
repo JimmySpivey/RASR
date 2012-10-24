@@ -18,6 +18,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.services.ISourceProviderService;
+import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.Emulator;
@@ -27,7 +30,9 @@ import com.jcraft.jcterm.Term;
 
 public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 
-	 static String COPYRIGHT="JCTerm 0.0.11\nCopyright (C) 2002,2007 ymnk<ymnk@jcraft.com>, JCraft,Inc.\n"
+	private static final long serialVersionUID = 8029208716727234045L;
+
+	static String COPYRIGHT="JCTerm 0.0.11\nCopyright (C) 2002,2007 ymnk<ymnk@jcraft.com>, JCraft,Inc.\n"
 		      +"Official Homepage: http://www.jcraft.com/jcterm/\n"
 		      +"This software is licensed under GNU LGPL.";
 
@@ -73,6 +78,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		  private boolean disableScreenRecording = false; //set to true to disable echoing commands into screen
 		  private String currentCommand = "";
 		  private List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
+		  private ScreenStateSourceProvider screenStateService;
 		  
 		  public List<RecordableEvent> getRecordableEvents() {
 			return recordableEvents;
@@ -85,11 +91,13 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		private final Object[] colors= {Color.black, Color.red, Color.green,
 		      Color.yellow, Color.blue, Color.magenta, Color.cyan, Color.white};
 
-		  public ATFRecorderAWT(){
+		  public ATFRecorderAWT(ScreenStateSourceProvider screenStateService){
 		    enableEvents(AWTEvent.KEY_EVENT_MASK);
 
 		    setFocusable(true);
 		    setFocusTraversalKeysEnabled(false);
+		    
+		    this.screenStateService = screenStateService;
 		  }
 
 		  private void setFont(String fname){
@@ -436,8 +444,10 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		  
 		  public void drawBytes(byte[] buf, int s, int len, int x, int y){
 		    //System.out.println("drawBytes: "+new String(buf, s, len)+" "+graphics);
-		    if (!disableScreenRecording)
+		    if (!disableScreenRecording) {
 		    	currentScreen += new String(buf, s, len);
+		    	screenStateService.setCurrentScreen(currentScreen);
+		    }
 			  
 			graphics.drawBytes(buf, s, len, x, y-(descent+line_space));
 		    if(bold)

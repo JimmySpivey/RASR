@@ -35,6 +35,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -42,7 +43,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
+import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
 import com.jcraft.eclipse.jsch.core.IJSchLocation;
 import com.jcraft.eclipse.jsch.core.JSchCoreException;
@@ -58,7 +61,7 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 
-public class JCTermView extends ViewPart{
+public class JCTermView extends ViewPart {
 
   private static final String ID="com.jcraft.eclipse.jcterm.view";
 
@@ -110,7 +113,7 @@ public class JCTermView extends ViewPart{
   public void createPartControl(Composite parent){
     	  
 	  System.out.println("Using new ATF Recorder Part Control");
-	  
+
       container=new Composite(parent, SWT.EMBEDDED|SWT.NO_BACKGROUND);
       frame=org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
 
@@ -175,7 +178,11 @@ public class JCTermView extends ViewPart{
       frame.setFocusable(true);
       frame.setFocusableWindowState(true);
 
-      term=new ATFRecorderAWT();
+		//Obtain IsourceProvider
+		ISourceProviderService sourceProviderService = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
+		ScreenStateSourceProvider screenStateService = (ScreenStateSourceProvider) sourceProviderService
+		        .getSourceProvider(ScreenStateSourceProvider.NAME_SCREEN);
+      term=new ATFRecorderAWT(screenStateService);
       frame.add((ATFRecorderAWT)term);
       frame.pack();
 

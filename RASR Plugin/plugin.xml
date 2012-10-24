@@ -30,5 +30,15 @@
             file="contexts.xml">
       </contexts>
    </extension>
+<extension
+     point="org.eclipse.ui.services">
+  <sourceProvider
+        provider="org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider">
+     <!--variable
+           name="arm.variables.loggedIn"
+           priorityLevel="workbench">
+     </variable-->
+  </sourceProvider>
+</extension>
 
 </plugin>
