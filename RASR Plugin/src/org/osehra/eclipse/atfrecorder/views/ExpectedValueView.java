@@ -3,37 +3,26 @@ package org.osehra.eclipse.atfrecorder.views;
 
 import java.util.Map;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISourceProviderListener;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
-import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
-
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -60,10 +49,14 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 	 */
 	public static final String ID = "org.osehra.eclipse.atfrecorder.views.OverrideExpectView";
 
-	private TableViewer viewer;
-	private Action action1;
-	private Action action2;
-	private Action doubleClickAction;
+//	private TableViewer viewer;
+//	private Action action1;
+//	private Action action2;
+//	private Action doubleClickAction;
+	
+	private Text text;
+	
+	private String currentScreen;
 
 	/*
 	 * The content provider class is responsible for
@@ -110,127 +103,162 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-
-		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "ATF_Recorder_Plugin.viewer");
-		makeActions();
-		hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
+//		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+//		viewer.setContentProvider(new ViewContentProvider());
+//		viewer.setLabelProvider(new ViewLabelProvider());
+//		viewer.setSorter(new NameSorter());
+//		viewer.setInput(getViewSite());
 		
-
+		text = new Text(parent, SWT.V_SCROLL );
+		text.setText("");
+		Device device = Display.getCurrent();
+		text.setBackground(new Color(device, 0, 0, 0));
+		text.setEditable(false);
+		text.setForeground(new Color(device, 255, 255, 255));
+		FontData fd = new FontData("Courier New", 10, SWT.BOLD);
+		text.setFont(new Font(device, fd)); //TODO: add backup fonts/test for other supported OS'es		
+		
+		// Create the help context id for the viewer's control
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "ATF_Recorder_Plugin.viewer");
+//		makeActions();
+//		hookContextMenu();
+//		hookDoubleClickAction();
+//		contributeToActionBars();
 		
 		//register our Listener View (so it can get updates to the current screen)
 		ISourceProviderService service = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
-		
-		//debug/delete this
-		ISourceProvider[] blah = service.getSourceProviders();
-		
 		ISourceProvider screenStateProvider = service.getSourceProvider("org.osehra.rasr.sourceprovider.screen");
 		screenStateProvider.addSourceProviderListener(this);
 	}
 
-	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				ExpectedValueView.this.fillContextMenu(manager);
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
-	}
+//	private void hookContextMenu() {
+//		MenuManager menuMgr = new MenuManager("#PopupMenu");
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				ExpectedValueView.this.fillContextMenu(manager);
+//			}
+//		});
+//		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+//		viewer.getControl().setMenu(menu);
+//		getSite().registerContextMenu(menuMgr, viewer);
+//	}
 
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(new Separator());
-		manager.add(action2);
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(action2);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
-	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
-	}
-
-	private void makeActions() {
-		action1 = new Action() {
-			public void run() {
-				showMessage("Action 1 executed");
-			}
-		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
-		action2 = new Action() {
-			public void run() {
-				showMessage("Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		doubleClickAction = new Action() {
-			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
-			}
-		};
-	}
-
-	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
-	}
-	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			viewer.getControl().getShell(),
-			"Override Expect View",
-			message);
-	}
+//	private void contributeToActionBars() {
+//		IActionBars bars = getViewSite().getActionBars();
+//		fillLocalPullDown(bars.getMenuManager());
+//		fillLocalToolBar(bars.getToolBarManager());
+//	}
+//
+//	private void fillLocalPullDown(IMenuManager manager) {
+//		manager.add(action1);
+//		manager.add(new Separator());
+//		manager.add(action2);
+//	}
+//
+//	private void fillContextMenu(IMenuManager manager) {
+//		manager.add(action1);
+//		manager.add(action2);
+//		// Other plug-ins can contribute there actions here
+//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//	}
+//	
+//	private void fillLocalToolBar(IToolBarManager manager) {
+//		manager.add(action1);
+//		manager.add(action2);
+//	}
+//
+//	private void makeActions() {
+//		action1 = new Action() {
+//			public void run() {
+//				showMessage("Action 1 executed");
+//			}
+//		};
+//		action1.setText("Action 1");
+//		action1.setToolTipText("Action 1 tooltip");
+//		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		
+//		action2 = new Action() {
+//			public void run() {
+//				showMessage("Action 2 executed");
+//			}
+//		};
+//		action2.setText("Action 2");
+//		action2.setToolTipText("Action 2 tooltip");
+//		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+//				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+//		doubleClickAction = new Action() {
+//			public void run() {
+//				ISelection selection = viewer.getSelection();
+//				Object obj = ((IStructuredSelection)selection).getFirstElement();
+//				showMessage("Double-click detected on "+obj.toString());
+//			}
+//		};
+//	}
+//
+//	private void hookDoubleClickAction() {
+//		viewer.addDoubleClickListener(new IDoubleClickListener() {
+//			public void doubleClick(DoubleClickEvent event) {
+//				doubleClickAction.run();
+//			}
+//		});
+//	}
+//	private void showMessage(String message) {
+//		MessageDialog.openInformation(
+//			viewer.getControl().getShell(),
+//			"Override Expect View",
+//			message);
+//	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		text.setFocus();
+		//viewer.getControl().setFocus();
 	}
 
 	@Override
-	public void sourceChanged(int arg0, Map arg1) {
+	public void sourceChanged(int arg0, @SuppressWarnings("rawtypes") Map arg1) {
 		System.out.println("source changed via map");
-		
 	}
 
 	@Override
-	public void sourceChanged(int arg0, String arg1, Object arg2) {
-		System.out.println("Source changed via string and object");
-		
+	public void sourceChanged(int arg0, String providerVarName, Object providerVarValue) {
+		//it should always equals this since we just have 1 variable in our provider and we only listen to that one provider
+		if (providerVarName.equals("org.osehra.rasr.sourceprovider.screen")) {
+			
+			System.out.println("source changed");
+			//currentScreen = new String((String) providerVarValue);
+			currentScreen = (String) providerVarValue; //might want to give it its own local copy of the string so that it isn't updated when it is modified.
+			
+			//needed to put heavier work in a thread for UI performance. otherwise eclipse will throw an exception.
+			new Thread(new Runnable() {
+				public void run() {
+					System.out.println(currentScreen);
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							text.setText(currentScreen);
+							//System.out.println("text size as point: " +text.getSize());
+							System.out.println(text.getCharCount());
+							System.out.println(currentScreen.length());
+							System.out.println();
+							int offset = text.getCharCount() - currentScreen.length();
+							text.setSelection(offset+Math.max(1, currentScreen.length() - 21), offset+currentScreen.length() );
+							//text.setSelection(1);
+							text.showSelection();
+						    while (!text.isDisposed()) {
+						        if (!Display.getDefault().readAndDispatch())
+						        	Display.getDefault().sleep();
+						      }
+						}
+					});
+				}
+			}).start();
+			
+
+			
+		}
 	}
 }

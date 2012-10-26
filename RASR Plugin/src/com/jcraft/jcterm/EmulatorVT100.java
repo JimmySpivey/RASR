@@ -549,6 +549,7 @@ public class EmulatorVT100 extends Emulator{
       }
     }
     catch(Exception e){
+    	e.printStackTrace();
     }
   }
 
