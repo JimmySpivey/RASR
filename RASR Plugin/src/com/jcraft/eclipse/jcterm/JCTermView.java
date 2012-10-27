@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -178,11 +177,8 @@ public class JCTermView extends ViewPart {
       frame.setFocusable(true);
       frame.setFocusableWindowState(true);
 
-		//Obtain IsourceProvider
-		ISourceProviderService sourceProviderService = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
-		ScreenStateSourceProvider screenStateService = (ScreenStateSourceProvider) sourceProviderService
-		        .getSourceProvider(ScreenStateSourceProvider.NAME_SCREEN);
-      term=new ATFRecorderAWT(screenStateService);
+      //pass in the sourceProviderService so that the term can communicate between views.
+      term=new ATFRecorderAWT((ISourceProviderService)getSite().getService(ISourceProviderService.class));
       frame.add((ATFRecorderAWT)term);
       frame.pack();
 

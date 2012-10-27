@@ -115,14 +115,8 @@ public class ATFCodeGenerator {
 		statements.add("    vista = test_driver.connect_VistA(test_suite_details)");
 		for (RecordableEvent recordAbleEvent : recordableEvents) {
 			if (recordAbleEvent.getType() == RecordableEventType.EXPECT) {
-				String recorded = recordAbleEvent.getRecordedValue().trim();
-				int lastCR = recorded.lastIndexOf("\r");
-				int lastLF = recorded.lastIndexOf("\n");
-				if (lastCR != -1 || lastLF != -1)
-					recorded = recorded.substring(Math.max(lastCR, lastLF) + 1);
-				//recorded = recorded.replaceAll("\r", "");
-				//recorded = recorded.replaceAll("\n", "");
-				statements.add("    vista.wait('" +recorded+"')");
+
+				statements.add("    vista.wait('" +recordAbleEvent.getRecordedValue()+"')");
 			} else if (recordAbleEvent.getType() == RecordableEventType.SEND) {
 				statements.add("    vista.write('" +recordAbleEvent.getRecordedValue()+"')"); 
 			}

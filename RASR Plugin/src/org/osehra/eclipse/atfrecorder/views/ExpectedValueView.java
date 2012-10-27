@@ -4,10 +4,6 @@ package org.osehra.eclipse.atfrecorder.views;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DragDetectEvent;
-import org.eclipse.swt.events.DragDetectListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
@@ -19,6 +15,8 @@ import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.osehra.eclipse.atfrecorder.internal.EVSelectedTextListener;
+import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -46,7 +44,9 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 	public static final String ID = "org.osehra.eclipse.atfrecorder.views.OverrideExpectView";
 
 	private Text text;
-	private String currentScreen;
+	//private String currentScreen; //not instance related, move to single method where referenced
+	private EVSelectedTextListener selectedListener;
+	private ScreenStateSourceProvider selectedTextProvider;
 
 	public ExpectedValueView() {
 	}
@@ -64,24 +64,17 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 		text.setForeground(new Color(device, 255, 255, 255));
 		FontData fd = new FontData("Courier New", 10, 0);
 		text.setFont(new Font(device, fd)); //TODO: add backup fonts/test for other supported OS'es
-		text.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				System.out.println("widgetSelected");
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				System.out.println("widgetDefaultSelected");				
-			}
-		}); //doesn't work on selected text
-				
-		//register our Listener View (so it can get updates to the current screen)
+
 		ISourceProviderService service = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
-		ISourceProvider screenStateProvider = service.getSourceProvider("org.osehra.rasr.sourceprovider.screen");
+		ISourceProvider screenStateProvider = service.getSourceProvider(ScreenStateSourceProvider.NAME_SCREEN);
+		//register our Listener View (so it can get updates to the current screen)
 		screenStateProvider.addSourceProviderListener(this);
+		
+		selectedTextProvider = (ScreenStateSourceProvider) service
+		        .getSourceProvider(ScreenStateSourceProvider.NAME_SELECTED);
+		
+		selectedListener = new EVSelectedTextListener(selectedTextProvider);
+	    text.addListener(SWT.MouseUp, selectedListener);
 	}
 
 	/**
@@ -100,26 +93,58 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 	@Override
 	public void sourceChanged(int arg0, String providerVarName, Object providerVarValue) {
 		//it should always equals this since we just have 1 variable in our provider and we only listen to that one provider
-		if (providerVarName.equals("org.osehra.rasr.sourceprovider.screen")) {
+		if (providerVarName.equals(ScreenStateSourceProvider.NAME_SCREEN)) {
 			
-			System.out.println("source changed");
+			//System.out.println("source changed");
 			//currentScreen = new String((String) providerVarValue);
-			currentScreen = (String) providerVarValue; //might want to give it its own local copy of the string so that it isn't updated when it is modified.
+			//currentScreen = (String) providerVarValue; //might want to give it its own local copy of the string so that it isn't updated when it is modified.
+			final String threadString = (String) providerVarValue;
 			
 			//needed to put heavier work in a thread for UI performance. otherwise eclipse will throw an exception.
 			new Thread(new Runnable() {
 				public void run() {
-					System.out.println(currentScreen);
+					//System.out.println(currentScreen);
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
+							String currentScreen = new String(threadString);
 							text.setText(currentScreen);
 							int offset = text.getCharCount() - currentScreen.length();
-							text.setSelection(offset+Math.max(1, currentScreen.length() - 21), offset+currentScreen.length() );
+							int start = offset+Math.max(1, currentScreen.length() - 21);
+							int end = offset+currentScreen.length();
+							String last20 = text.getText(start, end);
+							for (int i = last20.length() - 1; i >= 0; i--) {
+								if (last20.charAt(i) == '\r' || last20.charAt(i) == '\n' || last20.charAt(i) == ' ')
+									end--;
+								else
+									break;
+							}
+							for (int i = last20.length() - 2 - (text.getCharCount() - end); i >= 0; i--) {
+								if (last20.charAt(i) == '\r' || last20.charAt(i) == '\n'|| last20.charAt(i) == ' ') {
+									start += i + 1;
+									break;
+								}
+							}
+//							int firstCR = last20.indexOf("\r");
+//							int firstLF = last20.indexOf("\n");
+//							
+//							int lastCR = last20.lastIndexOf("\r");
+//							int lastLF = last20.lastIndexOf("\n");
+//							if (lastCR != -1 || lastLF != -1)
+//								start = Math.max(lastCR, lastLF) + 1;
+//								//last20 = last20.substring(Math.max(lastCR, lastLF) + 1);
+							
+							text.setSelection(start, end);
 							text.showSelection();
-						    while (!text.isDisposed()) {
-						        if (!Display.getDefault().readAndDispatch())
-						        	Display.getDefault().sleep();
-						      }
+							String selected = text.getSelectionText();
+							//System.out.println("setting start and end:" + start + " " + end);
+							selectedListener.setPreviousStart(start);
+							selectedListener.setPreviousEnd(end);
+							selectedListener.setPreviousSelectedText(selected);
+							selectedTextProvider.setSelected(text.getSelectionText());
+//						    while (!text.isDisposed()) {
+//						        if (!Display.getDefault().readAndDispatch())
+//						        	Display.getDefault().sleep();
+//						      }
 						}
 					});
 				}

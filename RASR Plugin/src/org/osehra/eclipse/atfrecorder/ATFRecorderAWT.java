@@ -17,7 +17,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
@@ -28,7 +30,7 @@ import com.jcraft.jcterm.EmulatorVT100;
 import com.jcraft.jcterm.Splash;
 import com.jcraft.jcterm.Term;
 
-public class ATFRecorderAWT extends Panel implements KeyListener, Term {
+public class ATFRecorderAWT extends Panel implements KeyListener, Term, ISourceProviderListener {
 
 	private static final long serialVersionUID = 8029208716727234045L;
 
@@ -77,8 +79,10 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		  private String currentScreen = "";
 		  private boolean disableScreenRecording = false; //set to true to disable echoing commands into screen
 		  private String currentCommand = "";
+		  private String currentSelectedExpect = "";
 		  private List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
 		  private ScreenStateSourceProvider screenStateService;
+		  private ScreenStateSourceProvider selectedTextService;
 		  
 		  public List<RecordableEvent> getRecordableEvents() {
 			return recordableEvents;
@@ -91,13 +95,18 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		private final Object[] colors= {Color.black, Color.red, Color.green,
 		      Color.yellow, Color.blue, Color.magenta, Color.cyan, Color.white};
 
-		  public ATFRecorderAWT(ScreenStateSourceProvider screenStateService){
+		  public ATFRecorderAWT(ISourceProviderService sourceProviderService) { //ScreenStateSourceProvider screenStateService){
 		    enableEvents(AWTEvent.KEY_EVENT_MASK);
 
 		    setFocusable(true);
 		    setFocusTraversalKeysEnabled(false);
+		    screenStateService = (ScreenStateSourceProvider) sourceProviderService
+			        .getSourceProvider(ScreenStateSourceProvider.NAME_SCREEN);
+		    selectedTextService = (ScreenStateSourceProvider) sourceProviderService
+			        .getSourceProvider(ScreenStateSourceProvider.NAME_SELECTED); //why is it looked up like this?? and does it even matter?
 		    
-		    this.screenStateService = screenStateService;
+			//register our Listener View (so it can get updates to the current screen)
+		    selectedTextService.addSourceProviderListener(this);
 		  }
 
 		  private void setFont(String fname){
@@ -333,8 +342,8 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		    if (keychar == '\n') {
 		    	keycode = KeyEvent.VK_ENTER;
 		    	//TODO: save last 20 characters to python expect/command list. BUT first crop out the echo'ed command
-		    	String last20Chars = currentScreen.substring(Math.max(0, currentScreen.length()-20), currentScreen.length());
-		    	recordableEvents.add(new RecordedExpectEvent(last20Chars)); //TODO: make sure to not add this if they override with a selected screen portion
+		    	//String last20Chars = currentScreen.substring(Math.max(0, currentScreen.length()-20), currentScreen.length());
+		    	recordableEvents.add(new RecordedExpectEvent(currentSelectedExpect));
 		    	//save the current command
 		    	recordableEvents.add(new RecordedSendEvent(currentCommand));
 		    	currentScreen = ""; //reset current screen buffer
@@ -579,6 +588,20 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term {
 		public void addNewLineToOutputBuffer() {
 			currentScreen += "\n";
 			
+		}
+
+		@Override
+		public void sourceChanged(int arg0, Map arg1) {
+			
+		}
+
+		@Override
+		public void sourceChanged(int arg0, String arg1, Object arg2) {
+			if (arg1.equals(ScreenStateSourceProvider.NAME_SELECTED)) {
+				System.out.println("Term recieved selected text");
+				System.out.println((String) arg2);
+				currentSelectedExpect = (String) arg2;
+			}
 		}
 
 }
