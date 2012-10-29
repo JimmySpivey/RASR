@@ -223,10 +223,6 @@ public class JCTermView extends ViewPart {
 
     this.location=location;
 
-    if(mode==EXEC){
-      this.location=location.substring(0, location.indexOf(' '));
-    }
-
     try{
       IProgressMonitor monitor=new NullProgressMonitor();
       jschsession=JSchSession.getSession(getJSchLocation(this.location),
@@ -267,62 +263,6 @@ public class JCTermView extends ViewPart {
         channel.connect();
         ((ChannelShell)channel).setPtySize(term.getColumnCount(), term
             .getRowCount(), term.getTermWidth(), term.getTermHeight());
-      }
-      else if(mode==SFTP){
-
-        out=new PipedOutputStream();
-        in=new PipedInputStream();
-
-        channel=jschsession.getSession().openChannel("sftp"); //$NON-NLS-1$
-
-        channel.connect();
-
-        (new Sftp((ChannelSftp)channel, (InputStream)(new PipedInputStream(
-            (PipedOutputStream)out)), new PipedOutputStream(
-            (PipedInputStream)in))).kick();
-      }
-      else if(mode==EXEC){
-        String command=location.substring(location.indexOf(' ')+1);
-        /*
-               channel=jschsession.getSession().openChannel("exec");
-
-               if(xforwarding){
-                 jschsession.getSession().setX11Host(xhost);
-                 jschsession.getSession().setX11Port(xport+6000);
-                 channel.setXForwarding(true);
-               }
-               
-               ((ChannelExec)channel).setCommand(command);
-               ((ChannelExec)channel).setPty(true);
-
-               out=channel.getOutputStream();
-               in=channel.getInputStream();
-               channel.connect();
-               
-               ((ChannelExec)channel).setPtySize(term.getColumnCount(), term
-                   .getRowCount(), term.getTermWidth(), term.getTermHeight());
-        */
-
-        channel=jschsession.getSession().openChannel("shell"); //$NON-NLS-1$
-
-        if(xforwarding){
-          jschsession.getSession().setX11Host(xhost);
-          jschsession.getSession().setX11Port(xport+6000);
-          channel.setXForwarding(true);
-        }
-
-        out=channel.getOutputStream();
-        in=channel.getInputStream();
-        channel.connect();
-
-        ((ChannelShell)channel).setPtySize(term.getColumnCount(), term
-            .getRowCount(), term.getTermWidth(), term.getTermHeight());
-
-        out.write(("exec "+command).getBytes()); //$NON-NLS-1$
-        byte[] cr=new byte[1];
-        cr[0]=0x0a;
-        out.write(cr);
-        out.flush();
       }
 
       final OutputStream fout=out;

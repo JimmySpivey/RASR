@@ -20,8 +20,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
     private JCTermView term;
     private LinkedList history=new LinkedList();
     private IAction openShellConnection;
-    private IAction openSftpConnection;
-    private IAction openExecConnection;
+
     
     public OpenConnectionAction(JCTermView _term){
       super();
@@ -49,58 +48,8 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
           }
         }
       };
-      openShellConnection.setText("Open Shell Connection...");
+      openShellConnection.setText("New Connection...");
 
-      openSftpConnection=new Action(){
-        public void run(){
-          String[] label=new String[1];
-          label[0]="Location";
-          boolean[] echo=new boolean[1];
-          echo[0]=true;
-
-          OpenConnectionDialog dialog=new OpenConnectionDialog(null, "Enter Location(e.g. user@host[:port])", label, echo);
-          //dialog.setUsernameMutable(false);
-          dialog.open();
-          String[] result=dialog.getResult();
-
-          if(result!=null){
-            String location=result[0];
-            if(isValidLocation(location)){
-              term.openConnection(JCTermView.SFTP, location);
-              OpenConnectionAction.this.add(location);
-              JCTermPlugin.getDefault().saveLocation("LOCATION/SFTP", location);
-            }
-          }
-        }
-      };
-      openSftpConnection.setText("Open Sftp Connection...");
-      
-      openExecConnection=new Action(){
-        public void run(){
-          String[] label=new String[2];
-          label[0]="Location";
-          label[1]="Command";
-          boolean[] echo=new boolean[2];
-          echo[0]=true;
-          echo[1]=true;
-
-          OpenConnectionDialog dialog=new OpenConnectionDialog(null, "Enter Location(e.g. user@host[:port])", label, echo);
-          dialog.open();
-          String[] result=dialog.getResult();
-
-          if(result!=null){
-            String location=result[0];
-            String command=result[1];
-            if(isValidLocation(location) && command.length()>0){
-              term.openConnection(JCTermView.EXEC, location+" "+command);
-              JCTermPlugin.getDefault().saveLocation("LOCATION/EXEC", location+" "+command);
-            }
-          }
-        }
-      };
-      openExecConnection.setText("Open Exec Connection...");
-
-      
       setText("Open Connection");
       setToolTipText("Open Connection");
       setImageDescriptor(JCTermPlugin
@@ -118,8 +67,6 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
     public Menu getMenu(Control parent){
       Menu fMenu=new Menu(parent);
       addActionToMenu(fMenu, openShellConnection);
-      addActionToMenu(fMenu, openSftpConnection);
-      addActionToMenu(fMenu, openExecConnection);
 
       new MenuItem(fMenu, SWT.SEPARATOR);
 
