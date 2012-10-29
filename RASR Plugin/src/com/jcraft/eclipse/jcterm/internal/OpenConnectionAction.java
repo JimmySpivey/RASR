@@ -72,7 +72,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
 
       String[] values=null;
 
-      values=JCTermPlugin.getDefault().getLocation("LOCATION/SHELL");
+      values=JCTermPlugin.getDefault().getLocation("LOCATION/SHELL"); // the /SHELL is left from how JCTERM stores preferences for different types of connections.
 
       for(int i=0; i<values.length; i++){
         final String location=values[i];
@@ -85,37 +85,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
           }
         };
 
-        action.setText("Shell: "+location+"@");
-        addActionToMenu(fMenu, action);
-      }
-
-      values=JCTermPlugin.getDefault().getLocation("LOCATION/SFTP");
-
-      for(int i=0; i<values.length; i++){
-        final String location=values[i];
-        if(location.length()==0)
-          continue;
-        Action action=new Action(){
-          public void run(){
-            term.openConnection(JCTermView.SFTP, location);
-          }
-        };
-        action.setText("Sftp: "+location+"@");
-        addActionToMenu(fMenu, action);
-      }
-      
-      values=JCTermPlugin.getDefault().getLocation("LOCATION/EXEC");
-
-      for(int i=0; i<values.length; i++){
-        final String location=values[i];
-        if(location.length()==0)
-          continue;
-        Action action=new Action(){
-          public void run(){
-            term.openConnection(JCTermView.EXEC, location);
-          }
-        };
-        action.setText("Exec: "+location+"@");
+        action.setText(location+"@");
         addActionToMenu(fMenu, action);
       }
 

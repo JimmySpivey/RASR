@@ -19,7 +19,7 @@
       <view
             category="atf"
             class="org.osehra.eclipse.atfrecorder.views.ExpectedValueView"
-            icon="icons/sample.gif"
+            icon="icons/layer_select.png"
             id="org.osehra.eclipse.atfrecorder.views.ExpectedValueView"
             name="Expected Value">
       </view>

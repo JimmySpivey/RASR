@@ -1,3 +1,4 @@
-save_add2.png - Creative Commons Attribution - http://findicons.com/icon/261446/save_add2?width=16
+save_add2.png - Creative Commons Attribution (by) - http://findicons.com/icon/261446/save_add2?width=16
 text_x_python.png - GNU/GPL - http://findicons.com/icon/237729/text_x_python?width=16
 old_edit_find.png - GNU/GPL - http://findicons.com/icon/93110/old_edit_find?width=16
+layer_select.png - Creative Commons Attribution (by) - http://findicons.com/icon/118280/layer_select
