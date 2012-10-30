@@ -13,12 +13,12 @@ package com.jcraft.eclipse.jcterm.internal;
 
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
 
-public interface IHelpContextIds{
+public interface IHelpContextIds {
 
-  public static final String PREFIX=JCTermPlugin.ID+"."; //$NON-NLS-1$
+	public static final String PREFIX = JCTermPlugin.ID + "."; //$NON-NLS-1$
 
-  // Dialogs
-  public static final String OPEN_CONNECTION_DIALOG=PREFIX
-      +"keyboard_interactive_dialog_context"; //$NON-NLS-1$
+	// Dialogs
+	public static final String OPEN_CONNECTION_DIALOG = PREFIX
+			+ "keyboard_interactive_dialog_context"; //$NON-NLS-1$
 
 }

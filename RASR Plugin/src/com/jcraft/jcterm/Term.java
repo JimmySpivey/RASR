@@ -9,7 +9,7 @@
  * modify it under the terms of the GNU Library General Public License
  * as published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
-   
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,59 +22,59 @@
 
 package com.jcraft.jcterm;
 
-public interface Term{
+public interface Term {
 
-  void start(Connection connection);
+	void start(Connection connection);
 
-  int getRowCount();
+	int getRowCount();
 
-  int getColumnCount();
+	int getColumnCount();
 
-  int getCharWidth();
+	int getCharWidth();
 
-  int getCharHeight();
+	int getCharHeight();
 
-  void setCursor(int x, int y);
+	void setCursor(int x, int y);
 
-  void clear();
+	void clear();
 
-  void draw_cursor();
+	void draw_cursor();
 
-  void redraw(int x, int y, int width, int height);
+	void redraw(int x, int y, int width, int height);
 
-  //void redraw();
-  void clear_area(int x1, int y1, int x2, int y2);
+	// void redraw();
+	void clear_area(int x1, int y1, int x2, int y2);
 
-  void scroll_area(int x, int y, int w, int h, int dx, int dy);
+	void scroll_area(int x, int y, int w, int h, int dx, int dy);
 
-  void drawBytes(byte[] buf, int s, int len, int x, int y);
+	void drawBytes(byte[] buf, int s, int len, int x, int y);
 
-  void drawString(String str, int x, int y);
+	void drawString(String str, int x, int y);
 
-  void beep();
+	void beep();
 
-  void setDefaultForeGround(Object foreground);
+	void setDefaultForeGround(Object foreground);
 
-  void setDefaultBackGround(Object background);
+	void setDefaultBackGround(Object background);
 
-  void setForeGround(Object foreground);
+	void setForeGround(Object foreground);
 
-  void setBackGround(Object background);
+	void setBackGround(Object background);
 
-  void setBold();
+	void setBold();
 
-  void setUnderline();
+	void setUnderline();
 
-  void setReverse();
+	void setReverse();
 
-  void resetAllAttributes();
+	void resetAllAttributes();
 
-  int getTermWidth();
+	int getTermWidth();
 
-  int getTermHeight();
+	int getTermHeight();
 
-  Object getColor(int index);
-  
-  //added for ATF Recoreder
-  void addNewLineToOutputBuffer();
+	Object getColor(int index);
+
+	// added for ATF Recoreder
+	void addNewLineToOutputBuffer();
 }

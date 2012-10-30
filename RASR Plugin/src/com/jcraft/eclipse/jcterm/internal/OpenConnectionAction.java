@@ -15,126 +15,126 @@ import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
 import com.jcraft.eclipse.jcterm.JCTermView;
 
-public class OpenConnectionAction extends Action implements IMenuCreator{
+public class OpenConnectionAction extends Action implements IMenuCreator {
 
-    private JCTermView term;
-    private LinkedList history=new LinkedList();
-    private IAction openShellConnection;
+	private JCTermView term;
+	private LinkedList history = new LinkedList();
+	private IAction openShellConnection;
 
-    
-    public OpenConnectionAction(JCTermView _term){
-      super();
-      this.term=_term;
+	public OpenConnectionAction(JCTermView _term) {
+		super();
+		this.term = _term;
 
-      openShellConnection=new Action(){
-        public void run(){
-          String[] label=new String[1];
-          label[0]="Location";
-          boolean[] echo=new boolean[1];
-          echo[0]=true;
+		openShellConnection = new Action() {
+			public void run() {
+				String[] label = new String[1];
+				label[0] = "Location";
+				boolean[] echo = new boolean[1];
+				echo[0] = true;
 
-          OpenConnectionDialog dialog=new OpenConnectionDialog(null, "Enter Location(e.g. user@host[:port])", label, echo);
-          //dialog.setUsernameMutable(false);
-          dialog.open();
-          String[] result=dialog.getResult();
+				OpenConnectionDialog dialog = new OpenConnectionDialog(null,
+						"Enter Location(e.g. user@host[:port])", label, echo);
+				// dialog.setUsernameMutable(false);
+				dialog.open();
+				String[] result = dialog.getResult();
 
-          if(result!=null){
-            String location=result[0];
-            if(isValidLocation(location)){
-              term.openConnection(JCTermView.SHELL, location);
-              OpenConnectionAction.this.add(location);
-              JCTermPlugin.getDefault().appendValue("LOCATION/SHELL", location);
-            }
-          }
-        }
-      };
-      openShellConnection.setText("New Connection...");
+				if (result != null) {
+					String location = result[0];
+					if (isValidLocation(location)) {
+						term.openConnection(JCTermView.SHELL, location);
+						OpenConnectionAction.this.add(location);
+						JCTermPlugin.getDefault().appendValue("LOCATION/SHELL",
+								location);
+					}
+				}
+			}
+		};
+		openShellConnection.setText("New Connection...");
 
-      setText("Open Connection");
-      setToolTipText("Open Connection");
-      setImageDescriptor(JCTermPlugin
-          .getImageDescriptor(IUIConstants.IMG_TERMINAL16));
-      setMenuCreator(this);
-    }
+		setText("Open Connection");
+		setToolTipText("Open Connection");
+		setImageDescriptor(JCTermPlugin
+				.getImageDescriptor(IUIConstants.IMG_TERMINAL16));
+		setMenuCreator(this);
+	}
 
-    public void run(){
-      openShellConnection.run();
-    }
+	public void run() {
+		openShellConnection.run();
+	}
 
-    public void dispose(){
-    }
+	public void dispose() {
+	}
 
-    public Menu getMenu(Control parent){
-      Menu fMenu=new Menu(parent);
-      addActionToMenu(fMenu, openShellConnection);
+	public Menu getMenu(Control parent) {
+		Menu fMenu = new Menu(parent);
+		addActionToMenu(fMenu, openShellConnection);
 
-      new MenuItem(fMenu, SWT.SEPARATOR);
+		new MenuItem(fMenu, SWT.SEPARATOR);
 
-      String[] values=null;
+		String[] values = null;
 
-      values=JCTermPlugin.getDefault().getValues("LOCATION/SHELL"); // the /SHELL is left from how JCTERM stores preferences for different types of connections.
+		values = JCTermPlugin.getDefault().getValues("LOCATION/SHELL"); //the /SHELL is back from JCTERM in how it stores setting for 3 modes of SSH (shell, exec and SFTP)
 
-      for(int i=0; i<values.length; i++){
-        final String location=values[i];
-        if(location.length()==0)
-          continue;
+		for (int i = 0; i < values.length; i++) {
+			final String location = values[i];
+			if (location.length() == 0)
+				continue;
 
-        Action action=new Action(){
-          public void run(){
-            term.openConnection(JCTermView.SHELL, location);
-          }
-        };
+			Action action = new Action() {
+				public void run() {
+					term.openConnection(JCTermView.SHELL, location);
+				}
+			};
 
-        action.setText(location+"@");
-        addActionToMenu(fMenu, action);
-      }
+			action.setText(location + "@");
+			addActionToMenu(fMenu, action);
+		}
 
-      return fMenu;
-    }
+		return fMenu;
+	}
 
-    protected void addActionToMenu(Menu parent, IAction action){
-      ActionContributionItem item=new ActionContributionItem(action);
-      item.fill(parent, -1);
-    }
+	protected void addActionToMenu(Menu parent, IAction action) {
+		ActionContributionItem item = new ActionContributionItem(action);
+		item.fill(parent, -1);
+	}
 
-    public void add(final String location){
-      history.addFirst(new Action(){
-        public void run(){
-          term.openConnection(JCTermView.SHELL, location);
-        }
-      });
-      ((Action)history.get(0)).setText(location);
-    }
+	public void add(final String location) {
+		history.addFirst(new Action() {
+			public void run() {
+				term.openConnection(JCTermView.SHELL, location);
+			}
+		});
+		((Action) history.get(0)).setText(location);
+	}
 
-    public void clear(){
-      history.clear();
-    }
+	public void clear() {
+		history.clear();
+	}
 
-    public Menu getMenu(Menu parent){
-      return null;
-    }
-    
-    private boolean isValidLocation(String location){
-    if(location==null)
-      return false;
-    String host=location;
-    String user="";
-    if(host.indexOf('@')>0){
-      user=host.substring(0, host.indexOf('@'));
-      host=host.substring(host.indexOf('@')+1);
-    }
-    if(host.indexOf(':')>0){
-      try{
-        Integer.parseInt(host.substring(host.indexOf(':')+1));
-        host=host.substring(0, host.indexOf(':'));
-      }
-      catch(NumberFormatException e){
-        return false;
-      }
-    }
-    
-    if(user.length()>0&&host.length()>0)
-      return true;
-    return false;
-  }
-  }
+	public Menu getMenu(Menu parent) {
+		return null;
+	}
+
+	private boolean isValidLocation(String location) {
+		if (location == null)
+			return false;
+		String host = location;
+		String user = "";
+		if (host.indexOf('@') > 0) {
+			user = host.substring(0, host.indexOf('@'));
+			host = host.substring(host.indexOf('@') + 1);
+		}
+		if (host.indexOf(':') > 0) {
+			try {
+				Integer.parseInt(host.substring(host.indexOf(':') + 1));
+				host = host.substring(0, host.indexOf(':'));
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+
+		if (user.length() > 0 && host.length() > 0)
+			return true;
+		return false;
+	}
+}

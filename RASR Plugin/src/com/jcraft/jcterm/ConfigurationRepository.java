@@ -9,7 +9,7 @@
  * modify it under the terms of the GNU Library General Public License
  * as published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
-   
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -23,13 +23,14 @@
 package com.jcraft.jcterm;
 
 /**
- * This interface abstracts where the configuration is stored to and
- * retrived from.
- *
+ * This interface abstracts where the configuration is stored to and retrived
+ * from.
+ * 
  * @see com.jcraft.jcterm.Configuration
  * @see com.jcraft.jcterm.ConfigurationRepositoryFS
  */
 public interface ConfigurationRepository {
-  Configuration load(String name);
-  void save(Configuration conf);
+	Configuration load(String name);
+
+	void save(Configuration conf);
 }

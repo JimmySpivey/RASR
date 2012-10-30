@@ -53,403 +53,393 @@ import com.jcraft.eclipse.jsch.core.JSchLocation;
 import com.jcraft.eclipse.jsch.core.JSchLocationAdapter;
 import com.jcraft.eclipse.jsch.core.JSchSession;
 import com.jcraft.jcterm.Connection;
-import com.jcraft.jcterm.JCTermPanelG2D;
-import com.jcraft.jcterm.JCTermSWT;
 import com.jcraft.jcterm.Term;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelShell;
 
 public class JCTermView extends ViewPart {
 
-  private static final String ID="com.jcraft.eclipse.jcterm.view";
+	private static final String ID = "com.jcraft.eclipse.jcterm.view";
 
-  public static final int SHELL=0;
-  public static final int SFTP=1;
-  public static final int EXEC=2;
+	public static final int SHELL = 0;
+	public static final int SFTP = 1;
+	public static final int EXEC = 2;
 
-  static final int JCTERMSWT=0;
-  static final int JCTERMSWING=1;
-  static final int JCTERMAWT=2;
-  static final int ATFRECORDERAWT=3;
+	static final int JCTERMSWT = 0;
+	static final int JCTERMSWING = 1;
+	static final int JCTERMAWT = 2;
+	static final int ATFRECORDERAWT = 3;
 
-  private int ui=ATFRECORDERAWT; //original value: JCTERMAWT
+	private int ui = ATFRECORDERAWT; // original value: JCTERMAWT
 
-  private String xhost="127.0.0.1";
-  private int xport=0;
-  private boolean xforwarding=false;
+	private String xhost = "127.0.0.1";
+	private int xport = 0;
+	private boolean xforwarding = false;
 
-  private JSchSession jschsession=null;
+	private JSchSession jschsession = null;
 
-  private int compression=0;
+	private int compression = 0;
 
-  private Term term=null;
+	private Term term = null;
 
-  private Connection connection=null;
-  private String location=null;
+	private Connection connection = null;
+	private String location = null;
 
-  public static final String INFO_PASSWORD="com.jcraft.eclipse.jcterm.password";//$NON-NLS-1$
-  public static final String AUTH_SCHEME=""; //$NON-NLS-1$ 
-  public static final URL FAKE_URL;
+	public static final String INFO_PASSWORD = "com.jcraft.eclipse.jcterm.password";//$NON-NLS-1$
+	public static final String AUTH_SCHEME = ""; //$NON-NLS-1$ 
+	public static final URL FAKE_URL;
 
-  static{
-    URL temp=null;
-    try{
-      temp=new URL("http://com.jcraft.eclipse.jcterm");//$NON-NLS-1$ 
-    }
-    catch(MalformedURLException e){
-      // Should never fail
-    }
-    FAKE_URL=temp;
-  }
+	static {
+		URL temp = null;
+		try {
+			temp = new URL("http://com.jcraft.eclipse.jcterm");//$NON-NLS-1$ 
+		} catch (MalformedURLException e) {
+			// Should never fail
+		}
+		FAKE_URL = temp;
+	}
 
-  public JCTermView(){
-  }
+	public JCTermView() {
+	}
 
-  Composite container=null;
-  Frame frame=null;
+	Composite container = null;
+	Frame frame = null;
 
-  public void createPartControl(Composite parent){
-    	  
-	  System.out.println("Using new ATF Recorder Part Control");
+	public void createPartControl(Composite parent) {
 
-      container=new Composite(parent, SWT.EMBEDDED|SWT.NO_BACKGROUND);
-      frame=org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
+		System.out.println("Using new ATF Recorder Part Control");
 
-      container.addControlListener(new ControlListener(){
-        public void controlMoved(ControlEvent e){
-        }
+		container = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+		frame = org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
 
-        public void controlResized(ControlEvent e){
-          Rectangle bounds=container.getBounds();
-          if(bounds.width==0||bounds.height==0)
-            return;
-          if(term!=null&&term instanceof ATFRecorderAWT)
-            ((ATFRecorderAWT)term).setSize(bounds.width, bounds.height);
-        }
+		container.addControlListener(new ControlListener() {
+			public void controlMoved(ControlEvent e) {
+			}
 
-      });
-      container.addKeyListener(new KeyListener(){
-        public void keyPressed(KeyEvent e){
-          //System.out.println("keyPressed: "+e);
-          int code=-1;
-          switch(e.keyCode){
-            case 9: // TAB
-              code=9;
-              break;
-            case SWT.ARROW_DOWN:
-              code=java.awt.event.KeyEvent.VK_DOWN;
-              break;
-            case SWT.ARROW_UP:
-              code=java.awt.event.KeyEvent.VK_UP;
-            case SWT.ARROW_LEFT:
-              code=java.awt.event.KeyEvent.VK_LEFT;
-              break;
-            case SWT.ARROW_RIGHT:
-              code=java.awt.event.KeyEvent.VK_RIGHT;
-              break;
-          }
-          if(code!=-1){
-            if(term instanceof ATFRecorderAWT){
-              ((ATFRecorderAWT)term).keyTypedCode(code);
-              ((ATFRecorderAWT)term).requestFocusInWindow();
-            }
-          }
-        }
+			public void controlResized(ControlEvent e) {
+				Rectangle bounds = container.getBounds();
+				if (bounds.width == 0 || bounds.height == 0)
+					return;
+				if (term != null && term instanceof ATFRecorderAWT)
+					((ATFRecorderAWT) term)
+							.setSize(bounds.width, bounds.height);
+			}
 
-        public void keyReleased(KeyEvent e){
-        }
-      });
+		});
+		container.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				// System.out.println("keyPressed: "+e);
+				int code = -1;
+				switch (e.keyCode) {
+				case 9: // TAB
+					code = 9;
+					break;
+				case SWT.ARROW_DOWN:
+					code = java.awt.event.KeyEvent.VK_DOWN;
+					break;
+				case SWT.ARROW_UP:
+					code = java.awt.event.KeyEvent.VK_UP;
+				case SWT.ARROW_LEFT:
+					code = java.awt.event.KeyEvent.VK_LEFT;
+					break;
+				case SWT.ARROW_RIGHT:
+					code = java.awt.event.KeyEvent.VK_RIGHT;
+					break;
+				}
+				if (code != -1) {
+					if (term instanceof ATFRecorderAWT) {
+						((ATFRecorderAWT) term).keyTypedCode(code);
+						((ATFRecorderAWT) term).requestFocusInWindow();
+					}
+				}
+			}
 
-      container.addFocusListener(new FocusListener(){
-        public void focusGained(FocusEvent e){
-          // System.out.println("focusGained: "+e);
-          frame.requestFocus();
-          if(term instanceof ATFRecorderAWT){
-            ((ATFRecorderAWT)term).requestFocusInWindow();
-          }
-        }
+			public void keyReleased(KeyEvent e) {
+			}
+		});
 
-        public void focusLost(FocusEvent e){
-        }
-      });
+		container.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				// System.out.println("focusGained: "+e);
+				frame.requestFocus();
+				if (term instanceof ATFRecorderAWT) {
+					((ATFRecorderAWT) term).requestFocusInWindow();
+				}
+			}
 
-      frame.setFocusable(true);
-      frame.setFocusableWindowState(true);
+			public void focusLost(FocusEvent e) {
+			}
+		});
 
-      //pass in the sourceProviderService so that the term can communicate between views.
-      term=new ATFRecorderAWT((ISourceProviderService)getSite().getService(ISourceProviderService.class));
-      frame.add((ATFRecorderAWT)term);
-      frame.pack();
+		frame.setFocusable(true);
+		frame.setFocusableWindowState(true);
 
-      frame.addKeyListener((java.awt.event.KeyListener)term);
+		// pass in the sourceProviderService so that the term can communicate
+		// between views.
+		term = new ATFRecorderAWT((ISourceProviderService) getSite()
+				.getService(ISourceProviderService.class));
+		frame.add((ATFRecorderAWT) term);
+		frame.pack();
 
-    makeAction();
-    setPartName("RAS Recorder"); //$NON-NLS-1$
-  }
+		frame.addKeyListener((java.awt.event.KeyListener) term);
 
-  private void makeAction(){
-    IActionBars bars=getViewSite().getActionBars();
-    
-    //Display Code Button
-//    org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction displayCodeAction=new org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction(
-//    		(ATFRecorderAWT) term);
-//        bars.getToolBarManager().add(displayCodeAction);
-    
-    //Save Test Button
-    SaveTestAction saveTestAction=new SaveTestAction((ATFRecorderAWT) term);
-        bars.getToolBarManager().add(saveTestAction);
-    
-    //Connect Menu
-    OpenConnectionAction openConnection=new OpenConnectionAction(this);
-    bars.getToolBarManager().add(openConnection);
-    
-    //pull down menu
-    IMenuManager manager = bars.getMenuManager();
-    PreferencesAction preferencesAction = new PreferencesAction();
-	manager.add(preferencesAction);
-	//manager.add(new Separator());
-  }
+		makeAction();
+		setPartName("RAS Recorder"); //$NON-NLS-1$
+	}
 
-  public void openConnection(int mode, String location){
+	private void makeAction() {
+		IActionBars bars = getViewSite().getActionBars();
 
-    if(connection!=null){
-      JCTermView view=getUnusedView();
-      if(view!=this){
-        view.openConnection(mode, location);
-        return;
-      }
-      // TODO
-      return;
-    }
+		// Display Code Button
+		// org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction
+		// displayCodeAction=new
+		// org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction(
+		// (ATFRecorderAWT) term);
+		// bars.getToolBarManager().add(displayCodeAction);
 
-    this.location=location;
+		// Save Test Button
+		SaveTestAction saveTestAction = new SaveTestAction(
+				(ATFRecorderAWT) term);
+		bars.getToolBarManager().add(saveTestAction);
 
-    try{
-      IProgressMonitor monitor=new NullProgressMonitor();
-      jschsession=JSchSession.getSession(getJSchLocation(this.location),
-          monitor);
-      if(jschsession==null){
-        // TODO
-        this.location=null;
-        return;
-      }
+		// Connect Menu
+		OpenConnectionAction openConnection = new OpenConnectionAction(this);
+		bars.getToolBarManager().add(openConnection);
 
-      jschsession.getSession().setServerAliveInterval(60000);
-      setCompression(compression);
-    }
-    catch(Exception e){
-      // System.out.println(e);
-      // break;
-      return;
-    }
+		// pull down menu
+		IMenuManager manager = bars.getMenuManager();
+		PreferencesAction preferencesAction = new PreferencesAction();
+		manager.add(preferencesAction);
+		// manager.add(new Separator());
+	}
 
-    try{
-      Channel channel=null;
-      OutputStream out=null;
-      InputStream in=null;
+	public void openConnection(int mode, String location) {
 
-      if(mode==SHELL){
-        channel=jschsession.getSession().openChannel("shell"); //$NON-NLS-1$
+		if (connection != null) {
+			JCTermView view = getUnusedView();
+			if (view != this) {
+				view.openConnection(mode, location);
+				return;
+			}
+			// TODO
+			return;
+		}
 
-        if(xforwarding){
-          jschsession.getSession().setX11Host(xhost);
-          jschsession.getSession().setX11Port(xport+6000);
-          channel.setXForwarding(true);
-        }
+		this.location = location;
 
-        ((ChannelShell)channel).setAgentForwarding(true);
-        
-        out=channel.getOutputStream();
-        in=channel.getInputStream();
-        channel.connect();
-        ((ChannelShell)channel).setPtySize(term.getColumnCount(), term
-            .getRowCount(), term.getTermWidth(), term.getTermHeight());
-      }
+		try {
+			IProgressMonitor monitor = new NullProgressMonitor();
+			jschsession = JSchSession.getSession(
+					getJSchLocation(this.location), monitor);
+			if (jschsession == null) {
+				// TODO
+				this.location = null;
+				return;
+			}
 
-      final OutputStream fout=out;
-      final InputStream fin=in;
-      final Channel fchannel=channel;
+			jschsession.getSession().setServerAliveInterval(60000);
+			setCompression(compression);
+		} catch (Exception e) {
+			// System.out.println(e);
+			// break;
+			return;
+		}
 
-      Connection connection=new Connection(){
-        public InputStream getInputStream(){
-          return fin;
-        }
+		try {
+			Channel channel = null;
+			OutputStream out = null;
+			InputStream in = null;
 
-        public OutputStream getOutputStream(){
-          return fout;
-        }
+			if (mode == SHELL) {
+				channel = jschsession.getSession().openChannel("shell"); //$NON-NLS-1$
 
-        public void requestResize(Term term){
-          if(fchannel instanceof ChannelShell){
-            int c=term.getColumnCount();
-            int r=term.getRowCount();
-            ((ChannelShell)fchannel).setPtySize(c, r, c*term.getCharWidth(), r
-                *term.getCharHeight());
-          }
-        }
+				if (xforwarding) {
+					jschsession.getSession().setX11Host(xhost);
+					jschsession.getSession().setX11Port(xport + 6000);
+					channel.setXForwarding(true);
+				}
 
-        public void close(){
-          fchannel.disconnect();
-        }
-      };
+				((ChannelShell) channel).setAgentForwarding(true);
 
-      start(connection);
-    }
-    catch(Exception e){
-      // System.out.println(e);
-      // break;
-    }
-  }
+				out = channel.getOutputStream();
+				in = channel.getInputStream();
+				channel.connect();
+				((ChannelShell) channel).setPtySize(term.getColumnCount(),
+						term.getRowCount(), term.getTermWidth(),
+						term.getTermHeight());
+			}
 
-  private void start(Connection connection){
-    this.connection=connection;
-    Thread termThread=new Thread(new Runnable(){
-      public void run(){
-        setPartName(location);
-        term.start(JCTermView.this.connection);
-        if(JCTermView.this.connection!=null)
-          JCTermView.this.connection.close();
-        JCTermView.this.connection=null;
-        setPartName("RAS Recorder");
-      }
-    });
-    setFocus();
-    termThread.start();
-  }
+			final OutputStream fout = out;
+			final InputStream fin = in;
+			final Channel fchannel = channel;
 
-  public void setPartName(final String name){
-    final Display display=Display.getDefault();
-    if(display==null){
-      return;
-    }
-    display.asyncExec(new Runnable(){
-      public void run(){
-        JCTermView.super.setPartName(name);
-      }
-    });
-  }
+			Connection connection = new Connection() {
+				public InputStream getInputStream() {
+					return fin;
+				}
 
-  private void setCompression(int compression){
-    this.compression=compression;
-    if(jschsession==null||!jschsession.getSession().isConnected()){
-      return;
-    }
-    java.util.Properties config=new java.util.Properties();
-    if(compression==0){
-      config.put("compression.s2c", "none"); //$NON-NLS-1$ //$NON-NLS-2$
-      config.put("compression.c2s", "none"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    else{
-      config.put("compression.s2c", "zlib,none"); //$NON-NLS-1$ //$NON-NLS-2$
-      config.put("compression.c2s", "zlib,none"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-    try{
-      jschsession.getSession().setConfig(config);
-      jschsession.getSession().rekey();
-    }
-    catch(Exception e){
-    }
-  }
+				public OutputStream getOutputStream() {
+					return fout;
+				}
 
-  public void setFocus(){
-    container.setFocus();
+				public void requestResize(Term term) {
+					if (fchannel instanceof ChannelShell) {
+						int c = term.getColumnCount();
+						int r = term.getRowCount();
+						((ChannelShell) fchannel).setPtySize(c, r,
+								c * term.getCharWidth(),
+								r * term.getCharHeight());
+					}
+				}
 
-    if(term instanceof JCTermSWT)
-      ((JCTermSWT)term).setFocus();
-    else if(term instanceof JCTermPanelG2D){
-      ((JCTermPanelG2D)term).requestFocusInWindow();
-    }
-  }
+				public void close() {
+					fchannel.disconnect();
+				}
+			};
 
-  private JCTermView getUnusedView(){
-    JCTermView view=this;
-    if(view.connection!=null){
-      try{
-        IWorkbench workbench=PlatformUI.getWorkbench();
-        IWorkbenchWindow window=workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page=window.getActivePage();
-        IViewPart v=page.showView(JCTermView.ID);
-        if(!(v instanceof JCTermView)||((JCTermView)v).connection!=null){
-          for(int i=0; i<10; i++){
-            v=page.showView(JCTermView.ID, new Integer(i).toString(),
-                IWorkbenchPage.VIEW_ACTIVATE);
-            if((v instanceof JCTermView)&&((JCTermView)v).connection==null){
-              break;
-            }
-            v=null;
-          }
-        }
+			start(connection);
+		} catch (Exception e) {
+			// System.out.println(e);
+			// break;
+		}
+	}
 
-        if(v==null)
-          return null;
+	private void start(Connection connection) {
+		this.connection = connection;
+		Thread termThread = new Thread(new Runnable() {
+			public void run() {
+				setPartName(location);
+				term.start(JCTermView.this.connection);
+				if (JCTermView.this.connection != null)
+					JCTermView.this.connection.close();
+				JCTermView.this.connection = null;
+				setPartName("RAS Recorder");
+			}
+		});
+		setFocus();
+		termThread.start();
+	}
 
-        if(v instanceof JCTermView)
-          view=(JCTermView)v;
-      }
-      catch(PartInitException e){
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    return view;
-  }
+	public void setPartName(final String name) {
+		final Display display = Display.getDefault();
+		if (display == null) {
+			return;
+		}
+		display.asyncExec(new Runnable() {
+			public void run() {
+				JCTermView.super.setPartName(name);
+			}
+		});
+	}
 
-  private IJSchLocation getJSchLocation(final String location){
-    IJSchLocation _location=null;
-    try{
-      _location=JSchLocation.fromString(location);
-    }
-    catch(JSchCoreException e1){
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }
+	private void setCompression(int compression) {
+		this.compression = compression;
+		if (jschsession == null || !jschsession.getSession().isConnected()) {
+			return;
+		}
+		java.util.Properties config = new java.util.Properties();
+		if (compression == 0) {
+			config.put("compression.s2c", "none"); //$NON-NLS-1$ //$NON-NLS-2$
+			config.put("compression.c2s", "none"); //$NON-NLS-1$ //$NON-NLS-2$
+		} else {
+			config.put("compression.s2c", "zlib,none"); //$NON-NLS-1$ //$NON-NLS-2$
+			config.put("compression.c2s", "zlib,none"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		try {
+			jschsession.getSession().setConfig(config);
+			jschsession.getSession().rekey();
+		} catch (Exception e) {
+		}
+	}
 
-    _location=new JSchLocationAdapter(_location){
-      public void flushUserInfo(){
-        flushCache();
-      }
+	public void setFocus() {
+		container.setFocus();
 
-      private void flushCache(){
-        try{
-          Platform.flushAuthorizationInfo(FAKE_URL, location, AUTH_SCHEME);
-        }
-        catch(CoreException e){
-        }
-      }
+		if (term instanceof ATFRecorderAWT) {
+			((ATFRecorderAWT) term).requestFocusInWindow();
+		}
+	}
 
-      public void setAllowCaching(boolean value){
-        if(value)
-          updateCache();
-        else
-          flushCache();
-      }
+	//TODO: rework this to only have 1 view in eclipse at a time
+	private JCTermView getUnusedView() {
+		JCTermView view = this;
+		if (view.connection != null) {
+			try {
+				IWorkbench workbench = PlatformUI.getWorkbench();
+				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				IViewPart v = page.showView(JCTermView.ID);
 
-      private boolean updateCache(){
-        // put the password into the Platform map
-        Map map=Platform.getAuthorizationInfo(FAKE_URL, location, AUTH_SCHEME);
-        if(map==null){
-          map=new java.util.HashMap(10);
-        }
-        if(getPassword()!=null)
-          map.put(INFO_PASSWORD, getPassword());
-        try{
-          Platform.addAuthorizationInfo(FAKE_URL, location, AUTH_SCHEME, map);
-        }
-        catch(CoreException e){
-          // We should probably wrap the CoreException here!
-          return false;
-        }
-        return true;
-      }
-    };
+				if (v == null) 
+					return null;
 
-    String password=null;
-    Map map=Platform.getAuthorizationInfo(FAKE_URL, location, AUTH_SCHEME);
-    if(map!=null){
-      password=(String)map.get(INFO_PASSWORD);
-    }
-    if(password!=null)
-      _location.setPassword(password);
-    return _location;
-  }
+				if (v instanceof JCTermView)
+					view = (JCTermView) v;
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return view;
+	}
+
+	private IJSchLocation getJSchLocation(final String location) {
+		IJSchLocation _location = null;
+		try {
+			_location = JSchLocation.fromString(location);
+		} catch (JSchCoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		_location = new JSchLocationAdapter(_location) {
+			public void flushUserInfo() {
+				flushCache();
+			}
+
+			private void flushCache() {
+				try {
+					Platform.flushAuthorizationInfo(FAKE_URL, location,
+							AUTH_SCHEME);
+				} catch (CoreException e) {
+				}
+			}
+
+			public void setAllowCaching(boolean value) {
+				if (value)
+					updateCache();
+				else
+					flushCache();
+			}
+
+			private boolean updateCache() {
+				// put the password into the Platform map
+				Map map = Platform.getAuthorizationInfo(FAKE_URL, location,
+						AUTH_SCHEME);
+				if (map == null) {
+					map = new java.util.HashMap(10);
+				}
+				if (getPassword() != null)
+					map.put(INFO_PASSWORD, getPassword());
+				try {
+					Platform.addAuthorizationInfo(FAKE_URL, location,
+							AUTH_SCHEME, map);
+				} catch (CoreException e) {
+					// We should probably wrap the CoreException here!
+					return false;
+				}
+				return true;
+			}
+		};
+
+		String password = null;
+		Map map = Platform
+				.getAuthorizationInfo(FAKE_URL, location, AUTH_SCHEME);
+		if (map != null) {
+			password = (String) map.get(INFO_PASSWORD);
+		}
+		if (password != null)
+			_location.setPassword(password);
+		return _location;
+	}
 }

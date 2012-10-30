@@ -9,7 +9,7 @@
  * modify it under the terms of the GNU Library General Public License
  * as published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
-   
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,13 +25,13 @@ package com.jcraft.jcterm;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface Connection{
-  
-  InputStream getInputStream();
+public interface Connection {
 
-  OutputStream getOutputStream();
+	InputStream getInputStream();
 
-  void requestResize(Term term);
+	OutputStream getOutputStream();
 
-  void close();
+	void requestResize(Term term);
+
+	void close();
 }
