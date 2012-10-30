@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/RASR_Feature_0.0.4.jar" id="RASR_Feature" version="0.0.04"/>
+   <feature url="features/RASR_Feature_0.0.41.jar" id="RASR_Feature" version="0.0.041"/>
 </site>
