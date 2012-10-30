@@ -14,8 +14,6 @@ package com.jcraft.eclipse.jcterm;
 import java.awt.Frame;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -24,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -44,8 +43,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
-import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
+import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
+import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
 
+import com.jcraft.eclipse.jcterm.internal.OpenConnectionAction;
 import com.jcraft.eclipse.jsch.core.IJSchLocation;
 import com.jcraft.eclipse.jsch.core.JSchCoreException;
 import com.jcraft.eclipse.jsch.core.JSchLocation;
@@ -54,10 +55,8 @@ import com.jcraft.eclipse.jsch.core.JSchSession;
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.JCTermPanelG2D;
 import com.jcraft.jcterm.JCTermSWT;
-import com.jcraft.jcterm.Sftp;
 import com.jcraft.jcterm.Term;
 import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelShell;
 
 public class JCTermView extends ViewPart {
@@ -197,16 +196,18 @@ public class JCTermView extends ViewPart {
 //        bars.getToolBarManager().add(displayCodeAction);
     
     //Save Test Button
-    org.osehra.eclipse.atfrecorder.internal.SaveTestAction saveTestAction=new org.osehra.eclipse.atfrecorder.internal.SaveTestAction(
-    		(ATFRecorderAWT) term);
+    SaveTestAction saveTestAction=new SaveTestAction((ATFRecorderAWT) term);
         bars.getToolBarManager().add(saveTestAction);
     
-    //Connect Menu (TODO: change to button?)
-    com.jcraft.eclipse.jcterm.internal.OpenConnectionAction openConnection=new com.jcraft.eclipse.jcterm.internal.OpenConnectionAction(
-    		this);
+    //Connect Menu
+    OpenConnectionAction openConnection=new OpenConnectionAction(this);
     bars.getToolBarManager().add(openConnection);
     
-
+    //pull down menu
+    IMenuManager manager = bars.getMenuManager();
+    PreferencesAction preferencesAction = new PreferencesAction();
+	manager.add(preferencesAction);
+	//manager.add(new Separator());
   }
 
   public void openConnection(int mode, String location){

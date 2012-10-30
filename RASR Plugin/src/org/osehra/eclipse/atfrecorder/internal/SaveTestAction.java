@@ -12,23 +12,24 @@ import org.osehra.python.codegen.LineNotFoundException;
 
 import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
+import com.jcraft.eclipse.jcterm.JCTermView;
 
 public class SaveTestAction extends Action {
 
-	// private JCTermView term;
 	private IAction saveTest;
-	private ATFCodeGenerator atfCodeGen;
 
 	public SaveTestAction(final ATFRecorderAWT atfRecorderAwt) {
 		super();
 		
-		atfCodeGen = new ATFCodeGenerator();
-
 		saveTest = new Action() {
 			public void run() {
+				
+				//TODO: come up with a preferences (singleton) object for RASR
+				String atfLocation = JCTermPlugin.getDefault().getValue("PREF/ATF-LOC");
+				
 				//TODO: load these parms from user dialog prompt before tests are ran
 				try {
-					atfCodeGen.addTestToATF(atfRecorderAwt.getRecordableEvents(), "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), false);
+					new ATFCodeGenerator().addTestToATF(atfRecorderAwt.getRecordableEvents(), "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), atfLocation, false);
 					atfRecorderAwt.resetRecorder();
 				} catch (FileNotFoundException e) {
 					// TODO Should inform user if File isn't found.

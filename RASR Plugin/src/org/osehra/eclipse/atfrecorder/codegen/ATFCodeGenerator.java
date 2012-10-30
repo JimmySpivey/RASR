@@ -46,34 +46,19 @@ import org.osehra.python.codegen.PythonScriptEditor;
 
 public class ATFCodeGenerator {
 
-	private Properties getPropertiesFromClasspath(String propFileName) throws IOException {
-	    // loading xmlProfileGen.properties from the classpath
-	    Properties props = new Properties();
-	    InputStream inputStream = this.getClass().getClassLoader()
-	        .getResourceAsStream(propFileName);
-
-	    if (inputStream == null) {
-	        throw new FileNotFoundException("property file '" + propFileName
-	            + "' not found in the classpath");
-	    }
-
-	    props.load(inputStream);
-
-	    return props;
-	}
-	
 	public void addTestToATF(List<RecordableEvent> recordableEvents,
-			String testSuiteName, String testName, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
+			String testSuiteName, String testName, String atfLoc, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
-		Properties properties = getPropertiesFromClasspath("atfRecorder.properties");
-		String dir = properties.getProperty("atf.location");
+//		Properties properties = getPropertiesFromClasspath("atfRecorder.properties");
+//		String dir = properties.getProperty("atf.location");
 		
 		//TODO: add package directory name as parm
 		String packageDir= "SSH Demo";
 		
 		//TODO: get correct file seperator as per OS
-		File driverFile = new File(dir+"FunctionalTest\\RAS\\VistA-FOIA\\Packages\\" +packageDir+ "\\"+testSuiteName+"_test.py"); 
-		File testsFile = new File(dir+"FunctionalTest\\RAS\\VistA-FOIA\\Packages\\" +packageDir+ "\\"+testSuiteName+"_suite.py");
+		String sep = System.getProperty("file.separator");
+		File driverFile = new File(atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageDir +sep+ testSuiteName+"_test.py"); 
+		File testsFile = new File(atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages" +sep+packageDir +sep+ testSuiteName+"_suite.py");
 		
 		if (isNewTestSuite) {
 			driverFile.createNewFile();

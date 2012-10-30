@@ -43,7 +43,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
             if(isValidLocation(location)){
               term.openConnection(JCTermView.SHELL, location);
               OpenConnectionAction.this.add(location);
-              JCTermPlugin.getDefault().saveLocation("LOCATION/SHELL", location);
+              JCTermPlugin.getDefault().appendValue("LOCATION/SHELL", location);
             }
           }
         }
@@ -72,7 +72,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator{
 
       String[] values=null;
 
-      values=JCTermPlugin.getDefault().getLocation("LOCATION/SHELL"); // the /SHELL is left from how JCTERM stores preferences for different types of connections.
+      values=JCTermPlugin.getDefault().getValues("LOCATION/SHELL"); // the /SHELL is left from how JCTERM stores preferences for different types of connections.
 
       for(int i=0; i<values.length; i++){
         final String location=values[i];

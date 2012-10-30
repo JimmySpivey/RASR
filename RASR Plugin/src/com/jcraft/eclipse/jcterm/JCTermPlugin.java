@@ -97,21 +97,33 @@ public class JCTermPlugin extends AbstractUIPlugin{
     createImageDescriptor(IUIConstants.IMG_OLD_EDIT_FIND16);
   }
 
-  public void saveLocation(String key, String location){
-    location=new String(Util.toBase64(location.getBytes(), 0, location.length()));
+  /**
+   * Used to save multiple values into 1 key entry.
+   * 
+   * @param key
+   * @param value
+   */
+  public void appendValue(String key, String value){ //TODO: refactor and call saveValue()
+    value=new String(Util.toBase64(value.getBytes(), 0, value.length()));
     IPreferenceStore store=getPreferenceStore();
-    String value=store.getString(key);
-    String[] values=value.split(" ");
+    String orig=store.getString(key);
+    String[] values=orig.split(" ");
     for(int i=0; i<values.length; i++){
-      if(values[i].equals(location))
+      if(values[i].equals(value))
         return;
     }
-    value=location+(value.length()>0 ? " " : "")+value;
-    store.setValue(key, value);
+    orig=value+(orig.length()>0 ? " " : "")+orig;
+    store.setValue(key, orig);
     savePluginPreferences();
   }
 
-  public String[] getLocation(String key){
+  /**
+   * Retrieves multiple values for a given single key.
+   * 
+   * @param key
+   * @return
+   */
+  public String[] getValues(String key){ //TODO: refactor, call getPrefStore
     IPreferenceStore store=getPreferenceStore();
     String value=null;
     String[] values=null;
@@ -121,5 +133,29 @@ public class JCTermPlugin extends AbstractUIPlugin{
       values[i]=new String(Util.fromBase64(values[i].getBytes(), 0, values[i].length()));
     }
     return values;
+  }
+  
+  /**
+   * Overwrites the value at the given key.
+   * 
+   * @param key
+   * @param value
+   */
+  public void saveValue(String key, String value){
+    value=new String(Util.toBase64(value.getBytes(), 0, value.length()));
+    IPreferenceStore store=getPreferenceStore();
+    store.setValue(key, value);
+    savePluginPreferences();
+  }
+
+  /**
+   * Retrieves multiple values for a given single key.
+   * 
+   * @param key
+   * @return
+   */
+  public String getValue(String key){
+    String value = getPreferenceStore().getString(key);
+    return new String(Util.fromBase64(value.getBytes(), 0, value.length()));
   }
 }
