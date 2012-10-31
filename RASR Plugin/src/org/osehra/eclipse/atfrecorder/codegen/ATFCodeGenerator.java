@@ -55,7 +55,6 @@ public class ATFCodeGenerator {
 		//TODO: add package directory name as parm
 		String packageDir= "SSH Demo";
 		
-		//TODO: get correct file seperator as per OS
 		String sep = System.getProperty("file.separator");
 		File driverFile = new File(atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageDir +sep+ testSuiteName+"_test.py"); 
 		File testsFile = new File(atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages" +sep+packageDir +sep+ testSuiteName+"_suite.py");

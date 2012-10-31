@@ -43,6 +43,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
+import org.osehra.eclipse.atfrecorder.internal.GenericNotificationPopup;
 import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
 import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
 
@@ -62,15 +63,6 @@ public class JCTermView extends ViewPart {
 	private static final String ID = "com.jcraft.eclipse.jcterm.view";
 
 	public static final int SHELL = 0;
-	public static final int SFTP = 1;
-	public static final int EXEC = 2;
-
-	static final int JCTERMSWT = 0;
-	static final int JCTERMSWING = 1;
-	static final int JCTERMAWT = 2;
-	static final int ATFRECORDERAWT = 3;
-
-	private int ui = ATFRECORDERAWT; // original value: JCTERMAWT
 
 	private String xhost = "127.0.0.1";
 	private int xport = 0;
@@ -105,6 +97,7 @@ public class JCTermView extends ViewPart {
 	Composite container = null;
 	Frame frame = null;
 
+	@SuppressWarnings({ "restriction" })
 	public void createPartControl(Composite parent) {
 
 		System.out.println("Using new ATF Recorder Part Control");
@@ -183,8 +176,19 @@ public class JCTermView extends ViewPart {
 
 		frame.addKeyListener((java.awt.event.KeyListener) term);
 
-		makeAction();
 		setPartName("RAS Recorder"); //$NON-NLS-1$
+		makeAction();
+		
+		//setup for first run
+		//if the ATF Location is not set or is set to an invalid location.
+		String atfLoc = JCTermPlugin.getDefault().getValue("PREF/ATF-LOC");
+		if (atfLoc == null || atfLoc.equals("")) {
+			GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
+					"ATF Location not set", 
+					"The ATF Location has not yet been set. Please set an ATF Location from the RAS Recorder view.");
+			popup.create();
+			popup.open();
+		}
 	}
 
 	private void makeAction() {

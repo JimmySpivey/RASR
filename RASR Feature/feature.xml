@@ -5,16 +5,16 @@
       version="0.0.041"
       provider-name="OSEHRA">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      This plugin records an SSH session and exports it as python statements which can be replayed for testing purposes.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright>
       [Enter Copyright Description here.]
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="">
+      Apache License, Version 2.0
    </license>
 
    <requires>

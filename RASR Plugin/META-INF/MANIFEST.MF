@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  com.jcraft.jsch;bundle-version="0.1.31",
  org.eclipse.core.resources;bundle-version="3.7.101",
  org.eclipse.jsch.core;bundle-version="1.1.300",
- com.jcraft.eclipse.jsch.core
+ com.jcraft.eclipse.jsch.core,
+ org.eclipse.mylyn.commons.ui;bundle-version="3.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: OSEHRA

@@ -1,7 +1,10 @@
 package org.osehra.eclipse.atfrecorder.internal;
 
+import java.io.File;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -9,6 +12,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
 
+//TODO: should be refactored if the need for a preferences page/window happens.
+//this is currently a class for handling the "set ATF Location" menu item.
 public class PreferencesAction extends Action {
 
 	private IAction preferences;
@@ -19,6 +24,7 @@ public class PreferencesAction extends Action {
 		
 
 		preferences = new Action() {
+			@SuppressWarnings("restriction")
 			public void run() {
 				Display display = Display.getDefault();
 				Shell shell = new Shell(display);
@@ -27,10 +33,23 @@ public class PreferencesAction extends Action {
 				dd.setMessage("Select the root directory of the ATF. EG: /home/user/work/OSEHRA-Automated-Testing/");
 				
 				String directory = dd.open(); //null if the user fails to select a directory.
-				System.out.println(directory);
 				
 				if (directory != null) {
-					JCTermPlugin.getDefault().saveValue("PREF/ATF-LOC", directory);
+					
+					String sep = System.getProperty("file.separator");
+					File f = new File(directory +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep);
+					
+					if (f.exists() && f.isDirectory()) {
+						JCTermPlugin.getDefault().saveValue("PREF/ATF-LOC", directory);
+						
+						GenericNotificationPopup popup = new GenericNotificationPopup(display, "ATF Location set", "ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
+						popup.create();
+						popup.open();
+					} else {
+						MessageDialog.openWarning(shell, "Could not set ATF Location", "The location specified (" +directory+ ") is not a valid Automated Testing Framework directory.");
+					}
+					
+					
 				}
 				
 			}
