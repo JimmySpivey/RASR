@@ -22,8 +22,6 @@
 
 package com.jcraft.jcterm;
 
-import java.awt.Color;
-import java.util.Vector;
 
 /**
  * This class abstracts settings from JCTerm. - font size - pairs of foreground

@@ -3,11 +3,9 @@ package org.osehra.eclipse.atfrecorder.codegen;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordableEventType;
@@ -46,18 +44,29 @@ import org.osehra.python.codegen.PythonScriptEditor;
 
 public class ATFCodeGenerator {
 
-	public void addTestToATF(List<RecordableEvent> recordableEvents,
+	/**
+	 * 
+	 * 
+	 * @param recordableEvents
+	 * @param testSuiteName
+	 * @param testName
+	 * @param atfLoc
+	 * @param isNewTestSuite
+	 * @return returns the directory location to where the test was created.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws LineNotFoundException
+	 */
+	public String addTestToATF(List<RecordableEvent> recordableEvents,
 			String testSuiteName, String testName, String atfLoc, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
-//		Properties properties = getPropertiesFromClasspath("atfRecorder.properties");
-//		String dir = properties.getProperty("atf.location");
-		
 		//TODO: add package directory name as parm
 		String packageDir= "SSH Demo";
 		
 		String sep = System.getProperty("file.separator");
-		File driverFile = new File(atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageDir +sep+ testSuiteName+"_test.py"); 
-		File testsFile = new File(atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages" +sep+packageDir +sep+ testSuiteName+"_suite.py");
+		String testSuiteDirectory = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageDir +sep;
+		File driverFile = new File(testSuiteDirectory + testSuiteName+"_test.py"); 
+		File testsFile = new File(testSuiteDirectory + testSuiteName+"_suite.py");
 		
 		if (isNewTestSuite) {
 			driverFile.createNewFile();
@@ -75,6 +84,8 @@ public class ATFCodeGenerator {
 		PythonScriptEditor driverFileEditor = new PythonScriptEditor(driverFile);
 		//TODO: don't rely on comments regex, add it to the last test function call
 		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#End Tests$");
+		
+		return testSuiteDirectory;
 	}
 	
 	public String getRecordedAsString(List<RecordableEvent> recordableEvents) throws IOException {

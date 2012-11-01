@@ -22,8 +22,14 @@
 
 package com.jcraft.jcterm;
 
-import com.jcraft.jsch.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 public class Sftp implements Runnable {
 	InputStream in;

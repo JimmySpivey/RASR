@@ -22,8 +22,8 @@
 
 package com.jcraft.jcterm;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class Emulator {
 	Term term = null;
