@@ -153,38 +153,10 @@ class OpenConnectionDialog extends TrayDialog {
 		}
 
 		createFields(main);
-		
-		//select test Suite fields
-		createTestSuiteFields(main);
-		
-		//TODO: populate combo with ATF location directories.
-		
 
 		Dialog.applyDialogFont(parent);
 
 		return main;
-	}
-
-	private void createTestSuiteFields(Composite main) {
-		Label testSuiteLabel = new Label(main, SWT.WRAP);
-		testSuiteLabel.setText("Test Suite");
-		Combo testSuiteCombo = new Combo(main, SWT.DROP_DOWN);
-		
-		//populateTestSuiteComobo
-		
-		String atfLoc = JCTermPlugin.getDefault().getValue("PREF/ATF-LOC");
-		String sep = System.getProperty("file.separator");
-		
-		File packagesDir = new File(atfLoc+sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages");
-		if (packagesDir.exists())
-			System.out.println(packagesDir+ " exists.");
-		File[] packages = packagesDir.listFiles();
-		for (int i = 0; i < packages.length; i++) {
-			if (!packages[i].isDirectory())
-				continue;
-			
-			testSuiteCombo.add(packages[i].getName());
-		}
 	}
 
 	/**

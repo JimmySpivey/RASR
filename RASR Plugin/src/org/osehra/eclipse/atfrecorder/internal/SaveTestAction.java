@@ -34,10 +34,23 @@ public class SaveTestAction extends Action {
 				//TODO: load these parms from user dialog prompt before tests are ran
 				try {
 					List<RecordableEvent> recordableEvents = atfRecorderAwt.getRecordableEvents();
-					if (recordableEvents == null || recordableEvents.isEmpty()) {
-						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
-								"Unable to Save", 
-								"Nothing has been recorded");
+//					if (recordableEvents == null || recordableEvents.isEmpty()) {
+//						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+//								"Unable to Save", 
+//								"Nothing has been recorded");
+//						return;
+//					}
+					
+					//TODO: open prompt for test name and test suite
+					//note: why not just prompt for test suite here? and auto fill it to the last used.
+					SaveTestDialog dialog = new SaveTestDialog(null);
+					dialog.open();
+					
+					String packageName = dialog.getPackageName();
+					String testSuite = dialog.getTestSuite();
+					String testName = dialog.getTestName();
+					
+					if (testName == null || testSuite == null) {
 						return;
 					}
 					

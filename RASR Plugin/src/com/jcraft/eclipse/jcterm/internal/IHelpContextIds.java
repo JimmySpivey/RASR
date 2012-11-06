@@ -21,4 +21,6 @@ public interface IHelpContextIds {
 	public static final String OPEN_CONNECTION_DIALOG = PREFIX
 			+ "keyboard_interactive_dialog_context"; //$NON-NLS-1$
 
+	public static final String SAVE_TEST_DIALOG = PREFIX //TODO: change this value to one specific to saveTest? (ie: different from open conn dialog)
+			+ "keyboard_interactive_dialog_context"; //$NON-NLS-1$
 }

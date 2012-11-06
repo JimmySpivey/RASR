@@ -32,4 +32,6 @@ public class Messages extends NLS {
 
 	public static String OpenConnectionDialog_message;
 	public static String OpenConnectionDialog_labelRepository;
+	
+	public static String SaveTestDialog_message;
 }
