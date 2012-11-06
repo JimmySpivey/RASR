@@ -43,6 +43,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
+import org.osehra.eclipse.atfrecorder.RASRPreferences;
 import org.osehra.eclipse.atfrecorder.internal.GenericNotificationPopup;
 import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
 import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
@@ -80,6 +81,8 @@ public class JCTermView extends ViewPart {
 	public static final String INFO_PASSWORD = "com.jcraft.eclipse.jcterm.password";//$NON-NLS-1$
 	public static final String AUTH_SCHEME = ""; //$NON-NLS-1$ 
 	public static final URL FAKE_URL;
+	
+	private RASRPreferences preferences = RASRPreferences.getInstance();
 
 	static {
 		URL temp = null;
@@ -181,7 +184,7 @@ public class JCTermView extends ViewPart {
 		
 		//setup for first run
 		//if the ATF Location is not set or is set to an invalid location.
-		String atfLoc = JCTermPlugin.getDefault().getValue("PREF/ATF-LOC");
+		String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
 		if (atfLoc == null || atfLoc.equals("")) {
 			GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
 					"ATF Location not set", 

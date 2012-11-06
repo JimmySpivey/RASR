@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.osehra.eclipse.atfrecorder.RASRPreferences;
 
 import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
@@ -24,6 +25,9 @@ import com.jcraft.eclipse.jcterm.internal.IHelpContextIds;
 
 public class SaveTestDialog extends TrayDialog {
 
+	private RASRPreferences preferences = RASRPreferences.getInstance();
+
+	
 	// widgets
 	protected Image keyLockImage;
 
@@ -126,7 +130,7 @@ public class SaveTestDialog extends TrayDialog {
 		
 		//populateTestSuiteComobo
 		
-		String atfLoc = JCTermPlugin.getDefault().getValue("PREF/ATF-LOC");
+		String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
 		String sep = System.getProperty("file.separator");
 		
 		File packagesDir = new File(atfLoc+sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages");
@@ -140,6 +144,7 @@ public class SaveTestDialog extends TrayDialog {
 			
 			packageCombo.add(packages[i].getName());
 		} //TODO: pre-select the last chosen package.
+		
 		
 		//testSuiteName combo
 		//TODO: file iteration for each python file ending in _suite

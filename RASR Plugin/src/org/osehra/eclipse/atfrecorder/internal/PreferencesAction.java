@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.osehra.eclipse.atfrecorder.RASRPreferences;
 
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
 
@@ -16,14 +17,14 @@ import com.jcraft.eclipse.jcterm.JCTermPlugin;
 //this is currently a class for handling the "set ATF Location" menu item.
 public class PreferencesAction extends Action {
 
-	private IAction preferences;
-	
+	private IAction prefAction;
+	private RASRPreferences preferences = RASRPreferences.getInstance();
 
 	public PreferencesAction() {
 		super();
 		
 
-		preferences = new Action() {
+		prefAction = new Action() {
 			@SuppressWarnings("restriction")
 			public void run() {
 				Display display = Display.getDefault();
@@ -40,7 +41,7 @@ public class PreferencesAction extends Action {
 					File f = new File(directory +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep);
 					
 					if (f.exists() && f.isDirectory()) {
-						JCTermPlugin.getDefault().saveValue("PREF/ATF-LOC", directory);
+						preferences.saveValue(RASRPreferences.ATF_LOCATION, directory);
 						
 						GenericNotificationPopup popup = new GenericNotificationPopup(display, "ATF Location set", "ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
 						popup.create();
@@ -54,14 +55,14 @@ public class PreferencesAction extends Action {
 				
 			}
 		};
-		preferences.setText("Preferences");
+		prefAction.setText("Preferences");
 
 		setText("Set ATF Location");
 		setToolTipText("Set ATF Location");
 	}
 
 	public void run() {
-		preferences.run();
+		prefAction.run();
 	}
 
 	public void dispose() {

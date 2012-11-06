@@ -10,6 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.osehra.eclipse.atfrecorder.RASRPreferences;
 
 import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
@@ -20,6 +21,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator {
 	private JCTermView term;
 	private LinkedList history = new LinkedList();
 	private IAction openShellConnection;
+	private RASRPreferences preferences = RASRPreferences.getInstance();
 
 	public OpenConnectionAction(JCTermView _term) {
 		super();
@@ -43,7 +45,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator {
 					if (isValidLocation(location)) {
 						term.openConnection(JCTermView.SHELL, location);
 						OpenConnectionAction.this.add(location);
-						JCTermPlugin.getDefault().appendValue("LOCATION/SHELL",
+						preferences.appendValue(RASRPreferences.SHELL_LOCATION,
 								location);
 					}
 				}
@@ -73,7 +75,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator {
 
 		String[] values = null;
 
-		values = JCTermPlugin.getDefault().getValues("LOCATION/SHELL"); //the /SHELL is back from JCTERM in how it stores setting for 3 modes of SSH (shell, exec and SFTP)
+		values = preferences.getValues(RASRPreferences.SHELL_LOCATION);
 
 		for (int i = 0; i < values.length; i++) {
 			final String location = values[i];

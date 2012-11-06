@@ -10,6 +10,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
+import org.osehra.eclipse.atfrecorder.RASRPreferences;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.codegen.ATFCodeGenerator;
 import org.osehra.python.codegen.LineNotFoundException;
@@ -19,6 +20,7 @@ import com.jcraft.eclipse.jcterm.JCTermPlugin;
 
 public class SaveTestAction extends Action {
 
+	private RASRPreferences preferences = RASRPreferences.getInstance();
 	private IAction saveTest;
 
 	public SaveTestAction(final ATFRecorderAWT atfRecorderAwt) {
@@ -28,10 +30,8 @@ public class SaveTestAction extends Action {
 			@SuppressWarnings("restriction")
 			public void run() {
 				
-				//TODO: come up with a preferences (singleton) object for RASR
-				String atfLocation = JCTermPlugin.getDefault().getValue("PREF/ATF-LOC");
+				String atfLocation = preferences.getValue(RASRPreferences.ATF_LOCATION);
 
-				//TODO: load these parms from user dialog prompt before tests are ran
 				try {
 					List<RecordableEvent> recordableEvents = atfRecorderAwt.getRecordableEvents();
 //					if (recordableEvents == null || recordableEvents.isEmpty()) {
