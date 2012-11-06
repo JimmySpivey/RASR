@@ -2,6 +2,7 @@ package org.osehra.eclipse.atfrecorder.internal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -9,6 +10,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
+import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.codegen.ATFCodeGenerator;
 import org.osehra.python.codegen.LineNotFoundException;
 
@@ -31,7 +33,15 @@ public class SaveTestAction extends Action {
 
 				//TODO: load these parms from user dialog prompt before tests are ran
 				try {
-					String testSuiteDirectory = new ATFCodeGenerator().addTestToATF(atfRecorderAwt.getRecordableEvents(), "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), atfLocation, false);
+					List<RecordableEvent> recordableEvents = atfRecorderAwt.getRecordableEvents();
+					if (recordableEvents == null || recordableEvents.isEmpty()) {
+						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+								"Unable to Save", 
+								"Nothing has been recorded");
+						return;
+					}
+					
+					String testSuiteDirectory = new ATFCodeGenerator().addTestToATF(recordableEvents, "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), atfLocation, false);
 					atfRecorderAwt.resetRecorder();
 					
 					GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
