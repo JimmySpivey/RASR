@@ -30,7 +30,8 @@ public class SaveTestDialog extends TrayDialog {
 	
 	// widgets
 	protected Image keyLockImage;
-
+	protected Combo packageCombo;
+	
 	protected String name;
 	private String message;
 	private String packageName;
@@ -126,7 +127,7 @@ public class SaveTestDialog extends TrayDialog {
 	protected void createFields(Composite parent) {
 		Label testSuiteLabel = new Label(parent, SWT.WRAP);
 		testSuiteLabel.setText("Test Suite");
-		Combo packageCombo = new Combo(parent, SWT.DROP_DOWN);
+		packageCombo = new Combo(parent, SWT.DROP_DOWN);
 		
 		//populateTestSuiteComobo
 		
@@ -137,13 +138,22 @@ public class SaveTestDialog extends TrayDialog {
 		if (!packagesDir.exists()) {
 			//TODO: open error dialog
 		}
+		
+		String prefPackage = preferences.getValue(RASRPreferences.PACKAGE_NAME);
 		File[] packages = packagesDir.listFiles();
 		for (int i = 0; i < packages.length; i++) {
 			if (!packages[i].isDirectory())
 				continue;
 			
-			packageCombo.add(packages[i].getName());
-		} //TODO: pre-select the last chosen package.
+			String packageName = packages[i].getName();
+			
+			packageCombo.add(packageName);
+			//preselect the last chosen package
+			if (packageName.equals(prefPackage)) {
+				System.out.println("selecting " +packages[i].getName());
+				packageCombo.select(i);
+			}
+		} 
 		
 		
 		//testSuiteName combo
@@ -167,7 +177,7 @@ public class SaveTestDialog extends TrayDialog {
 	 */
 	protected void okPressed() {
 		
-		
+		packageName = packageCombo.getItem(packageCombo.getSelectionIndex());
 		
 		super.okPressed();
 	}

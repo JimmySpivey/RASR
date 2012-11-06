@@ -50,9 +50,15 @@ public class SaveTestAction extends Action {
 					String testSuite = dialog.getTestSuite();
 					String testName = dialog.getTestName();
 					
-					if (testName == null || testSuite == null) {
-						return;
-					}
+//					if (packageName == null || testName == null || testSuite == null) {
+//						return;
+//					}
+					
+					preferences.saveValue(RASRPreferences.PACKAGE_NAME, dialog.getPackageName());
+					
+					//TODO: delete
+					if (1 == 1)
+					return;
 					
 					String testSuiteDirectory = new ATFCodeGenerator().addTestToATF(recordableEvents, "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), atfLocation, false);
 					atfRecorderAwt.resetRecorder();
