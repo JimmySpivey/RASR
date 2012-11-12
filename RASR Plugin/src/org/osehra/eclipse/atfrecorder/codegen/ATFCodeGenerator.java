@@ -61,9 +61,19 @@ public class ATFCodeGenerator {
 			String packageName, String testSuiteName, String testName, String atfLoc, boolean isNewPackage, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
 		String sep = System.getProperty("file.separator");
-		String testSuiteDirectory = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageName +sep;
-		File driverFile = new File(testSuiteDirectory + testSuiteName+"_test.py"); 
-		File testsFile = new File(testSuiteDirectory + testSuiteName+"_suite.py");
+		String packageDir = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageName +sep;
+		
+		if (isNewPackage) {
+			File dir = new File(packageDir);
+			  // if the directory does not exist, create it
+			  if (!dir.exists())
+			    dir.mkdir();
+			  
+			  //TODO: also make config file
+		}
+		
+		File driverFile = new File(packageDir + testSuiteName+"_test.py"); 
+		File testsFile = new File(packageDir + testSuiteName+"_suite.py");
 		
 		if (isNewTestSuite) {
 			driverFile.createNewFile();
@@ -82,7 +92,7 @@ public class ATFCodeGenerator {
 		//TODO: don't rely on comments regex, add it to the last test function call
 		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#End Tests$");
 		
-		return testSuiteDirectory;
+		return packageDir;
 	}
 	
 	public String getRecordedAsString(List<RecordableEvent> recordableEvents) throws IOException {
