@@ -55,7 +55,7 @@ public class SaveTestAction extends Action {
 					preferences.saveValue(RASRPreferences.PACKAGE_NAME, dialog.getPackageName());
 					preferences.saveValue(RASRPreferences.TEST_SUITE_NAME, dialog.getTestSuite());
 					
-					//TODO: turned off saving files, delete later
+					//turns off saving files, delete later
 //					if (1 == 1)
 //					return;
 					
@@ -65,7 +65,8 @@ public class SaveTestAction extends Action {
 							dialog.getTestSuite(),
 							dialog.getTestName(),
 							atfLocation,
-							false); //TODO: set flag if new test suite
+							dialog.isNewPackage(),
+							dialog.isNewSuite()); 
 					atfRecorderAwt.resetRecorder();
 					
 					GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 

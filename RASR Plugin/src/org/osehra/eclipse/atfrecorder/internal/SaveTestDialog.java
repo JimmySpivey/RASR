@@ -1,6 +1,7 @@
 package org.osehra.eclipse.atfrecorder.internal;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -11,6 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -34,6 +36,8 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 	//dependencies
 	private RASRPreferences preferences = RASRPreferences.getInstance();
 	private SaveTestMenuPopulator populator = new SaveTestMenuPopulator();
+	private List<String> packageList;
+	private List<String> suiteList;
 	
 	// widgets
 	protected Image keyLockImage;
@@ -79,18 +83,15 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		// set F1 help
 		PlatformUI.getWorkbench().getHelpSystem()
 				.setHelp(newShell, IHelpContextIds.SAVE_TEST_DIALOG);
-
 	}
 
-//	/**
-//	 * @see Window#create
-//	 */
-//	public void create() {
-//		super.create();
-//		if (texts.length > 0) {
-//			texts[0].setFocus();
-//		}
-//	}
+	/**
+	 * @see Window#create
+	 */
+	public void create() {
+		super.create();
+		testNameText.setFocus();
+	}
 
 	/**
 	 * @see Dialog#createDialogArea
@@ -145,17 +146,28 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		
 		//Populate the package pull down menu
 		try {
-			int i = 0;
-			for (String packageName : populator.getPackageNames()) {
-				packageCombo.add(packageName);
-				
-				//preselect the last chosen package
-				if (packageName.equals(lastSelectedPkg)) {
-					packageCombo.select(i);
-				}
-				
-				i++;
+			packageList = populator.getPackageNames();
+		} catch (FileNotFoundException e) {
+			MessageDialog.openError(Display.getDefault().getActiveShell(),
+					"ATF Location not found",
+					e.getMessage());
+			return;
+		}
+		int i = 0;
+		for (String packageName : packageList) {
+			packageCombo.add(packageName);
+			
+			//preselect the last chosen package
+			if (packageName.equals(lastSelectedPkg)) {
+				packageCombo.select(i);
 			}
+			
+			i++;
+		}
+
+		//testSuiteName combo
+		try {
+			suiteList = populator.getSuiteNames(lastSelectedPkg);
 		} catch (FileNotFoundException e) {
 			MessageDialog.openError(Display.getDefault().getActiveShell(),
 					"ATF Location not found",
@@ -163,15 +175,13 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 			return;
 		}
 		
-		//testSuiteName combo
 		Label suiteNameLabel = new Label(parent, SWT.WRAP);
 		suiteNameLabel.setText("Suite");
-
 		suiteNameCombo = new Combo(parent, SWT.DROP_DOWN);
 		
 		//if any package is selected, initialize the suite combo
 		if (packageCombo.getSelectionIndex() != -1)
-			populateSuite(lastSelectedPkg);
+			populateSuite();
 				
 		//testName text field
 		Label testNameLabel = new Label(parent, SWT.WRAP);
@@ -182,25 +192,17 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		hadError = false;
 	}
 
-	private void populateSuite(String lastSelectedPkg) {
+	private void populateSuite() {
 		String lastSelectedSte = preferences.getValue(RASRPreferences.TEST_SUITE_NAME);
-		try {
-			int i = 0;
-			for (String suite : populator.getSuiteNames(lastSelectedPkg)) {
-				suiteNameCombo.add(suite);
-				
-				if (suite.equals(lastSelectedSte))
-					suiteNameCombo.select(i);
-				i++;
-			}
-		} catch (FileNotFoundException e) {
-			MessageDialog.openError(Display.getDefault().getActiveShell(),
-					"ATF Location not found",
-					e.getMessage());
-			return;
+		int i = 0;
+		for (String suite : suiteList) {
+			suiteNameCombo.add(suite);
+			
+			if (suite.equals(lastSelectedSte))
+				suiteNameCombo.select(i);
+			i++;
 		}
 	}
-	
 	
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
@@ -281,6 +283,24 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 	public String getPackageName() {
 		return packageName;
 	}
+	
+	public boolean isNewPackage() throws IllegalStateException {
+		if (packageName == null)
+			throw new IllegalStateException("packageName is null");
+		if (packageList == null)
+			throw new IllegalStateException("packageList is null");
+		
+		return !packageList.contains(packageName);
+	}
+	
+	public boolean isNewSuite() throws IllegalStateException {
+		if (testSuite == null)
+			throw new IllegalStateException("testSuite is null");
+		if (suiteList == null)
+			throw new IllegalStateException("suiteList is null");
+		
+		return !suiteList.contains(testSuite);
+	}
 
 	@Override
 	public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -300,14 +320,24 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 			MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
 					"No package selected", 
 					"A package must be selected.");
-			
 			return;
 		}
 		
 		//clear current selection.
 		suiteNameCombo.removeAll();
-		
-		populateSuite(packageCombo.getItem(selectedPkg));
+		//reload the suiteNames based on the latest package selected
+		try {
+			suiteList = populator.getSuiteNames(packageCombo.getItem(selectedPkg));
+		} catch (FileNotFoundException e) {
+			MessageDialog.openError(Display.getDefault().getActiveShell(),
+					"ATF Location not found",
+					e.getMessage());
+			return;
+		}
+		//update combo
+		populateSuite();
+		suiteNameCombo.select(0);
+		//suiteNameCombo.setFocus();
 	}
 
 }

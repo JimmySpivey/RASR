@@ -58,7 +58,7 @@ public class ATFCodeGenerator {
 	 * @throws LineNotFoundException
 	 */
 	public String addTestToATF(List<RecordableEvent> recordableEvents,
-			String packageName, String testSuiteName, String testName, String atfLoc, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
+			String packageName, String testSuiteName, String testName, String atfLoc, boolean isNewPackage, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
 		String sep = System.getProperty("file.separator");
 		String testSuiteDirectory = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageName +sep;
