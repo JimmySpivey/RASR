@@ -22,6 +22,7 @@ public interface IUIConstants {
 	public final String IMG_TERMINAL16 = "Crystal_Clear_app_terminal16.png"; //$NON-NLS-1$
 
 	public final String IMG_SAVEADD16 = "save_add2.png";
+	public final String IMG_SAVEADD32 = "save_add_32x32.png";
 	public final String IMG_OLD_EDIT_FIND16 = "old_edit_find.png";
 	public final String IMG_LAYER_SELECT = "layer_select.png";
 }

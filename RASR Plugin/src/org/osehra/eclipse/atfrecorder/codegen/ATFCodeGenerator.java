@@ -58,13 +58,10 @@ public class ATFCodeGenerator {
 	 * @throws LineNotFoundException
 	 */
 	public String addTestToATF(List<RecordableEvent> recordableEvents,
-			String testSuiteName, String testName, String atfLoc, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
+			String packageName, String testSuiteName, String testName, String atfLoc, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
-		//TODO: add package directory name as parm
-		String packageDir= "SSH Demo";
-		
 		String sep = System.getProperty("file.separator");
-		String testSuiteDirectory = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageDir +sep;
+		String testSuiteDirectory = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageName +sep;
 		File driverFile = new File(testSuiteDirectory + testSuiteName+"_test.py"); 
 		File testsFile = new File(testSuiteDirectory + testSuiteName+"_suite.py");
 		

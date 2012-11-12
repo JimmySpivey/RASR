@@ -41,8 +41,6 @@ public class SaveTestAction extends Action {
 //						return;
 //					}
 					
-					//TODO: open prompt for test name and test suite
-					//note: why not just prompt for test suite here? and auto fill it to the last used.
 					SaveTestDialog dialog = new SaveTestDialog(null);
 					dialog.open();
 					
@@ -50,17 +48,24 @@ public class SaveTestAction extends Action {
 					String testSuite = dialog.getTestSuite();
 					String testName = dialog.getTestName();
 					
-//					if (packageName == null || testName == null || testSuite == null) {
-//						return;
-//					}
+					if (packageName == null || testName == null || testSuite == null) {
+						return;
+					}
 					
 					preferences.saveValue(RASRPreferences.PACKAGE_NAME, dialog.getPackageName());
+					preferences.saveValue(RASRPreferences.TEST_SUITE_NAME, dialog.getTestSuite());
 					
-					//TODO: delete
-					if (1 == 1)
-					return;
+					//TODO: turned off saving files, delete later
+//					if (1 == 1)
+//					return;
 					
-					String testSuiteDirectory = new ATFCodeGenerator().addTestToATF(recordableEvents, "ssh_connect_demo", "rasr_test_"+((int)(Math.random()*1000)), atfLocation, false);
+					String testSuiteDirectory = new ATFCodeGenerator().addTestToATF(
+							recordableEvents,
+							dialog.getPackageName(),
+							dialog.getTestSuite(),
+							dialog.getTestName(),
+							atfLocation,
+							false); //TODO: set flag if new test suite
 					atfRecorderAwt.resetRecorder();
 					
 					GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
