@@ -2,6 +2,7 @@ package org.osehra.eclipse.atfrecorder.codegen;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import org.osehra.python.codegen.LineNotFoundException;
 public class TestATFCodeGeneratorTest {
 
 	@Test
-	public void testAddTest() throws FileNotFoundException, IOException, LineNotFoundException {
+	public void testAddTest() throws FileNotFoundException, IOException, LineNotFoundException, URISyntaxException {
 		ATFCodeGenerator atfCodeGen = new ATFCodeGenerator();
 		List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
 		recordableEvents.add(new RecordedExpectEvent("ACCESS CODE:"));
