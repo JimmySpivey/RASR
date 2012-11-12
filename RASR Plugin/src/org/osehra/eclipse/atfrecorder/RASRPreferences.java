@@ -81,7 +81,8 @@ public final class RASRPreferences {
 	 * @param value
 	 */
 	public void saveValue(String key, String value) {
-		value = new String(Util.toBase64(value.getBytes(), 0, value.length()));
+		if (value != null && !value.isEmpty())
+			value = new String(Util.toBase64(value.getBytes(), 0, value.length()));
 		IPreferenceStore store = plugin.getPreferenceStore();
 		store.setValue(key, value);
 		plugin.savePluginPreferences();

@@ -1,0 +1,8 @@
+[RemoteDetails]
+RemoteConnect=1
+ServerLocation=vista.vainnovation.us
+SSHUsername=
+SSHPassword=
+Instance=cache
+UseDefaultNamespace=1
+Namespace= ; Leave empty since not using

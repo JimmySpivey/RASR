@@ -1,16 +1,5 @@
-'''
-Created on $header.dateFormated
-
-@author: $header.username
-##put desc here
-'''
+import sys
+sys.path = ['./FunctionalTest/RAS/lib'] + ['./dataFiles'] + ['./lib/vista'] + sys.path
 
 import TestHelper
-import sys
-
-#Begin Test functions
-
-
-    
-#End Test Functions
 

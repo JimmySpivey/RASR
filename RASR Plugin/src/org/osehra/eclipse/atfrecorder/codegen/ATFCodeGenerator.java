@@ -2,8 +2,11 @@ package org.osehra.eclipse.atfrecorder.codegen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +15,7 @@ import org.osehra.eclipse.atfrecorder.RecordableEventType;
 import org.osehra.python.codegen.LineNotFoundException;
 import org.osehra.python.codegen.PythonGenerator;
 import org.osehra.python.codegen.PythonScriptEditor;
+import org.osehra.templating.TemplateEngine;
 
 /*
  * 
@@ -43,6 +47,17 @@ import org.osehra.python.codegen.PythonScriptEditor;
  */
 
 public class ATFCodeGenerator {
+	
+	//dependencies
+	TemplateEngine driverTemplate;
+	TemplateEngine suiteTemplate;
+	TemplateEngine configFileTemplate;
+	
+	public ATFCodeGenerator() throws FileNotFoundException, URISyntaxException {
+		driverTemplate = new TemplateEngine("testDriverTemplate.txt");
+		suiteTemplate = new TemplateEngine("testSuiteTemplate.txt");
+		configFileTemplate = new TemplateEngine("testConfigFile.txt"); 
+	}
 
 	/**
 	 * 
@@ -69,7 +84,13 @@ public class ATFCodeGenerator {
 			  if (!dir.exists())
 			    dir.mkdir();
 			  
-			  //TODO: also make config file
+			  //also make config file
+			  File configFile = new File(packageDir +packageName+".cfg"); 
+			  configFile.createNewFile();
+			  FileWriter fw = new FileWriter(configFile);
+			  configFileTemplate.compileTemplate(fw);
+			  fw.flush();
+			  fw.close();
 		}
 		
 		File driverFile = new File(packageDir + testSuiteName+"_test.py"); 
@@ -79,7 +100,16 @@ public class ATFCodeGenerator {
 			driverFile.createNewFile();
 			testsFile.createNewFile();
 			
-			//TODO: load template into files or use file editor to manually create them
+			FileWriter fw = new FileWriter(driverFile);
+			driverTemplate.setValue("testSuite.name", testSuiteName);
+			driverTemplate.compileTemplate(fw);
+			fw.flush();
+			fw.close();
+			
+			fw = new FileWriter(testsFile);
+			driverTemplate.compileTemplate(fw);
+			fw.flush();
+			fw.close();
 		}
 		
 		//1) append test to _tests.py file

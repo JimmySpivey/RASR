@@ -89,7 +89,8 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 	 */
 	public void create() {
 		super.create();
-		testNameText.setFocus();
+		if (testNameText != null)
+			testNameText.setFocus();
 	}
 
 	/**
@@ -147,9 +148,11 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		try {
 			packageList = populator.getPackageNames();
 		} catch (FileNotFoundException e) {
+			preferences.saveValue(RASRPreferences.PACKAGE_NAME, "");
 			MessageDialog.openError(Display.getDefault().getActiveShell(),
 					"ATF Location not found",
 					e.getMessage());
+			hadError = true;
 			return;
 		}
 		int i = 0;
@@ -168,9 +171,11 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		try {
 			suiteList = populator.getSuiteNames(lastSelectedPkg);
 		} catch (FileNotFoundException e) {
+			preferences.saveValue(RASRPreferences.PACKAGE_NAME, "");
 			MessageDialog.openError(Display.getDefault().getActiveShell(),
 					"ATF Location not found",
 					e.getMessage());
+			hadError = true;
 			return;
 		}
 		
@@ -217,9 +222,10 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 			return;
 		}
 		
-		int selectedPkg= packageCombo.getSelectionIndex();
+		int selectedPkg = packageCombo.getSelectionIndex();
 		
-		if (selectedPkg == -1) {
+		if (selectedPkg == -1 && 
+				(packageCombo.getText() == null || packageCombo.getText().trim() == "")) {
 			MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
 					"No package selected", 
 					"A package must be selected.");
@@ -229,7 +235,8 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		}
 		
 		int selectedSte= suiteNameCombo.getSelectionIndex();
-		if (selectedSte == -1) {
+		if (selectedSte == -1 && 
+				(suiteNameCombo.getText() == null || suiteNameCombo.getText().trim() == "")) {
 			MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
 					"No suite selected", 
 					"A suite must be selected.");
@@ -238,8 +245,14 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 			return;
 		}
 		
-		packageName = packageCombo.getItem(selectedPkg);
-		testSuite = suiteNameCombo.getItem(selectedSte);
+		if (selectedPkg != -1)
+			packageName = packageCombo.getItem(selectedPkg);
+		else
+			packageName = packageCombo.getText();
+		if (selectedSte != -1)
+			testSuite = suiteNameCombo.getItem(selectedSte);
+		else
+			testSuite = suiteNameCombo.getText();
 		testName = testNameText.getText();
 		//TODO: can put validations here for testSuiteName to prevent the dialog window from closing on the user (???)
 		
@@ -313,7 +326,7 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		if (hadError)
 			return;
 		
-		int selectedPkg= packageCombo.getSelectionIndex();
+		int selectedPkg = packageCombo.getSelectionIndex();
 		
 		if (selectedPkg == -1) {
 			MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
@@ -328,9 +341,11 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		try {
 			suiteList = populator.getSuiteNames(packageCombo.getItem(selectedPkg));
 		} catch (FileNotFoundException e) {
+			preferences.saveValue(RASRPreferences.PACKAGE_NAME, "");
 			MessageDialog.openError(Display.getDefault().getActiveShell(),
 					"ATF Location not found",
 					e.getMessage());
+			hadError = true;
 			return;
 		}
 		//update combo

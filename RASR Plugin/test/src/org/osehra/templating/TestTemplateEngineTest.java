@@ -10,8 +10,8 @@ public class TestTemplateEngineTest {
 
 	@Test
 	public void testCompileTemplate() throws URISyntaxException, IOException {
-		TemplateEngine engine = new TemplateEngine(getClass().getClassLoader().getResource("samplePythonFile.txt").toURI());
-		engine.addValue("testSuite.name", "unit_testing");
+		TemplateEngine engine = new TemplateEngine("samplePythonFile.txt");
+		engine.setValue("testSuite.name", "unit_testing");
 		
 		
 		FileWriter fw = new FileWriter("testFile.py");

@@ -1,24 +1,23 @@
-'''
-Created on $header.dateFormated
-
-@author: $header.username
-##put desc here
-'''
 import os
 import sys
-sys.path = ['./Scripts'] + ['./dataFiles'] + ['./helpers'] + ['./TestSuies'] + sys.path
+#apparently these are not needed... at least not on windows. Will need to retest this on linux
+#sys.path = ['./FunctionalTest/RAS/lib'] + ['./lib/vista'] + sys.path
+#sys.path = ['./'] + ['../lib/vista'] + sys.path
+
+import ${testSuite.name}_suite
 import TestHelper
-import $testSuite.name_suite
 
 def main():
-    test_suite_name = os.path.basename(__file__).split('.')[0]
-    test_suite_driver = TestHelper.TestSuiteDriver()
-    test_suite_details = test_suite_driver.generate_test_suite_details(test_suite_name)
+    test_suite_driver = TestHelper.TestSuiteDriver(__file__)
+    test_suite_details = test_suite_driver.generate_test_suite_details()
 
     try:
         test_suite_driver.pre_test_suite_run(test_suite_details)
 
         #Begin Tests
+        #ssh_connect_demo_suite.dive_into_menus(test_suite_details)
+        #ssh_connect_demo_suite.demo_screen_man(test_suite_details)
+        ssh_connect_demo_suite.first_attempt(test_suite_details)
         #End Tests
 
         test_suite_driver.post_test_suite_run(test_suite_details)

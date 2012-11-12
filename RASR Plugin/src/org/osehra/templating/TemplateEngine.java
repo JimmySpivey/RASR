@@ -1,18 +1,17 @@
 package org.osehra.templating;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TemplateEngine {
 
-	private FileReader templateFile;
+	private Reader templateFile;
 	private Map<String, String> replacerMap = new HashMap<String, String>();
 	
 	
@@ -22,11 +21,13 @@ public class TemplateEngine {
 	 * @param url
 	 * @throws FileNotFoundException 
 	 */
-	public TemplateEngine(URI uri) throws FileNotFoundException {
-		templateFile = new FileReader(new File(uri));
+	public TemplateEngine(String classPathLoc) {
+		templateFile = new BufferedReader(new InputStreamReader(
+			    getClass().getClassLoader().getResourceAsStream(
+			    		classPathLoc)));
 	}
 	
-	public void addValue(String key, String value) {
+	public void setValue(String key, String value) {
 		replacerMap.put(key, value);
 	}
 	

@@ -2,6 +2,7 @@ package org.osehra.eclipse.atfrecorder.internal;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -75,20 +76,25 @@ public class SaveTestAction extends Action {
 					popup.create();
 					popup.open();
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
 					MessageDialog.openError(Display.getDefault().getActiveShell(), 
 							"File Not Found", 
 							"Attempted to save test, however the file was not found. Please check that the ATF located at " +atfLocation+ " is valid.");
 				} catch (IOException e) {
-					e.printStackTrace();
 					MessageDialog.openError(Display.getDefault().getActiveShell(), 
 							"IO Exception", 
 							e.getLocalizedMessage());
 				} catch (LineNotFoundException e) {
-					e.printStackTrace();
 					MessageDialog.openError(Display.getDefault().getActiveShell(), 
 							"Python Code Generation Exception", 
 							"Error occured while editing the python script. Please check that the script is still valid for editing.");
+				} catch (IllegalStateException e) {
+					MessageDialog.openError(Display.getDefault().getActiveShell(), 
+							"IllegalStateException??", 
+							e.getLocalizedMessage());
+				} catch (URISyntaxException e) {
+					MessageDialog.openError(Display.getDefault().getActiveShell(), 
+							"Failed to load template", 
+							"The templates required for creating new test files could not be found.");
 				}
 			}
 		};
