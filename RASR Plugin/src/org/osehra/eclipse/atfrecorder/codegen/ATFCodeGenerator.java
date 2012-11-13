@@ -49,9 +49,9 @@ import org.osehra.templating.TemplateEngine;
 public class ATFCodeGenerator {
 	
 	//dependencies
-	TemplateEngine driverTemplate;
-	TemplateEngine suiteTemplate;
-	TemplateEngine configFileTemplate;
+	private TemplateEngine driverTemplate;
+	private TemplateEngine suiteTemplate;
+	private TemplateEngine configFileTemplate;
 	
 	public ATFCodeGenerator() throws FileNotFoundException, URISyntaxException {
 		driverTemplate = new TemplateEngine("testDriverTemplate.txt");
@@ -80,34 +80,36 @@ public class ATFCodeGenerator {
 		
 		if (isNewPackage) {
 			File dir = new File(packageDir);
-			  // if the directory does not exist, create it
-			  if (!dir.exists())
-			    dir.mkdir();
-			  
-			  //also make config file
-			  File configFile = new File(packageDir +packageName+".cfg"); 
-			  configFile.createNewFile();
-			  FileWriter fw = new FileWriter(configFile);
-			  configFileTemplate.compileTemplate(fw);
-			  fw.flush();
-			  fw.close();
+				// if the directory does not exist, create it
+				if (!dir.exists())
+					dir.mkdir();
 		}
 		
 		File driverFile = new File(packageDir + testSuiteName+"_test.py"); 
 		File testsFile = new File(packageDir + testSuiteName+"_suite.py");
+		File configFile = new File(packageDir +testSuiteName+".cfg"); 
 		
 		if (isNewTestSuite) {
 			driverFile.createNewFile();
 			testsFile.createNewFile();
+			configFile.createNewFile();
 			
+			//test suite driver file
 			FileWriter fw = new FileWriter(driverFile);
 			driverTemplate.setValue("testSuite.name", testSuiteName);
 			driverTemplate.compileTemplate(fw);
 			fw.flush();
 			fw.close();
 			
+			//test suite file
 			fw = new FileWriter(testsFile);
-			driverTemplate.compileTemplate(fw);
+			suiteTemplate.compileTemplate(fw);
+			fw.flush();
+			fw.close();
+			
+			//config file
+			fw = new FileWriter(configFile);
+			configFileTemplate.compileTemplate(fw);
 			fw.flush();
 			fw.close();
 		}
