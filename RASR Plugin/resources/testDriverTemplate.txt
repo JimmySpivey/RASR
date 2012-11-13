@@ -15,9 +15,6 @@ def main():
         test_suite_driver.pre_test_suite_run(test_suite_details)
 
         #Begin Tests
-        #ssh_connect_demo_suite.dive_into_menus(test_suite_details)
-        #ssh_connect_demo_suite.demo_screen_man(test_suite_details)
-        ssh_connect_demo_suite.first_attempt(test_suite_details)
         #End Tests
 
         test_suite_driver.post_test_suite_run(test_suite_details)

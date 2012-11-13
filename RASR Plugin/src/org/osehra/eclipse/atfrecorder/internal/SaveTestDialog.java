@@ -210,6 +210,8 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		}
 	}
 	
+
+	private static Pattern ValidDirPattern = Pattern.compile("(\\w+[ ]?)*\\w+");
 	private static Pattern ValidNamePattern = Pattern.compile("[a-zA-Z0-9_]*");
 	
 	/**
@@ -260,7 +262,7 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		testName = testNameText.getText();
 		
 		//validate the contents of the input
-		if (!validateName(packageName)) {
+		if (!validateDir(packageName)) {
 			invalidPackageInput("Package name may only contain letters, numbers and the '_' character.");
 			return;
 		}
@@ -305,6 +307,11 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		return m.matches();
 	}
 
+	private boolean validateDir(String inputValue) {
+		Matcher m = ValidDirPattern.matcher(inputValue);
+		return m.matches();
+	}
+	
 	/**
 	 * Notifies that the cancel button of this dialog has been pressed.
 	 * <p>
