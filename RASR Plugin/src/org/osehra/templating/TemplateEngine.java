@@ -71,6 +71,8 @@ public class TemplateEngine {
 		StringBuilder varName = new StringBuilder("");
 		for (int read = 0; read != -1;) {
 			read = br.read();
+			if (read == -1)
+				break;
 			
 			if (read == '$') {
 				dollarFound = true;
@@ -97,7 +99,8 @@ public class TemplateEngine {
 			} else if (dollarFound && openBracFound) { //inside variable, record the name
 				varName.append((char)read);
 			} else { //not inside a variable, capture whatever data is found
-				out.write(read);
+				char write = (char)read;
+				out.write(write);
 			}
 		}
 		
