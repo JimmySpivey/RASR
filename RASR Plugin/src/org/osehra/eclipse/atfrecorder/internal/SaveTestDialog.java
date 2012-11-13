@@ -2,6 +2,8 @@ package org.osehra.eclipse.atfrecorder.internal;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -208,6 +210,8 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		}
 	}
 	
+	private static Pattern ValidNamePattern = Pattern.compile("[a-zA-Z0-9_]*");
+	
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
 	 * <p>
@@ -224,26 +228,26 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		
 		int selectedPkg = packageCombo.getSelectionIndex();
 		
+		//validate that the input is in fact present
 		if (selectedPkg == -1 && 
-				(packageCombo.getText() == null || packageCombo.getText().trim() == "")) {
-			MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
-					"No package selected", 
-					"A package must be selected.");
-			
-			super.okPressed();
+				(packageCombo.getText() == null || packageCombo.getText() == "")) {
+			invalidPackageInput("A package must be selected or entered.");
 			return;
 		}
 		
 		int selectedSte= suiteNameCombo.getSelectionIndex();
 		if (selectedSte == -1 && 
-				(suiteNameCombo.getText() == null || suiteNameCombo.getText().trim() == "")) {
-			MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
-					"No suite selected", 
-					"A suite must be selected.");
-			
-			super.okPressed();
+				(suiteNameCombo.getText() == null || suiteNameCombo.getText() == "")) {
+			invalidSuiteName("A suite must be selected or entered.");
 			return;
 		}
+		
+		if (testNameText.getText() == null || testNameText.getText().isEmpty()) {
+			invalidTestName("A test name must be entered");
+			return;
+		}
+		
+		String packageName, testSuite, testName;
 		
 		if (selectedPkg != -1)
 			packageName = packageCombo.getItem(selectedPkg);
@@ -254,10 +258,51 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		else
 			testSuite = suiteNameCombo.getText();
 		testName = testNameText.getText();
-		//TODO: can put validations here for testSuiteName to prevent the dialog window from closing on the user (???)
 		
-		//TODO: add validations for testName... can't have spaces or other characters invalid for python function
+		//validate the contents of the input
+		if (!validateName(packageName)) {
+			invalidPackageInput("Package name may only contain letters, numbers and the '_' character.");
+			return;
+		}
+		if (!validateName(testSuite)) {
+			invalidSuiteName("Suite name may only contain letters, numbers and the '_' character.");
+			return;
+		}
+		if (!validateName(testName)) {
+			invalidTestName("Test name may only contain letters, numbers and the '_' character.");
+			return;
+		}
+		
+		this.packageName = packageName;
+		this.testSuite = testSuite;
+		this.testName = testName;
 		super.okPressed();
+	}
+
+	private void invalidTestName(String message) {
+		MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+				"No test name", 
+				message);
+		testNameText.setFocus();
+	}
+
+	private void invalidSuiteName(String message) {
+		MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+				"No suite selected", 
+				message);
+		suiteNameCombo.setFocus();
+	}
+
+	private void invalidPackageInput(String message) {
+		MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+				"Invalid Package Name", 
+				message);
+		packageCombo.setFocus();
+	}
+
+	private boolean validateName(String inputValue) {
+		Matcher m = ValidNamePattern.matcher(inputValue);
+		return m.matches();
 	}
 
 	/**

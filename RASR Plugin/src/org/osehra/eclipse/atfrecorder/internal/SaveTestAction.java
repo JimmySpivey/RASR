@@ -35,12 +35,12 @@ public class SaveTestAction extends Action {
 
 				try {
 					List<RecordableEvent> recordableEvents = atfRecorderAwt.getRecordableEvents();
-//					if (recordableEvents == null || recordableEvents.isEmpty()) {
-//						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
-//								"Unable to Save", 
-//								"Nothing has been recorded");
-//						return;
-//					}
+					if (recordableEvents == null || recordableEvents.isEmpty()) {
+						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+								"Unable to Save", 
+								"Nothing has been recorded");
+						return;
+					}
 					
 					SaveTestDialog dialog = new SaveTestDialog(null);
 					dialog.open();
