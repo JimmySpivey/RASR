@@ -13,6 +13,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -248,12 +249,15 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	}
 
 	public void processKeyEvent(KeyEvent e) {
-		// System.out.println(e);
+		System.out.println(e);
 		int id = e.getID();
 		if (id == KeyEvent.KEY_PRESSED) {
-			/* keyPressed(e); */
+			//keyPressed(e);
 		} else if (id == KeyEvent.KEY_RELEASED) {
-			/* keyReleased(e); */
+			//because ctrl + [some character] will never register as a KEY_TYPED event
+			if (e.getModifiers() == KeyEvent.CTRL_MASK /* || e.getModifiers() == KeyEvent.SHIFT_DOWN_MASK*/)
+				keyTyped(e);
+			//keyReleased(e);
 		} else if (id == KeyEvent.KEY_TYPED) {
 			keyTyped(e);
 		}
@@ -334,7 +338,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	public void keyTyped(KeyEvent e) {
 		int keycode = e.getKeyCode();
 		char keychar = e.getKeyChar();
-		System.out.println(e);
+		//System.out.println(e);
 
 		disableScreenRecording = true; // TODO: this isn't air-tight, user could
 										// enter any key while we are still
@@ -380,6 +384,20 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 			// System.out.println("adding keychar: " +keychar);
 			currentCommand += keychar;
 		}
+		
+//		if (ctrlPressed)
+//			try {
+//				out.write('^');
+//			} catch (IOException e1) {
+//			}
+	
+//		if (e.getModifiers() == KeyEvent.CTRL_MASK)
+//			try {
+//				System.out.println("Sending ^");
+//			out.write('^');
+//			e.setKeyChar(KeyEvent.getKeyText(e.getKeyCode()).toLowerCase().toCharArray()[0]); //reset the keyChar to its character value
+//		} catch (IOException e1) {
+//		}
 
 		if ((keychar & 0xff00) == 0) {
 			obuffer[0] = (byte) (e.getKeyChar());
