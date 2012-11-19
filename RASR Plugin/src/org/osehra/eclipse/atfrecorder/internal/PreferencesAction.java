@@ -43,9 +43,12 @@ public class PreferencesAction extends Action {
 					if (f.exists() && f.isDirectory()) {
 						preferences.saveValue(RASRPreferences.ATF_LOCATION, directory);
 						
-						GenericNotificationPopup popup = new GenericNotificationPopup(display, "ATF Location set", "ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
-						popup.create();
-						popup.open();
+//						GenericNotificationPopup popup = new GenericNotificationPopup(display, "ATF Location set", "ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
+//						popup.create();
+//						popup.open();
+						MessageDialog.openInformation(Display.getDefault().getActiveShell(), 
+								"ATF Location set", 
+								"ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
 					} else {
 						MessageDialog.openWarning(shell, "Could not set ATF Location", "The location specified (" +directory+ ") is not a valid Automated Testing Framework directory.");
 					}

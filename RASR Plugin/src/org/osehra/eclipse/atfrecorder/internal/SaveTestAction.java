@@ -70,11 +70,15 @@ public class SaveTestAction extends Action {
 							dialog.isNewSuite()); 
 					atfRecorderAwt.resetRecorder();
 					
-					GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
+//					GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
+//							"Test Saved", 
+//							"Test saved to " + testSuiteDirectory);
+//					popup.create();
+//					popup.open();
+					
+					MessageDialog.openInformation(Display.getDefault().getActiveShell(), 
 							"Test Saved", 
 							"Test saved to " + testSuiteDirectory);
-					popup.create();
-					popup.open();
 				} catch (FileNotFoundException e) {
 					MessageDialog.openError(Display.getDefault().getActiveShell(), 
 							"File Not Found", 

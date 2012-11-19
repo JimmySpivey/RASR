@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -44,7 +45,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
-import org.osehra.eclipse.atfrecorder.internal.GenericNotificationPopup;
 import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
 import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
 
@@ -186,11 +186,14 @@ public class JCTermView extends ViewPart {
 		//if the ATF Location is not set or is set to an invalid location.
 		String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
 		if (atfLoc == null || atfLoc.equals("")) {
-			GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
+//			GenericNotificationPopup popup = new GenericNotificationPopup(Display.getDefault(), 
+//					"ATF Location not set", 
+//					"The ATF Location has not yet been set. Please set an ATF Location from the RAS Recorder view.");
+//			popup.create();
+//			popup.open();
+			MessageDialog.openInformation(Display.getDefault().getActiveShell(), 
 					"ATF Location not set", 
 					"The ATF Location has not yet been set. Please set an ATF Location from the RAS Recorder view.");
-			popup.create();
-			popup.open();
 		}
 	}
 
