@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordableEventType;
 import org.osehra.python.codegen.LineNotFoundException;
@@ -53,10 +55,16 @@ public class ATFCodeGenerator {
 	private TemplateEngine suiteTemplate;
 	private TemplateEngine configFileTemplate;
 	
-	public ATFCodeGenerator() throws FileNotFoundException, URISyntaxException {
-		driverTemplate = new TemplateEngine("testDriverTemplate.txt");
-		suiteTemplate = new TemplateEngine("testSuiteTemplate.txt");
-		configFileTemplate = new TemplateEngine("testConfigFile.txt"); 
+	public ATFCodeGenerator() throws URISyntaxException, IOException {
+		driverTemplate = new TemplateEngine(FileLocator.find(Platform.getBundle("ATF_Recorder_Plugin"), 
+				new Path("resources/testDriverTemplate.txt"), 
+				null));
+		suiteTemplate = new TemplateEngine(FileLocator.find(Platform.getBundle("ATF_Recorder_Plugin"), 
+				new Path("resources/testSuiteTemplate.txt"), 
+				null));
+		configFileTemplate = new TemplateEngine(FileLocator.find(Platform.getBundle("ATF_Recorder_Plugin"), 
+				new Path("resources/testConfigFile.txt"), 
+				null)); 
 	}
 
 	/**

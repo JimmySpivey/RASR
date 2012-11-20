@@ -19,8 +19,10 @@ import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -102,9 +104,7 @@ public class JCTermView extends ViewPart {
 
 	@SuppressWarnings({ "restriction" })
 	public void createPartControl(Composite parent) {
-
-		System.out.println("Using new ATF Recorder Part Control");
-
+	
 		container = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
 		frame = org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,10 @@ public class TemplateEngine {
 		templateFile = new BufferedReader(new InputStreamReader(
 			    getClass().getClassLoader().getResourceAsStream(
 			    		classPathLoc)));
+	}
+	
+	public TemplateEngine(URL url) throws IOException {
+		templateFile = new BufferedReader(new InputStreamReader(url.openStream()));
 	}
 	
 	public void setValue(String key, String value) {
