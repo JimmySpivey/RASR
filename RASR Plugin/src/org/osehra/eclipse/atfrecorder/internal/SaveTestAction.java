@@ -28,13 +28,12 @@ public class SaveTestAction extends Action {
 		super();
 		
 		saveTest = new Action() {
-			@SuppressWarnings("restriction")
 			public void run() {
 				
 				String atfLocation = preferences.getValue(RASRPreferences.ATF_LOCATION);
 
 				try {
-					List<RecordableEvent> recordableEvents = atfRecorderAwt.getRecordableEvents();
+					List<RecordableEvent> recordableEvents = atfRecorderAwt.getCurrentRecording().getEvents();
 					if (recordableEvents == null || recordableEvents.isEmpty()) {
 						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
 								"Unable to Save", 
@@ -61,7 +60,7 @@ public class SaveTestAction extends Action {
 //					return;
 					
 					String testSuiteDirectory = new ATFCodeGenerator().addTestToATF(
-							recordableEvents,
+							atfRecorderAwt.getCurrentRecording(),
 							dialog.getPackageName(),
 							dialog.getTestSuite(),
 							dialog.getTestName(),

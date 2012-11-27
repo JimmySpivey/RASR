@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordedExpectEvent;
 import org.osehra.eclipse.atfrecorder.RecordedSendEvent;
+import org.osehra.eclipse.atfrecorder.TestRecording;
 import org.osehra.python.codegen.LineNotFoundException;
 
 public class TestATFCodeGeneratorTest {
@@ -21,7 +22,11 @@ public class TestATFCodeGeneratorTest {
 		recordableEvents.add(new RecordedExpectEvent("ACCESS CODE:"));
 		recordableEvents.add(new RecordedSendEvent("01vehu"));
 		
-		atfCodeGen.addTestToATF(recordableEvents, "my package", "rasr_demo", "new_test", "C:\\Users\\jspivey\\DEV\\GitHub\\ATF-RASR", false, false);
+		TestRecording testRecording = new TestRecording();
+		testRecording.setAccessCode("accessCode01");
+		testRecording.setVerifyCode("verifyCode01");
+		testRecording.setEvents(recordableEvents);
+		atfCodeGen.addTestToATF(testRecording , "my package", "rasr_demo", "new_test", "C:\\Users\\jspivey\\DEV\\GitHub\\ATF-RASR", false, false);
 		
 		//TODO: stub a property file for a temp directory location.
 		//TODO: move stub file to temp location

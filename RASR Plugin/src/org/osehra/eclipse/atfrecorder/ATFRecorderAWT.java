@@ -13,11 +13,8 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ui.ISourceProviderListener;
@@ -81,18 +78,22 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private boolean disableScreenRecording = false; // set to true to disable
 													// echoing commands into
 													// screen
+	private int enterKeyCount;
 	private String currentCommand = "";
 	private String currentSelectedExpect = "";
-	private List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
+	private TestRecording testRecording = new TestRecording();
 	private ScreenStateSourceProvider screenStateService;
 	private ScreenStateSourceProvider selectedTextService;
 
-	public List<RecordableEvent> getRecordableEvents() {
-		return recordableEvents;
+	public TestRecording getCurrentRecording() {
+		return testRecording;
 	}
 
 	public void resetRecorder() {
-		recordableEvents.clear();
+		testRecording.setAccessCode(null);
+		testRecording.setVerifyCode(null);
+		if (testRecording.getEvents() != null)
+			testRecording.getEvents().clear();
 	}
 
 	private final Object[] colors = { Color.black, Color.red, Color.green,
@@ -353,10 +354,23 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 			// first crop out the echo'ed command
 			// String last20Chars = currentScreen.substring(Math.max(0,
 			// currentScreen.length()-20), currentScreen.length());
-			recordableEvents
-					.add(new RecordedExpectEvent(currentSelectedExpect));
-			// save the current command
-			recordableEvents.add(new RecordedSendEvent(currentCommand));
+			if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty() && 
+					currentCommand != null && !currentCommand.isEmpty()) {
+				switch (++enterKeyCount) {
+				case 1:
+					testRecording.setAccessCode(currentCommand);
+					break;
+				case 2:
+					testRecording.setVerifyCode(currentCommand);
+					break;
+				default:
+					//disable recording for the first 2 prompts (access/verify codes)
+					testRecording.getEvents()
+							.add(new RecordedExpectEvent(currentSelectedExpect));
+					// save the current command
+					testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
+				}
+			}
 			currentScreen = ""; // reset current screen buffer
 			disableScreenRecording = false;
 			currentCommand = "";

@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordableEventType;
+import org.osehra.eclipse.atfrecorder.TestRecording;
 import org.osehra.python.codegen.LineNotFoundException;
 import org.osehra.python.codegen.PythonGenerator;
 import org.osehra.python.codegen.PythonScriptEditor;
@@ -80,7 +81,7 @@ public class ATFCodeGenerator {
 	 * @throws IOException
 	 * @throws LineNotFoundException
 	 */
-	public String addTestToATF(List<RecordableEvent> recordableEvents,
+	public String addTestToATF(TestRecording testRecording, //List<RecordableEvent> recordableEvents,
 			String packageName, String testSuiteName, String testName, String atfLoc, boolean isNewPackage, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
 		String sep = System.getProperty("file.separator");
@@ -93,14 +94,16 @@ public class ATFCodeGenerator {
 					dir.mkdir();
 		}
 		
-		File driverFile = new File(packageDir + testSuiteName+"_test.py"); 
+		File driverFile = new File(packageDir + testSuiteName+"_test.py");
 		File testsFile = new File(packageDir + testSuiteName+"_suite.py");
-		File configFile = new File(packageDir +testSuiteName+".cfg"); 
 		
 		if (isNewTestSuite) {
+			updateLocalUserConfigFile(testSuiteName, testRecording);
+			
+			File localSuiteConfigFile = new File(packageDir +testSuiteName+".cfg");
 			driverFile.createNewFile();
 			testsFile.createNewFile();
-			configFile.createNewFile();
+			localSuiteConfigFile.createNewFile();
 			
 			//test suite driver file
 			FileWriter fw = new FileWriter(driverFile);
@@ -116,7 +119,7 @@ public class ATFCodeGenerator {
 			fw.close();
 			
 			//config file
-			fw = new FileWriter(configFile);
+			fw = new FileWriter(localSuiteConfigFile);
 			configFileTemplate.compileTemplate(fw);
 			fw.flush();
 			fw.close();
@@ -124,7 +127,7 @@ public class ATFCodeGenerator {
 		
 		//1) append test to _tests.py file
 		PythonScriptEditor testFileEditor = new PythonScriptEditor(testsFile);
-		List<String> statements = generateFunctionStatements(recordableEvents);
+		List<String> statements = generateFunctionStatements(testRecording.getEvents());
 		testFileEditor.appendFunction("def " +testName+ "(test_suite_details):", statements);
 		
 		//2) insert method call to test in _driver.py file
@@ -133,6 +136,29 @@ public class ATFCodeGenerator {
 		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#End Tests$");
 		
 		return packageDir;
+	}
+
+	private void updateLocalUserConfigFile(String testSuiteName, TestRecording recordedSession)
+			throws IOException {
+		
+		//create file if it doesn't exist
+		File userConfigFile = new File(System.getProperty("user.home")+"/.ATF/roles.txt");
+		if (!userConfigFile.exists()) {
+			userConfigFile.createNewFile();
+		}
+		
+		//scan the file for the testSuite entry, if it doesn't exist append a new one.
+		//rather big problem: user could record a test with a different access/verify code
+		
+		
+		
+		FileWriter fw = new FileWriter(userConfigFile, true);
+		fw.append("[" +testSuiteName+ "]\n");
+		fw.append("aCode=" +recordedSession.getAccessCode()+"\n"); //TODO: populate from 
+		fw.append("vCode=" +recordedSession.getVerifyCode()+"\n");
+		fw.append("\n");
+		fw.flush();
+		fw.close();
 	}
 	
 	public String getRecordedAsString(List<RecordableEvent> recordableEvents) throws IOException {
@@ -154,7 +180,7 @@ public class ATFCodeGenerator {
 		statements.add("test_driver.pre_test_run(test_suite_details)");
 		statements.add("");
 		statements.add("try:");
-		statements.add("    vista = test_driver.connect_VistA(test_suite_details)");
+		statements.add("    vista = test_driver.connect_VistA(test_suite_details, testname)");
 		for (RecordableEvent recordAbleEvent : recordableEvents) {
 			if (recordAbleEvent.getType() == RecordableEventType.EXPECT) {
 
