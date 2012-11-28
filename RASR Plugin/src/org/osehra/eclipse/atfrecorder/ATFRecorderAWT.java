@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
@@ -94,6 +96,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		testRecording.setVerifyCode(null);
 		if (testRecording.getEvents() != null)
 			testRecording.getEvents().clear();
+		enterKeyCount = 0;
 	}
 
 	private final Object[] colors = { Color.black, Color.red, Color.green,
@@ -354,8 +357,8 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 			// first crop out the echo'ed command
 			// String last20Chars = currentScreen.substring(Math.max(0,
 			// currentScreen.length()-20), currentScreen.length());
-			if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty() && 
-					currentCommand != null && !currentCommand.isEmpty()) {
+			if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty() && //TODO: improve, add a warning to the user if these are null/empty
+					currentCommand != null) {
 				switch (++enterKeyCount) {
 				case 1:
 					testRecording.setAccessCode(currentCommand);
@@ -370,10 +373,21 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 					// save the current command
 					testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
 				}
+				currentScreen = ""; // reset current screen buffer
+				disableScreenRecording = false;
+				currentCommand = "";
+			} else {
+				Display.getDefault().asyncExec(new Runnable() {
+					
+					@Override
+					public void run() {
+						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+								"No Input Detected", 
+								"No input from the screen detected. Please ensure that the Expected Value View is displayed.");
+					}
+				});
+				return;
 			}
-			currentScreen = ""; // reset current screen buffer
-			disableScreenRecording = false;
-			currentCommand = "";
 		}
 
 		if (keychar == '\b' || keychar == 0x7F) { // backspace or delete pressed

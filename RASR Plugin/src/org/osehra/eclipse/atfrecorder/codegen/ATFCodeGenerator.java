@@ -12,6 +12,8 @@ import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.ini4j.Ini;
+import org.ini4j.Profile.Section;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordableEventType;
 import org.osehra.eclipse.atfrecorder.TestRecording;
@@ -97,8 +99,9 @@ public class ATFCodeGenerator {
 		File driverFile = new File(packageDir + testSuiteName+"_test.py");
 		File testsFile = new File(packageDir + testSuiteName+"_suite.py");
 		
+		updateLocalUserConfigFile(packageName, testSuiteName, testName, testRecording);
+		
 		if (isNewTestSuite) {
-			updateLocalUserConfigFile(testSuiteName, testRecording);
 			
 			File localSuiteConfigFile = new File(packageDir +testSuiteName+".cfg");
 			driverFile.createNewFile();
@@ -138,27 +141,35 @@ public class ATFCodeGenerator {
 		return packageDir;
 	}
 
-	private void updateLocalUserConfigFile(String testSuiteName, TestRecording recordedSession)
+	private void updateLocalUserConfigFile(String packageName, String testSuiteName, String testName, TestRecording recordedSession)
 			throws IOException {
 		
 		//create file if it doesn't exist
-		File userConfigFile = new File(System.getProperty("user.home")+"/.ATF/roles.txt");
+		File userConfigFile = new File(System.getProperty("user.home")+"/.ATF/roles.cfg");
 		if (!userConfigFile.exists()) {
 			userConfigFile.createNewFile();
 		}
 		
-		//scan the file for the testSuite entry, if it doesn't exist append a new one.
-		//rather big problem: user could record a test with a different access/verify code
+		Ini ini = new Ini(userConfigFile);
+		String key = packageName+"-"+testSuiteName;
+		if (!ini.containsKey(key)) {
+			//add the new section
+			ini.add(key);
+			ini.add(key, "SSHUsername", "CONFIG HERE");
+			ini.add(key, "SSHPassword", "CONFIG HERE");
+		}
 		
+		ini.add(key, testName+"_aCode", recordedSession.getAccessCode());
+		ini.add(key, testName+"_vCode", recordedSession.getVerifyCode());
+		ini.store(userConfigFile);
 		
-		
-		FileWriter fw = new FileWriter(userConfigFile, true);
-		fw.append("[" +testSuiteName+ "]\n");
-		fw.append("aCode=" +recordedSession.getAccessCode()+"\n"); //TODO: populate from 
-		fw.append("vCode=" +recordedSession.getVerifyCode()+"\n");
-		fw.append("\n");
-		fw.flush();
-		fw.close();
+//		FileWriter fw = new FileWriter(userConfigFile, true);
+//		fw.append("[" +packageName+"-"+testSuiteName+ "]\n"); //TODO: major bug, needs to find existing location and append to that entry
+//		fw.append(testName+"aCode=" +recordedSession.getAccessCode()+"\n");
+//		fw.append(testName+"vCode=" +recordedSession.getVerifyCode()+"\n");
+//		fw.append("\n");
+//		fw.flush();
+//		fw.close();
 	}
 	
 	public String getRecordedAsString(List<RecordableEvent> recordableEvents) throws IOException {

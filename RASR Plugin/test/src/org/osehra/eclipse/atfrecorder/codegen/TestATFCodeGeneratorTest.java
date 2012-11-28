@@ -34,4 +34,13 @@ public class TestATFCodeGeneratorTest {
 		//TODO: parse file and add asserts
 	}
 
+//	@Test
+//	public void testUpdateLocalUserConfigFile() throws URISyntaxException, IOException {
+//		ATFCodeGenerator atfCodeGen = new ATFCodeGenerator();
+//		TestRecording recordedSession = new TestRecording();
+//		recordedSession.setAccessCode("03unittest");
+//		recordedSession.setVerifyCode("unitest03");
+//		atfCodeGen.updateLocalUserConfigFile("SSH Demo", "ssh_demo_suite", "dive_into_menus2", recordedSession );
+//
+//	}
 }
