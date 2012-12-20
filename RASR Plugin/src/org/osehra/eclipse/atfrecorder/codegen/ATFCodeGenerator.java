@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.ini4j.Ini;
-import org.ini4j.Profile.Section;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.RecordableEventType;
 import org.osehra.eclipse.atfrecorder.TestRecording;
@@ -195,9 +195,11 @@ public class ATFCodeGenerator {
 		for (RecordableEvent recordAbleEvent : recordableEvents) {
 			if (recordAbleEvent.getType() == RecordableEventType.EXPECT) {
 
-				statements.add("    vista.wait('" +recordAbleEvent.getRecordedValue()+"')");
+				statements.add("    vista.wait('" +escapeSpecials(
+						recordAbleEvent.getRecordedValue())+"')");
 			} else if (recordAbleEvent.getType() == RecordableEventType.SEND) {
-				statements.add("    vista.write('" +recordAbleEvent.getRecordedValue()+"')"); 
+				statements.add("    vista.write('" +escapeSpecials(
+						recordAbleEvent.getRecordedValue())+"')"); 
 			}
 		}
 		statements.add("");
@@ -211,6 +213,25 @@ public class ATFCodeGenerator {
 		statements.add("test_driver.end_method_handling(test_suite_details)");
 		
 		return statements;
+	}
+	
+	private String escapeSpecials(String value)  {
+		List<String> specials = new ArrayList<String>(
+				Arrays.asList(new String[] {
+						"'",
+						"\"",
+						"\\",
+						
+				}));
+		
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < value.length(); i++) {
+			if (specials.contains(value.charAt(i)))
+				sb.append('\\');
+			sb.append(value.charAt(i));
+		}
+		
+		return sb.toString();
 	}
 
 }
