@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -47,6 +48,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
+import org.osehra.eclipse.atfrecorder.internal.ManageConnectionsAction;
 import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
 import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
 
@@ -213,8 +215,10 @@ public class JCTermView extends ViewPart {
 		bars.getToolBarManager().add(saveTestAction);
 
 		// Connect Menu
-		OpenConnectionAction openConnection = new OpenConnectionAction(this);
+		IAction openConnection = new OpenConnectionAction(this);
 		bars.getToolBarManager().add(openConnection);
+//		IAction mangageConnections = new ManageConnectionsAction();
+//		bars.getToolBarManager().add(mangageConnections);
 
 		// pull down menu
 		IMenuManager manager = bars.getMenuManager();

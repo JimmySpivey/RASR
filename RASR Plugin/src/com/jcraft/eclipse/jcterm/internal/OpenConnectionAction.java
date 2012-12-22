@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
+import org.osehra.eclipse.atfrecorder.internal.ManageConnectionsAction;
 
 import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;
@@ -21,12 +22,14 @@ public class OpenConnectionAction extends Action implements IMenuCreator {
 	private JCTermView term;
 	private LinkedList history = new LinkedList();
 	private IAction openShellConnection;
+	private IAction mangageConnections;
 	private RASRPreferences preferences = RASRPreferences.getInstance();
 
 	public OpenConnectionAction(JCTermView _term) {
 		super();
 		this.term = _term;
 
+		//New Connection...
 		openShellConnection = new Action() {
 			public void run() {
 				String[] label = new String[1];
@@ -52,6 +55,10 @@ public class OpenConnectionAction extends Action implements IMenuCreator {
 			}
 		};
 		openShellConnection.setText("New Connection...");
+		
+		//Manage Connections...
+		mangageConnections = new ManageConnectionsAction();
+		mangageConnections.setText("Manage Connections...");
 
 		setText("Open Connection");
 		setToolTipText("Open Connection");
@@ -70,6 +77,7 @@ public class OpenConnectionAction extends Action implements IMenuCreator {
 	public Menu getMenu(Control parent) {
 		Menu fMenu = new Menu(parent);
 		addActionToMenu(fMenu, openShellConnection);
+		addActionToMenu(fMenu, mangageConnections);
 
 		new MenuItem(fMenu, SWT.SEPARATOR);
 
