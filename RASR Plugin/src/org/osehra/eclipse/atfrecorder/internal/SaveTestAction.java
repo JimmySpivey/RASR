@@ -75,6 +75,13 @@ public class SaveTestAction extends Action {
 //					popup.create();
 //					popup.open();
 					
+					
+					//Invoke Cmake so that when running ctest it automatically grabs the new testSuite
+					if (dialog.isNewSuite()) {
+						String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
+						//Process process = Runtime.getRuntime().exec();
+					}
+					
 					MessageDialog.openInformation(Display.getDefault().getActiveShell(), 
 							"Test Saved", 
 							"Test saved to " + testSuiteDirectory);

@@ -19,10 +19,8 @@ import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -35,8 +33,10 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -104,10 +104,15 @@ public class JCTermView extends ViewPart {
 	Composite container = null;
 	Frame frame = null;
 
-	@SuppressWarnings({ "restriction" })
 	public void createPartControl(Composite parent) {
 	
 		container = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+		RowLayout rowLayout = new RowLayout();
+		container.setLayout(rowLayout);
+		
+		//Label topLabel = new Label(container, SWT.NONE);
+		//topLabel.setText("MY NEW LABEL");
+		
 		frame = org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
 
 		container.addControlListener(new ControlListener() {
@@ -177,7 +182,7 @@ public class JCTermView extends ViewPart {
 		term = new ATFRecorderAWT((ISourceProviderService) getSite()
 				.getService(ISourceProviderService.class));
 		frame.add((ATFRecorderAWT) term);
-		frame.pack();
+		//frame.pack();
 
 		frame.addKeyListener((java.awt.event.KeyListener) term);
 
@@ -213,6 +218,9 @@ public class JCTermView extends ViewPart {
 		SaveTestAction saveTestAction = new SaveTestAction(
 				(ATFRecorderAWT) term);
 		bars.getToolBarManager().add(saveTestAction);
+		
+		//Recording image
+		//bars.getToolBarManager().ad
 
 		// Connect Menu
 		IAction openConnection = new OpenConnectionAction(this);

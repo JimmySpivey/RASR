@@ -1,0 +1,152 @@
+<sequence-diagram version="1.0.11" icons="true" automaticImage="PNG">  
+  <object id="1" language="java" name="com.jcraft.eclipse.jcterm.JCTermView" project="RASR Plugin" 
+    file="/RASR Plugin/src/com/jcraft/eclipse/jcterm/JCTermView.java" binary="false" label="jcTermView" type="class" 
+    autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="2">      
+      <position height="492" width="0" x="0" y="78"/>    
+    </execution>    
+    <execution id="20">      
+      <position height="21" width="7" x="57" y="438"/>    
+    </execution>    
+    <execution id="22">      
+      <position height="63" width="7" x="57" y="486"/>    
+    </execution>  
+  </object>  
+  <object id="25" language="java" name="org.eclipse.swt.awt.SWT_AWT" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.swt.win32.win32.x86_64_3.7.2.v3740f.jar" binary="true" 
+    label="swt_AWT" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="4">      
+      <position height="21" width="0" x="0" y="99"/>    
+    </execution>  
+  </object>  
+  <object id="26" language="java" name="org.eclipse.swt.widgets.Control" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.swt.win32.win32.x86_64_3.7.2.v3740f.jar" binary="true" 
+    label="control" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="6">      
+      <position height="21" width="103" x="210" y="139"/>    
+    </execution>    
+    <execution id="8">      
+      <position height="21" width="103" x="210" y="163"/>    
+    </execution>    
+    <execution id="10">      
+      <position height="21" width="103" x="210" y="190"/>    
+    </execution>  
+  </object>  
+  <object id="27" language="java" name="org.osehra.eclipse.atfrecorder.ATFRecorderAWT" project="RASR Plugin" 
+    file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/ATFRecorderAWT.java" binary="false" label="atfRecorderAWT" 
+    type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="12">      
+      <position height="114" width="0" x="0" y="231"/>    
+    </execution>  
+  </object>  
+  <object id="34" language="java" name="org.eclipse.ui.services.ISourceProviderService" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="iSourceProviderService" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="29">      
+      <position height="21" width="158" x="682" y="238"/>    
+    </execution>    
+    <execution id="31">      
+      <position height="21" width="158" x="682" y="263"/>    
+    </execution>  
+  </object>  
+  <object id="35" language="java" name="org.eclipse.ui.AbstractSourceProvider" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="abstractSourceProvider" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="33">      
+      <position height="21" width="163" x="844" y="303"/>    
+    </execution>  
+  </object>  
+  <object id="36" language="java" name="org.eclipse.ui.part.WorkbenchPart" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="workbenchPart" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="14">      
+      <position height="21" width="113" x="875" y="347"/>    
+    </execution>  
+  </object>  
+  <object id="37" language="java" name="org.eclipse.ui.services.IServiceLocator" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="iServiceLocator" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="16">      
+      <position height="21" width="113" x="1107" y="371"/>    
+    </execution>  
+  </object>  
+  <object id="38" language="java" name="java.awt.Container" project="RASR Plugin" 
+    file="C:/Program Files/Java/jre7/lib/rt.jar" binary="true" label="container" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="18">      
+      <position height="21" width="78" x="1224" y="395"/>    
+    </execution>  
+  </object>  
+  <object id="39" language="java" name="org.eclipse.ui.IViewSite" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="iViewSite" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="24">      
+      <position height="21" width="76" x="1098" y="507"/>    
+    </execution>  
+  </object>  
+  <message id="3" operation="new_Frame(org.eclipse.swt.widgets.Composite):java.awt.Frame">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </message>  
+  <message id="5" operation="addControlListener(org.eclipse.swt.events.ControlListener):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="6"/>  
+  </message>  
+  <message id="7" operation="addKeyListener(org.eclipse.swt.events.KeyListener):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="8"/>  
+  </message>  
+  <message id="9" operation="addFocusListener(org.eclipse.swt.events.FocusListener):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="10"/>  
+  </message>  
+  <message id="11" operation="ATFRecorderAWT(org.eclipse.ui.services.ISourceProviderService)">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="12"/>  
+  </message>  
+  <message id="13" operation="getSite():org.eclipse.ui.IWorkbenchPartSite">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="14"/>  
+  </message>  
+  <message id="15" operation="getService(java.lang.Class):java.lang.Object">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="16"/>  
+  </message>  
+  <message id="17" operation="add(java.awt.Component):java.awt.Component">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="18"/>  
+  </message>  
+  <message id="19" operation="setPartName(java.lang.String):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="20"/>  
+  </message>  
+  <message id="21" operation="makeAction():void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="22"/>  
+  </message>  
+  <message id="23" operation="getActionBars():org.eclipse.ui.IActionBars">    
+    <end type="SOURCE" refId="22"/>    
+    <end type="TARGET" refId="24"/>  
+  </message>  
+  <message id="28" operation="getSourceProvider(java.lang.String):org.eclipse.ui.ISourceProvider">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="29"/>  
+  </message>  
+  <message id="30" operation="getSourceProvider(java.lang.String):org.eclipse.ui.ISourceProvider">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="31"/>  
+  </message>  
+  <message id="32" operation="addSourceProviderListener(org.eclipse.ui.ISourceProviderListener):void">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="33"/>  
+  </message>
+</sequence-diagram>

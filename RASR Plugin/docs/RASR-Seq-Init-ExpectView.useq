@@ -1,0 +1,89 @@
+<sequence-diagram version="1.0.11" icons="true" automaticImage="PNG">  
+  <object id="1" language="java" name="org.osehra.eclipse.atfrecorder.views.ExpectedValueView" project="RASR Plugin" 
+    file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/views/ExpectedValueView.java" binary="false" 
+    label="expectedValueView" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="2">      
+      <position height="197" width="0" x="0" y="96"/>    
+    </execution>  
+  </object>  
+  <object id="17" language="java" name="org.eclipse.ui.part.WorkbenchPart" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="workbenchPart" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="4">      
+      <position height="21" width="0" x="0" y="117"/>    
+    </execution>  
+  </object>  
+  <object id="18" language="java" name="org.eclipse.ui.services.IServiceLocator" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="iServiceLocator" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="6">      
+      <position height="21" width="113" x="285" y="138"/>    
+    </execution>  
+  </object>  
+  <object id="19" language="java" name="org.eclipse.ui.services.ISourceProviderService" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="iSourceProviderService" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="8">      
+      <position height="21" width="158" x="402" y="160"/>    
+    </execution>    
+    <execution id="10">      
+      <position height="21" width="7" x="478" y="182"/>    
+    </execution>  
+  </object>  
+  <object id="20" language="java" name="org.eclipse.ui.ISourceProvider" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.ui.workbench_3.7.1.v20120104-1859.jar" binary="true" 
+    label="iSourceProvider" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="12">      
+      <position height="21" width="115" x="564" y="205"/>    
+    </execution>  
+  </object>  
+  <object id="21" language="java" name="org.osehra.eclipse.atfrecorder.internal.EVSelectedTextListener" 
+    project="RASR Plugin" file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/internal/EVSelectedTextListener.java" 
+    binary="false" label="evSelectedTextListener" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="14">      
+      <position height="21" width="165" x="683" y="226"/>    
+    </execution>  
+  </object>  
+  <object id="22" language="java" name="org.eclipse.swt.widgets.Widget" project="RASR Plugin" 
+    file="C:/Program Files/eclipse/Indigo/plugins/org.eclipse.swt.win32.win32.x86_64_3.7.2.v3740f.jar" binary="true" 
+    label="widget" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="16">      
+      <position height="21" width="103" x="852" y="251"/>    
+    </execution>  
+  </object>  
+  <message id="3" operation="getSite():org.eclipse.ui.IWorkbenchPartSite">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </message>  
+  <message id="5" operation="getService(java.lang.Class):java.lang.Object">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="6"/>  
+  </message>  
+  <message id="7" operation="getSourceProvider(java.lang.String):org.eclipse.ui.ISourceProvider">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="8"/>  
+  </message>  
+  <message id="9" operation="getSourceProvider(java.lang.String):org.eclipse.ui.ISourceProvider">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="10"/>  
+  </message>  
+  <message id="11" operation="addSourceProviderListener(org.eclipse.ui.ISourceProviderListener):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="12"/>  
+  </message>  
+  <message id="13" operation="EVSelectedTextListener(org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider)">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="14"/>  
+  </message>  
+  <message id="15" operation="addListener(int,org.eclipse.swt.widgets.Listener):void">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="16"/>  
+  </message>
+</sequence-diagram>

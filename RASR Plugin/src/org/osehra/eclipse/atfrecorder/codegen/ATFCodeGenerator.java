@@ -145,8 +145,12 @@ public class ATFCodeGenerator {
 			throws IOException {
 		
 		//create file if it doesn't exist
-		File userConfigFile = new File(System.getProperty("user.home")+"/.ATF/roles.cfg");
+		String userConfigLocation = System.getProperty("user.home")+"/.ATF/";
+		File userConfigDir = new File(userConfigLocation);
+		File userConfigFile = new File(userConfigLocation+"roles.cfg");
 		if (!userConfigFile.exists()) {
+			if (!userConfigDir.exists())
+				userConfigDir.mkdir();
 			userConfigFile.createNewFile();
 		}
 		
