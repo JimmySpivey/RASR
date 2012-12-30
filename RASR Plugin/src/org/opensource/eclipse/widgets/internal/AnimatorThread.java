@@ -16,6 +16,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import com.jcraft.eclipse.jcterm.IUIConstants;
+import com.jcraft.eclipse.jcterm.JCTermPlugin;
+
 public class AnimatorThread extends Thread {
 	
 	private Color labelBgColor;
@@ -42,11 +45,13 @@ public class AnimatorThread extends Thread {
 		display = label.getDisplay();
 		labelBgColor = label.getBackground();
 		image = null;
+		imageLoader = new ImageLoader();
 		try {
 			imageDataArray = imageLoader.load(FileLocator.find(
 					Platform.getBundle(pluginName), 
 					new Path(imageBundleLoc), 
 					null).openStream());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

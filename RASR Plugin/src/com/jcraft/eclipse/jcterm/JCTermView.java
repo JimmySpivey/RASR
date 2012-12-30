@@ -33,10 +33,10 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
@@ -48,9 +48,10 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
-import org.osehra.eclipse.atfrecorder.internal.ManageConnectionsAction;
 import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
+import org.osehra.eclipse.atfrecorder.internal.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
+import org.osehra.eclipse.atfrecorder.internal.StopIconAction;
 
 import com.jcraft.eclipse.jcterm.internal.OpenConnectionAction;
 import com.jcraft.eclipse.jsch.core.IJSchLocation;
@@ -105,15 +106,40 @@ public class JCTermView extends ViewPart {
 	Frame frame = null;
 
 	public void createPartControl(Composite parent) {
+		
+		//manage the parent's layout
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 1;
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		parent.setLayout(gridLayout);
+		
+		//create the top-bar for RASR
+//		Composite topBar = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+//		GridData gridData = new GridData();
+//		gridData.horizontalAlignment = GridData.FILL;
+//		gridData.grabExcessHorizontalSpace = true;
+//		gridData.grabExcessVerticalSpace = false;
+//		topBar.setLayoutData(gridData);
+		
+		//TODO: just create a green flag icon that is dimmed when it is not recording.
+		
+//		Label recordingIcon = new Label(topBar, SWT.NONE);
+//		recordingIcon.setText("BLAH");
+//		AnimatorThread at = new AnimatorThread(recordingIcon,
+//				"ATF_Recorder_Plugin",
+//				IUIConstants.ICON_PATH+"recording_off.gif");
 	
+		//create the frame which holds the terminal
 		container = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
-		RowLayout rowLayout = new RowLayout();
-		container.setLayout(rowLayout);
-		
-		//Label topLabel = new Label(container, SWT.NONE);
-		//topLabel.setText("MY NEW LABEL");
-		
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.verticalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.grabExcessVerticalSpace = true;
+		container.setLayoutData(gridData);
 		frame = org.eclipse.swt.awt.SWT_AWT.new_Frame(container);
+		
 
 		container.addControlListener(new ControlListener() {
 			public void controlMoved(ControlEvent e) {
@@ -206,6 +232,7 @@ public class JCTermView extends ViewPart {
 
 	private void makeAction() {
 		IActionBars bars = getViewSite().getActionBars();
+		ATFRecorderAWT recorder = (ATFRecorderAWT) term;
 
 		// Display Code Button
 		// org.osehra.eclipse.atfrecorder.internal.DisplayCodeAction
@@ -214,9 +241,18 @@ public class JCTermView extends ViewPart {
 		// (ATFRecorderAWT) term);
 		// bars.getToolBarManager().add(displayCodeAction);
 
+		//Stop Icon
+		StopIconAction stopIcon = new StopIconAction(recorder);
+		recorder.setStopIcon(stopIcon);
+		bars.getToolBarManager().add(stopIcon);
+		
+		//Recording Icon
+		RecordingIconAction recordingIcon = new RecordingIconAction(recorder, stopIcon);
+		recorder.setRecordingIcon(recordingIcon);
+		bars.getToolBarManager().add(recordingIcon);
+
 		// Save Test Button
-		SaveTestAction saveTestAction = new SaveTestAction(
-				(ATFRecorderAWT) term);
+		SaveTestAction saveTestAction = new SaveTestAction(recorder);
 		bars.getToolBarManager().add(saveTestAction);
 		
 		//Recording image

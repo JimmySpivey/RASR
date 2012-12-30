@@ -25,4 +25,6 @@ public interface IUIConstants {
 	public final String IMG_SAVEADD32 = "save_add_32x32.png";
 	public final String IMG_OLD_EDIT_FIND16 = "old_edit_find.png";
 	public final String IMG_LAYER_SELECT = "layer_select.png";
+	public final String IMG_RECORDING = "control_record.png";
+	public final String IMG_STOP = "stop.png";
 }

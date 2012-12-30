@@ -21,7 +21,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.osehra.eclipse.atfrecorder.internal.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
+import org.osehra.eclipse.atfrecorder.internal.StopIconAction;
 
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.Emulator;
@@ -76,6 +78,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private Splash splash = null;
 
 	// Added for Recording
+	private boolean recordingEnabled = true; //turns recording of terminal session on or off. set by user
 	private String currentScreen = "";
 	private boolean disableScreenRecording = false; // set to true to disable
 													// echoing commands into
@@ -86,6 +89,10 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private TestRecording testRecording = new TestRecording();
 	private ScreenStateSourceProvider screenStateService;
 	private ScreenStateSourceProvider selectedTextService;
+	
+	//a lot of this can be re-designed/refactored
+	private RecordingIconAction recordingIcon;
+	private StopIconAction stopIcon;
 
 	public TestRecording getCurrentRecording() {
 		return testRecording;
@@ -102,8 +109,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private final Object[] colors = { Color.black, Color.red, Color.green,
 			Color.yellow, Color.blue, Color.magenta, Color.cyan, Color.white };
 
-	public ATFRecorderAWT(ISourceProviderService sourceProviderService) { // ScreenStateSourceProvider
-																			// screenStateService){
+	public ATFRecorderAWT(ISourceProviderService sourceProviderService) {
 		enableEvents(AWTEvent.KEY_EVENT_MASK);
 
 		setFocusable(true);
@@ -353,7 +359,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		// pressed it is seen as a character not a key code
 		if (keychar == '\n') {
 			keycode = KeyEvent.VK_ENTER;
-			// TODO: save last 20 characters to python expect/command list. BUT
+			// save last 20 characters to python expect/command list. BUT
 			// first crop out the echo'ed command
 			// String last20Chars = currentScreen.substring(Math.max(0,
 			// currentScreen.length()-20), currentScreen.length());
@@ -367,11 +373,17 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 					testRecording.setVerifyCode(currentCommand);
 					break;
 				default:
-					//disable recording for the first 2 prompts (access/verify codes)
-					testRecording.getEvents()
-							.add(new RecordedExpectEvent(currentSelectedExpect));
-					// save the current command
-					testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
+					//disable recording for the first 2 prompts (access/verify codes) //TODO: this is buggy, the use may enter the wrong a/v code
+					if (recordingEnabled) {
+						//enable the stop and recording buttons (if they are already disabled?)
+						if (!stopIcon.isEnabled());
+							stopIcon.enable();
+						if (!recordingIcon.isEnabled())
+							recordingIcon.enable();
+						testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
+						testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
+					}
+					
 				}
 				currentScreen = ""; // reset current screen buffer
 				disableScreenRecording = false;
@@ -383,7 +395,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 					public void run() {
 						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
 								"No Input Detected", 
-								"No input from the screen detected. Please ensure that the Expected Value View is displayed.");
+								"No input from the screen detected. Please ensure that the Expected Value View is displayed and that a value is selected.");
 					}
 				});
 				return;
@@ -654,10 +666,29 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	@Override
 	public void sourceChanged(int arg0, String arg1, Object arg2) {
 		if (arg1.equals(ScreenStateSourceProvider.NAME_SELECTED)) {
-			System.out.println("Term recieved selected text");
-			System.out.println((String) arg2);
+			//System.out.println("Term recieved selected text");
+			//System.out.println((String) arg2);
 			currentSelectedExpect = (String) arg2;
 		}
 	}
 
+	public void enableRecording() {
+		recordingEnabled = true;
+	}
+	
+	public void disableRecording() {
+		recordingEnabled = false;
+	}
+	
+	public boolean isRecordingEnabled() {
+		return recordingEnabled;
+	}
+	
+	public void setRecordingIcon(RecordingIconAction recordingIcon) {
+		this.recordingIcon = recordingIcon;
+	}
+
+	public void setStopIcon(StopIconAction stopIcon) {
+		this.stopIcon = stopIcon;
+	}
 }
