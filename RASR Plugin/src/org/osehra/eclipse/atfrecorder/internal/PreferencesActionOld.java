@@ -11,21 +11,17 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
 
-import com.jcraft.eclipse.jcterm.JCTermPlugin;
-
-//TODO: should be refactored if the need for a preferences page/window happens.
-//this is currently a class for handling the "set ATF Location" menu item.
-public class PreferencesAction extends Action {
+//this was a class for handling the "set ATF Location" menu item.
+public class PreferencesActionOld extends Action {
 
 	private IAction prefAction;
 	private RASRPreferences preferences = RASRPreferences.getInstance();
 
-	public PreferencesAction() {
+	public PreferencesActionOld() {
 		super();
 		
 
 		prefAction = new Action() {
-			@SuppressWarnings("restriction")
 			public void run() {
 				Display display = Display.getDefault();
 				Shell shell = new Shell(display);

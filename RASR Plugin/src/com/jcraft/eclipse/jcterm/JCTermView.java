@@ -48,7 +48,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
-import org.osehra.eclipse.atfrecorder.internal.PreferencesAction;
+import org.osehra.eclipse.atfrecorder.internal.PreferencesActionOld;
 import org.osehra.eclipse.atfrecorder.internal.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.internal.SaveTestAction;
 import org.osehra.eclipse.atfrecorder.internal.StopIconAction;
@@ -266,7 +266,7 @@ public class JCTermView extends ViewPart {
 
 		// pull down menu
 		IMenuManager manager = bars.getMenuManager();
-		PreferencesAction preferencesAction = new PreferencesAction();
+		PreferencesActionOld preferencesAction = new PreferencesActionOld();
 		manager.add(preferencesAction);
 		// manager.add(new Separator());
 	}
