@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -48,6 +49,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
+import org.osehra.eclipse.atfrecorder.actions.ManageConnectionsAction;
 import org.osehra.eclipse.atfrecorder.actions.PreferencesActionOld;
 import org.osehra.eclipse.atfrecorder.actions.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.actions.SaveTestAction;
@@ -266,9 +268,14 @@ public class JCTermView extends ViewPart {
 
 		// pull down menu
 		IMenuManager manager = bars.getMenuManager();
+		//preferences action
 		PreferencesActionOld preferencesAction = new PreferencesActionOld();
 		manager.add(preferencesAction);
-		// manager.add(new Separator());
+		manager.add(new Separator());
+		
+//		//remove a connection
+//		ManageConnectionsAction mca = new ManageConnectionsAction();
+//		manager.add(mca);
 	}
 
 	public void openConnection(int mode, String location) {

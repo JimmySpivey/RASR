@@ -39,6 +39,11 @@ public class ManageConnectionsAction extends Action implements IMenuCreator {
 				
 			}
 		};
+		
+		manageConnAction.setText("Manage Connections");
+		
+		setText("Manage Connections");
+		setToolTipText("Select this to remove a connection");
 	}
 
 	@Override
