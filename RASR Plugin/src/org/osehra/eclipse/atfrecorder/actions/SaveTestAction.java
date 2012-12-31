@@ -1,4 +1,4 @@
-package org.osehra.eclipse.atfrecorder.internal;
+package org.osehra.eclipse.atfrecorder.actions;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
 import org.osehra.eclipse.atfrecorder.RecordableEvent;
 import org.osehra.eclipse.atfrecorder.codegen.ATFCodeGenerator;
+import org.osehra.eclipse.atfrecorder.dialogs.SaveTestDialog;
 import org.osehra.python.codegen.LineNotFoundException;
 
 import com.jcraft.eclipse.jcterm.IUIConstants;

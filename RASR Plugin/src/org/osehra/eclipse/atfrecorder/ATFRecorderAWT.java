@@ -21,9 +21,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.services.ISourceProviderService;
-import org.osehra.eclipse.atfrecorder.internal.RecordingIconAction;
+import org.osehra.eclipse.atfrecorder.actions.RecordingIconAction;
+import org.osehra.eclipse.atfrecorder.actions.StopIconAction;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
-import org.osehra.eclipse.atfrecorder.internal.StopIconAction;
 
 import com.jcraft.jcterm.Connection;
 import com.jcraft.jcterm.Emulator;

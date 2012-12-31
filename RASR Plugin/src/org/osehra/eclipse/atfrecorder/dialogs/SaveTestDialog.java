@@ -1,4 +1,4 @@
-package org.osehra.eclipse.atfrecorder.internal;
+package org.osehra.eclipse.atfrecorder.dialogs;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -54,7 +54,7 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 	
 	private Boolean hadError;
 	
-	protected SaveTestDialog(Shell shell) {
+	public SaveTestDialog(Shell shell) {
 		super(shell);
 		
 		setShellStyle(getShellStyle() | SWT.RESIZE);

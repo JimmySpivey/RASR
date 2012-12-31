@@ -1,4 +1,4 @@
-package org.osehra.eclipse.atfrecorder.internal;
+package org.osehra.eclipse.atfrecorder.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
+import org.osehra.eclipse.atfrecorder.dialogs.ManageConnectionDialog;
 
 public class ManageConnectionsAction extends Action implements IMenuCreator {
 

@@ -1,4 +1,4 @@
-package org.osehra.eclipse.atfrecorder.internal;
+package org.osehra.eclipse.atfrecorder.actions;
 
 import java.io.File;
 

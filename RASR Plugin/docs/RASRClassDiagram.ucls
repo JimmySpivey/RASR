@@ -205,8 +205,8 @@
       <operations public="true" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <class id="26" corner="BOTTOM_RIGHT" language="java" name="org.osehra.eclipse.atfrecorder.internal.SaveTestAction" 
-    project="RASR Plugin" file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/internal/SaveTestAction.java" 
+  <class id="26" corner="BOTTOM_RIGHT" language="java" name="org.osehra.eclipse.atfrecorder.actions.SaveTestAction" 
+    project="RASR Plugin" file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/actions/SaveTestAction.java" 
     binary="false">    
     <position height="-1" width="-1" x="550" y="266"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
@@ -214,8 +214,8 @@
       <operations public="true" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <class id="27" corner="BOTTOM_RIGHT" language="java" name="org.osehra.eclipse.atfrecorder.internal.SaveTestDialog" 
-    project="RASR Plugin" file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/internal/SaveTestDialog.java" 
+  <class id="27" corner="BOTTOM_RIGHT" language="java" name="org.osehra.eclipse.atfrecorder.dialogs.SaveTestDialog" 
+    project="RASR Plugin" file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/dialogs/SaveTestDialog.java" 
     binary="false">    
     <position height="-1" width="-1" x="1176" y="881"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
@@ -224,8 +224,8 @@
     </display>  
   </class>  
   <class id="28" corner="BOTTOM_RIGHT" language="java" 
-    name="org.osehra.eclipse.atfrecorder.internal.PreferencesActionOld" project="RASR Plugin" 
-    file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/internal/PreferencesActionOld.java" binary="false">    
+    name="org.osehra.eclipse.atfrecorder.actions.PreferencesActionOld" project="RASR Plugin" 
+    file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/actions/PreferencesActionOld.java" binary="false">    
     <position height="-1" width="-1" x="565" y="418"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      

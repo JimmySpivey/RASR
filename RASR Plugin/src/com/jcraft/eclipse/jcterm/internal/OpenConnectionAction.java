@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
-import org.osehra.eclipse.atfrecorder.internal.ManageConnectionsAction;
+import org.osehra.eclipse.atfrecorder.actions.ManageConnectionsAction;
 
 import com.jcraft.eclipse.jcterm.IUIConstants;
 import com.jcraft.eclipse.jcterm.JCTermPlugin;

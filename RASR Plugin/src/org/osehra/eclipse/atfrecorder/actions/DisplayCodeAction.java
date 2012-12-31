@@ -1,3 +1,4 @@
+package org.osehra.eclipse.atfrecorder.actions;
 //package org.osehra.eclipse.atfrecorder.internal;
 //
 //import java.io.IOException;

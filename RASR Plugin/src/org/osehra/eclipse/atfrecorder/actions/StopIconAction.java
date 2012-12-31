@@ -1,4 +1,4 @@
-package org.osehra.eclipse.atfrecorder.internal;
+package org.osehra.eclipse.atfrecorder.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
