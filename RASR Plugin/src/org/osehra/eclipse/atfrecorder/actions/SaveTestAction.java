@@ -1,7 +1,9 @@
 package org.osehra.eclipse.atfrecorder.actions;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -79,8 +81,24 @@ public class SaveTestAction extends Action {
 					
 					//Invoke Cmake so that when running ctest it automatically grabs the new testSuite
 					if (dialog.isNewSuite()) {
-						String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
-						//Process process = Runtime.getRuntime().exec();
+						try {
+
+							String cmakeOutLoc = preferences
+									.getValue(RASRPreferences.CMAKE_OUT_LOCATION);
+							Process process = Runtime.getRuntime().exec(
+									"cmake " + cmakeOutLoc);
+							String line;
+
+							BufferedReader input = new BufferedReader(
+									new InputStreamReader(
+											process.getInputStream()));
+							while ((line = input.readLine()) != null) {
+								System.out.println(line);
+							}
+						} catch (Exception e) {
+							// swallow any exceptions that occur
+							e.printStackTrace();
+						}
 					}
 					
 					MessageDialog.openInformation(Display.getDefault().getActiveShell(), 

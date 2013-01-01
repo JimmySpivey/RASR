@@ -50,9 +50,10 @@ import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
 import org.osehra.eclipse.atfrecorder.actions.ManageConnectionsAction;
-import org.osehra.eclipse.atfrecorder.actions.PreferencesActionOld;
+import org.osehra.eclipse.atfrecorder.actions.SetATFDirAction;
 import org.osehra.eclipse.atfrecorder.actions.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.actions.SaveTestAction;
+import org.osehra.eclipse.atfrecorder.actions.SetCMakeOutDirAction;
 import org.osehra.eclipse.atfrecorder.actions.StopIconAction;
 
 import com.jcraft.eclipse.jcterm.internal.OpenConnectionAction;
@@ -269,11 +270,15 @@ public class JCTermView extends ViewPart {
 		// pull down menu
 		IMenuManager manager = bars.getMenuManager();
 		//preferences action
-		PreferencesActionOld preferencesAction = new PreferencesActionOld();
-		manager.add(preferencesAction);
-		manager.add(new Separator());
+		SetATFDirAction setAtfLocAction = new SetATFDirAction();
+		manager.add(setAtfLocAction);
+		
+		SetCMakeOutDirAction cmakeOutAction = new SetCMakeOutDirAction();
+		manager.add(cmakeOutAction);
+		
 		
 //		//remove a connection
+//		manager.add(new Separator());
 //		ManageConnectionsAction mca = new ManageConnectionsAction();
 //		manager.add(mca);
 	}

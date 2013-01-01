@@ -12,12 +12,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
 
 //this was a class for handling the "set ATF Location" menu item.
-public class PreferencesActionOld extends Action {
+public class SetATFDirAction extends Action {
 
 	private IAction prefAction;
 	private RASRPreferences preferences = RASRPreferences.getInstance();
 
-	public PreferencesActionOld() {
+	public SetATFDirAction() {
 		super();
 		
 

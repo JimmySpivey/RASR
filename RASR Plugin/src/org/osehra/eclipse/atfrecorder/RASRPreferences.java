@@ -26,10 +26,11 @@ public final class RASRPreferences {
 	
 	private JCTermPlugin plugin = JCTermPlugin.getDefault();
 	
-	public static final String ATF_LOCATION 	= "PREF/ATF-LOC";
-	public static final String PACKAGE_NAME		= "PREF/PKG-NAME";
-	public static final String TEST_SUITE_NAME	= "PREF/STE-NAME";
-	public static final String SHELL_LOCATION	= "LOCATION/SHELL"; //name left over from JCTerm
+	public static final String ATF_LOCATION 		= "PREF/ATF-LOC";
+	public static final String CMAKE_OUT_LOCATION 	= "PREF/CMAKE-OUT-LOC";
+	public static final String PACKAGE_NAME			= "PREF/PKG-NAME";
+	public static final String TEST_SUITE_NAME		= "PREF/STE-NAME";
+	public static final String SHELL_LOCATION		= "LOCATION/SHELL"; //name left over from JCTerm
 	
 	private String atfLocation;
 	private String packageName;

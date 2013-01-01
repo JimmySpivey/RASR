@@ -223,9 +223,9 @@
       <operations public="true" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <class id="28" corner="BOTTOM_RIGHT" language="java" 
-    name="org.osehra.eclipse.atfrecorder.actions.PreferencesActionOld" project="RASR Plugin" 
-    file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/actions/PreferencesActionOld.java" binary="false">    
+  <class id="28" corner="BOTTOM_RIGHT" language="java" name="org.osehra.eclipse.atfrecorder.actions.SetATFDirAction" 
+    project="RASR Plugin" file="/RASR Plugin/src/org/osehra/eclipse/atfrecorder/actions/SetATFDirAction.java" 
+    binary="false">    
     <position height="-1" width="-1" x="565" y="418"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
