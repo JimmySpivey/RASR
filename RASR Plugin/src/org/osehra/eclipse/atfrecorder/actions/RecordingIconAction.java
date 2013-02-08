@@ -24,7 +24,9 @@ public class RecordingIconAction extends Action {
 			}
 		};
 				
-		//disable();
+		disable();
+		setText("Not recording / not started");
+		setToolTipText("Not recording / not started");
 		setImageDescriptor(JCTermPlugin
 				.getImageDescriptor(IUIConstants.IMG_RECORDING));
 	}
