@@ -333,10 +333,13 @@ public class JCTermView extends ViewPart {
 
 				out = channel.getOutputStream();
 				in = channel.getInputStream();
-				channel.connect();
+				System.out.println("setting xterm");
+				((ChannelShell) channel).setPtyType("xterm");
+				//abstract Channel |extended by-> ChannelSession |extended by-> ChannelShell
+				channel.connect(); //calls abstract channel#start(), calls ChannelShell#start, calls ChannelSession#sendRequests
 				((ChannelShell) channel).setPtySize(term.getColumnCount(),
 						term.getRowCount(), term.getTermWidth(),
-						term.getTermHeight());
+						term.getTermHeight()); //TODO: perhaps this should be moved to before connect?
 			}
 
 			final OutputStream fout = out;
@@ -356,6 +359,7 @@ public class JCTermView extends ViewPart {
 					if (fchannel instanceof ChannelShell) {
 						int c = term.getColumnCount();
 						int r = term.getRowCount();
+						((ChannelShell) fchannel).setPtyType("xterm");
 						((ChannelShell) fchannel).setPtySize(c, r,
 								c * term.getCharWidth(),
 								r * term.getCharHeight());
