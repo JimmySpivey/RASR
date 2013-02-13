@@ -21,8 +21,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.services.ISourceProviderService;
-import org.osehra.eclipse.atfrecorder.actions.RecordingIconAction;
-import org.osehra.eclipse.atfrecorder.actions.StopIconAction;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
 import com.jcraft.jcterm.Connection;
@@ -78,12 +76,16 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private Splash splash = null;
 
 	// Added for Recording
-	private boolean recordingEnabled = true; //turns recording of terminal session on or off. set by user
+	private boolean recordingEnabled = true; //turns recording of terminal session on or off. set by user via stop button
 	private String currentScreen = "";
+	
+	private AVCodeStateEnum avCodeState = AVCodeStateEnum.NO_PROMPT;
+	private String capturedAccessCode;
+	private String capturedVerifyCode;
+	
 	private boolean disableScreenRecording = false; // set to true to disable
 													// echoing commands into
 													// screen
-	private int enterKeyCount;
 	private String currentCommand = "";
 	private String currentSelectedExpect = "";
 	private TestRecording testRecording = new TestRecording();
@@ -91,8 +93,8 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private ScreenStateSourceProvider selectedTextService;
 	
 	//a lot of this can be re-designed/refactored
-	private RecordingIconAction recordingIcon;
-	private StopIconAction stopIcon;
+//	private RecordingIconAction recordingIcon;
+//	private StopIconAction stopIcon;
 
 	public TestRecording getCurrentRecording() {
 		return testRecording;
@@ -103,7 +105,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		testRecording.setVerifyCode(null);
 		if (testRecording.getEvents() != null)
 			testRecording.getEvents().clear();
-		enterKeyCount = 0;
+		avCodeState = AVCodeStateEnum.NO_PROMPT;
 	}
 
 	private final Object[] colors = { Color.black, Color.red, Color.green,
@@ -355,36 +357,47 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 										// waiting for the current screen to
 										// come back
 
-		// not sure why this bug exists from JCTerm, but if the enter key is
-		// pressed it is seen as a character not a key code
 		if (keychar == '\n') {
-			keycode = KeyEvent.VK_ENTER;
-			// save last 20 characters to python expect/command list. BUT
-			// first crop out the echo'ed command
-			// String last20Chars = currentScreen.substring(Math.max(0,
-			// currentScreen.length()-20), currentScreen.length());
-			if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty() && //TODO: improve, add a warning to the user if these are null/empty
-					currentCommand != null) {
-				switch (++enterKeyCount) {
-				case 1:
-					testRecording.setAccessCode(currentCommand);
-					break;
-				case 2:
-					testRecording.setVerifyCode(currentCommand);
-					break;
-				default:
-					//disable recording for the first 2 prompts (access/verify codes) //TODO: this is buggy, the use may enter the wrong a/v code
-					if (recordingEnabled) {
-						//enable the stop and recording buttons (if they are already disabled?)
-						if (!stopIcon.isEnabled());
-							stopIcon.enable();
-						if (!recordingIcon.isEnabled())
-							recordingIcon.enable();
-						testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
-						testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
-					}
+			keycode = KeyEvent.VK_ENTER; // not sure why this bug exists from
+											// JCTerm, but if the enter key is
+											// pressed it is seen as a character
+											// not a key code
+			if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty()) {
+				
+				if (currentScreen.trim().endsWith("ACCESS CODE:")) {
+					capturedAccessCode = currentCommand;
+					avCodeState = AVCodeStateEnum.FOUND_ACCESS_PROMPT;
+				} else if (avCodeState == AVCodeStateEnum.FOUND_ACCESS_PROMPT && currentScreen.trim().equals("VERIFY CODE:")) {
+					capturedVerifyCode = currentCommand;
+					avCodeState = AVCodeStateEnum.FOUND_COMPLETE_PROMPT;
 					
+					if (avCodeState == AVCodeStateEnum.PROMPT_PASSED) {
+						Display.getDefault().asyncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+										"A/V code detected", 
+										"While already logged into VistA, an ACCESS/VERIFY code prompt has been detected. Please save the current recording before continuing to a new login.");
+								
+								//TODO: prompt user to save current test before starting a new login.
+							}
+						});
+						
+						return;
+					}
+				} else if (avCodeState ==  AVCodeStateEnum.FOUND_COMPLETE_PROMPT) {
+					avCodeState = AVCodeStateEnum.PROMPT_PASSED;
+					testRecording.setAccessCode(capturedAccessCode);
+					testRecording.setVerifyCode(capturedVerifyCode);
 				}
+				
+				if (avCodeState == AVCodeStateEnum.PROMPT_PASSED && recordingEnabled) {
+					testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
+					testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
+				}
+
+				
 				currentScreen = ""; // reset current screen buffer
 				disableScreenRecording = false;
 				currentCommand = "";
@@ -682,13 +695,5 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	
 	public boolean isRecordingEnabled() {
 		return recordingEnabled;
-	}
-	
-	public void setRecordingIcon(RecordingIconAction recordingIcon) {
-		this.recordingIcon = recordingIcon;
-	}
-
-	public void setStopIcon(StopIconAction stopIcon) {
-		this.stopIcon = stopIcon;
 	}
 }

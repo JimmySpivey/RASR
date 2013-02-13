@@ -246,12 +246,12 @@ public class JCTermView extends ViewPart {
 
 		//Stop Icon
 		StopIconAction stopIcon = new StopIconAction(recorder);
-		recorder.setStopIcon(stopIcon);
+		//recorder.setStopIcon(stopIcon);
 		bars.getToolBarManager().add(stopIcon);
 		
 		//Recording Icon
 		RecordingIconAction recordingIcon = new RecordingIconAction(recorder, stopIcon);
-		recorder.setRecordingIcon(recordingIcon);
+		//recorder.setRecordingIcon(recordingIcon);
 		bars.getToolBarManager().add(recordingIcon);
 
 		// Save Test Button
