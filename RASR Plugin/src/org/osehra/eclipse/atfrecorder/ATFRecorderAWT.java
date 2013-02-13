@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.osehra.eclipse.atfrecorder.actions.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
 import com.jcraft.jcterm.Connection;
@@ -28,6 +29,7 @@ import com.jcraft.jcterm.Emulator;
 import com.jcraft.jcterm.EmulatorVT100;
 import com.jcraft.jcterm.Splash;
 import com.jcraft.jcterm.Term;
+import com.sun.nio.sctp.InvalidStreamException;
 
 public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		ISourceProviderListener {
@@ -76,7 +78,9 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	private Splash splash = null;
 
 	// Added for Recording
-	private boolean recordingEnabled = true; //turns recording of terminal session on or off. set by user via stop button
+	private RecordingIconAction recordingIcon;
+	
+	private boolean recordingEnabled; //turns recording of terminal session on or off. set by user via stop button
 	private String currentScreen = "";
 	
 	private AVCodeStateEnum avCodeState = AVCodeStateEnum.NO_PROMPT;
@@ -106,6 +110,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		if (testRecording.getEvents() != null)
 			testRecording.getEvents().clear();
 		avCodeState = AVCodeStateEnum.NO_PROMPT;
+		recordingIcon.toggleOn();
 	}
 
 	private final Object[] colors = { Color.black, Color.red, Color.green,
@@ -357,61 +362,19 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 										// waiting for the current screen to
 										// come back
 
+			
 		if (keychar == '\n') {
 			keycode = KeyEvent.VK_ENTER; // not sure why this bug exists from
-											// JCTerm, but if the enter key is
-											// pressed it is seen as a character
-											// not a key code
-			if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty()) {
-				
-				if (currentScreen.trim().endsWith("ACCESS CODE:")) {
-					capturedAccessCode = currentCommand;
-					avCodeState = AVCodeStateEnum.FOUND_ACCESS_PROMPT;
-				} else if (avCodeState == AVCodeStateEnum.FOUND_ACCESS_PROMPT && currentScreen.trim().equals("VERIFY CODE:")) {
-					capturedVerifyCode = currentCommand;
-					avCodeState = AVCodeStateEnum.FOUND_COMPLETE_PROMPT;
-					
-					if (avCodeState == AVCodeStateEnum.PROMPT_PASSED) {
-						Display.getDefault().asyncExec(new Runnable() {
-							
-							@Override
-							public void run() {
-								MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
-										"A/V code detected", 
-										"While already logged into VistA, an ACCESS/VERIFY code prompt has been detected. Please save the current recording before continuing to a new login.");
-								
-								//TODO: prompt user to save current test before starting a new login.
-							}
-						});
-						
-						return;
-					}
-				} else if (avCodeState ==  AVCodeStateEnum.FOUND_COMPLETE_PROMPT) {
-					avCodeState = AVCodeStateEnum.PROMPT_PASSED;
-					testRecording.setAccessCode(capturedAccessCode);
-					testRecording.setVerifyCode(capturedVerifyCode);
+			// JCTerm, but if the enter key is
+			// pressed it is seen as a character
+			// not a key code
+			
+			if (recordingEnabled) {
+				try {
+					recordCurrentScreen();
+				} catch (RecordingException re) {
+					return; //do not continue processing the enter key from the user/do not send enter to server
 				}
-				
-				if (avCodeState == AVCodeStateEnum.PROMPT_PASSED && recordingEnabled) {
-					testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
-					testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
-				}
-
-				
-				currentScreen = ""; // reset current screen buffer
-				disableScreenRecording = false;
-				currentCommand = "";
-			} else {
-				Display.getDefault().asyncExec(new Runnable() {
-					
-					@Override
-					public void run() {
-						MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
-								"No Input Detected", 
-								"No input from the screen detected. Please ensure that the Expected Value View is displayed and that a value is selected.");
-					}
-				});
-				return;
 			}
 		}
 
@@ -419,7 +382,8 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 			keychar = 0x7F;
 			e.setKeyChar((char) 0x7F); // map backspace to delete key
 
-			if (currentCommand.length() != 0) {
+			
+			if (recordingEnabled && currentCommand.length() != 0) {
 				// System.out.println("removing char: "
 				// +currentCommand.substring(currentCommand.length() - 1));
 				currentCommand = currentCommand.substring(0,
@@ -435,7 +399,8 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		if (keychar != 0x7F) { // don't add the delete char to our command, but
 								// do add it to the terminal out stream
 			// System.out.println("adding keychar: " +keychar);
-			currentCommand += keychar;
+			if (recordingEnabled)
+				currentCommand += keychar;
 		}
 		
 //		if (ctrlPressed)
@@ -472,6 +437,63 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 				out.flush();
 			} catch (Exception eee) {
 			}
+		}
+	}
+
+	private void recordCurrentScreen() throws RecordingException {
+		if (currentSelectedExpect != null && !currentSelectedExpect.isEmpty()) {
+			
+			if (currentScreen.trim().endsWith("ACCESS CODE:")) {
+				capturedAccessCode = currentCommand;
+				avCodeState = AVCodeStateEnum.FOUND_ACCESS_PROMPT;
+			} else if (avCodeState == AVCodeStateEnum.FOUND_ACCESS_PROMPT && currentScreen.trim().equals("VERIFY CODE:")) {
+				capturedVerifyCode = currentCommand;
+
+				if (avCodeState == AVCodeStateEnum.PROMPT_PASSED) {
+					Display.getDefault().asyncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+									"A/V code detected", 
+									"While already logged into VistA, an ACCESS/VERIFY code prompt has been detected. Please save the current recording before continuing to a new login.");
+							
+							//could prompt user to save current test before starting a new login instead of instructing them to do so?
+						}
+					});
+					
+					throw new RecordingException(); //FYI: this prevents them from moving onto the next screen since the enter key will not be sent to the server
+				}
+				
+				avCodeState = AVCodeStateEnum.FOUND_COMPLETE_PROMPT;
+			} else if (avCodeState ==  AVCodeStateEnum.FOUND_ACCESS_PROMPT) {
+				//TODO: need to fetch avCodePrevious state instead of assuming it was previously PROMPT_PASSED
+				avCodeState = AVCodeStateEnum.PROMPT_PASSED; //reset back to PROMPT_PASSED, false positive on ACCESS CODE: match
+			} else if (avCodeState ==  AVCodeStateEnum.FOUND_COMPLETE_PROMPT) {
+				avCodeState = AVCodeStateEnum.PROMPT_PASSED;
+				testRecording.setAccessCode(capturedAccessCode);
+				testRecording.setVerifyCode(capturedVerifyCode);
+			}
+			
+			if (recordingEnabled) {
+				testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
+				testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
+			}
+
+			currentScreen = ""; // reset current screen buffer
+			disableScreenRecording = false;
+			currentCommand = "";
+		} else {
+			Display.getDefault().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					MessageDialog.openWarning(Display.getDefault().getActiveShell(), 
+							"No Input Detected", 
+							"No input from the screen detected. Please ensure that the Expected Value View is displayed and that a value is selected.");
+				}
+			});
+			throw new RecordingException(); //FYI: this prevents them from moving onto the next screen since the enter key will not be sent to the server
 		}
 	}
 
@@ -685,15 +707,19 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		}
 	}
 
-	public void enableRecording() {
-		recordingEnabled = true;
-	}
-	
-	public void disableRecording() {
-		recordingEnabled = false;
+	public void setRecordingEnabled(boolean recordingEnabled) {
+		this.recordingEnabled = recordingEnabled;
 	}
 	
 	public boolean isRecordingEnabled() {
 		return recordingEnabled;
+	}
+	
+	public AVCodeStateEnum getAvCodeState() {
+		return avCodeState;
+	}
+
+	public void setRecordingIcon(RecordingIconAction recordingIcon) {
+		this.recordingIcon = recordingIcon;		
 	}
 }

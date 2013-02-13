@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -49,12 +48,10 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
 import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
-import org.osehra.eclipse.atfrecorder.actions.ManageConnectionsAction;
-import org.osehra.eclipse.atfrecorder.actions.SetATFDirAction;
 import org.osehra.eclipse.atfrecorder.actions.RecordingIconAction;
 import org.osehra.eclipse.atfrecorder.actions.SaveTestAction;
+import org.osehra.eclipse.atfrecorder.actions.SetATFDirAction;
 import org.osehra.eclipse.atfrecorder.actions.SetCMakeOutDirAction;
-import org.osehra.eclipse.atfrecorder.actions.StopIconAction;
 
 import com.jcraft.eclipse.jcterm.internal.OpenConnectionAction;
 import com.jcraft.eclipse.jsch.core.IJSchLocation;
@@ -245,13 +242,13 @@ public class JCTermView extends ViewPart {
 		// bars.getToolBarManager().add(displayCodeAction);
 
 		//Stop Icon
-		StopIconAction stopIcon = new StopIconAction(recorder);
-		//recorder.setStopIcon(stopIcon);
-		bars.getToolBarManager().add(stopIcon);
-		
+//		StopIconAction stopIcon = new StopIconAction(recorder);
+//		//recorder.setStopIcon(stopIcon);
+//		bars.getToolBarManager().add(stopIcon);
+
 		//Recording Icon
-		RecordingIconAction recordingIcon = new RecordingIconAction(recorder, stopIcon);
-		//recorder.setRecordingIcon(recordingIcon);
+		RecordingIconAction recordingIcon = new RecordingIconAction(recorder);
+		recorder.setRecordingIcon(recordingIcon);
 		bars.getToolBarManager().add(recordingIcon);
 
 		// Save Test Button
