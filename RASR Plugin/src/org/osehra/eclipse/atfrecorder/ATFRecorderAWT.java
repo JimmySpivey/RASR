@@ -475,7 +475,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 				testRecording.setVerifyCode(capturedVerifyCode);
 			}
 			
-			if (recordingEnabled) {
+			if (recordingEnabled && avCodeState == AVCodeStateEnum.NO_PROMPT || avCodeState == AVCodeStateEnum.PROMPT_PASSED) {
 				testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
 				testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
 			}
