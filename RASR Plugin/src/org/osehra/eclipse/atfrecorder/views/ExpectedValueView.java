@@ -4,6 +4,7 @@ package org.osehra.eclipse.atfrecorder.views;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
@@ -43,7 +44,7 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 	 */
 	public static final String ID = "org.osehra.eclipse.atfrecorder.views.OverrideExpectView";
 
-	private Text text;
+	private StyledText text;
 	//private String currentScreen; //not instance related, move to single method where referenced
 	private EVSelectedTextListener selectedListener;
 	private ScreenStateSourceProvider selectedTextProvider;
@@ -56,14 +57,24 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		text = new Text(parent, SWT.V_SCROLL );
+		text = new StyledText(parent, SWT.V_SCROLL );
 		text.setText("");
 		Device device = Display.getCurrent();
 		text.setBackground(new Color(device, 0, 0, 0));
 		text.setEditable(false);
 		text.setForeground(new Color(device, 255, 255, 255));
 		FontData fd = new FontData("Courier New", 10, 0);
-		text.setFont(new Font(device, fd)); //TODO: add backup fonts/test for other supported OS'es
+		text.setFont(new Font(device, fd)); //TODO: add backup true type fonts/test for other supported OS'es
+		
+//		//create the top-bar for RASR
+//		Composite topBar = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+//		GridData gridData = new GridData();
+//		gridData.horizontalAlignment = GridData.FILL;
+//		gridData.grabExcessHorizontalSpace = true;
+//		gridData.grabExcessVerticalSpace = false;
+//		topBar.setLayoutData(gridData);
+//		
+		
 
 		ISourceProviderService service = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
 		ISourceProvider screenStateProvider = service.getSourceProvider(ScreenStateSourceProvider.NAME_SCREEN);
@@ -111,7 +122,7 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 							int offset = text.getCharCount() - currentScreen.length();
 							int start = offset+Math.max(1, currentScreen.length() - 21);
 							int end = offset+currentScreen.length();
-							String last20 = text.getText(start, end);
+							String last20 = text.getText(start, end - 1); //for StyleText, end has to be -1
 							for (int i = last20.length() - 1; i >= 0; i--) {
 								if (last20.charAt(i) == '\r' || last20.charAt(i) == '\n' || last20.charAt(i) == ' ')
 									end--;
