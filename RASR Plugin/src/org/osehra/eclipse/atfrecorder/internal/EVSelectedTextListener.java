@@ -1,5 +1,6 @@
 package org.osehra.eclipse.atfrecorder.internal;
 
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -49,7 +50,7 @@ public class EVSelectedTextListener implements Listener {
 
 	@Override
 	public void handleEvent(Event event) {
-		Text text = (Text) event.widget;
+		StyledText text = (StyledText) event.widget;
 		String selected = text.getSelectionText();
 		//determine if it is selected from left-right or right-left
 		
@@ -79,7 +80,7 @@ public class EVSelectedTextListener implements Listener {
 			
 			
 			//need to determine if user selected from left-right or right-left
-			int caretPos = text.getCaretPosition();
+			int caretPos = text.getCaretOffset();
 			int selLength = selected.length();
 			boolean leftToRight;
 			//check for out of bounds
@@ -97,11 +98,11 @@ public class EVSelectedTextListener implements Listener {
 			}
 			
 			if (leftToRight) {
-				previousStart = text.getCaretPosition() - selected.length();
-				previousEnd = text.getCaretPosition();
+				previousStart = text.getCaretOffset() - selected.length();
+				previousEnd = text.getCaretOffset();
 			} else {
-				previousStart = text.getCaretPosition();
-				previousEnd = text.getCaretPosition() + selected.length();
+				previousStart = text.getCaretOffset();
+				previousEnd = text.getCaretOffset() + selected.length();
 			}
 
 			
