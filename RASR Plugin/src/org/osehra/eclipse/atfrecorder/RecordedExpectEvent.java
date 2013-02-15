@@ -1,12 +1,14 @@
 package org.osehra.eclipse.atfrecorder;
 
+import java.util.List;
+
 public class RecordedExpectEvent extends RecordableEvent {
 
-	private String recordedValue;
+	private List<String> recordedValue;
 	
-	public RecordedExpectEvent(String recordedValue) {
+	public RecordedExpectEvent(List<String> recordedValues) {
 		super();
-		this.recordedValue = recordedValue;
+		this.recordedValue = recordedValues;
 	}
 	
 	@Override
@@ -15,12 +17,12 @@ public class RecordedExpectEvent extends RecordableEvent {
 	}
 
 	@Override
-	public String getRecordedValue() {
+	public List<String> getRecordedValues() {
 		return recordedValue;
 	}
 
-	public void setRecordedValue(String recordedValue) {
-		this.recordedValue = recordedValue;
-	}
+//	public void setRecordedValue(String recordedValue) {
+//		this.recordedValue = recordedValue;
+//	}
 
 }

@@ -19,8 +19,12 @@ public class TestATFCodeGeneratorTest {
 	public void testAddTest() throws FileNotFoundException, IOException, LineNotFoundException, URISyntaxException {
 		ATFCodeGenerator atfCodeGen = new ATFCodeGenerator();
 		List<RecordableEvent> recordableEvents = new ArrayList<RecordableEvent>();
-		recordableEvents.add(new RecordedExpectEvent("ACCESS CODE:"));
-		recordableEvents.add(new RecordedSendEvent("01vehu"));
+		List<String> recordedValues = new ArrayList<String>();
+		recordedValues.add("ACCESS CODE:");
+		recordableEvents.add(new RecordedExpectEvent(recordedValues));
+		recordedValues.clear();
+		recordedValues.add("01vehu");
+		recordableEvents.add(new RecordedSendEvent(recordedValues));
 		
 		TestRecording testRecording = new TestRecording();
 		testRecording.setAccessCode("accessCode01");

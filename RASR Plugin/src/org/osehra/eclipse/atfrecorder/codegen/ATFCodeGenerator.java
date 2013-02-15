@@ -198,12 +198,22 @@ public class ATFCodeGenerator {
 		statements.add("    vista = test_driver.connect_VistA(test_suite_details, testname)");
 		for (RecordableEvent recordAbleEvent : recordableEvents) {
 			if (recordAbleEvent.getType() == RecordableEventType.EXPECT) {
-
-				statements.add("    vista.wait('" +escapeSpecials(
-						recordAbleEvent.getRecordedValue())+"')");
+				
+				if (recordAbleEvent.getRecordedValues().size() == 1)
+					statements.add("    vista.wait('" +escapeSpecials(
+							recordAbleEvent.getRecordedValues().get(0))+"')");
+				else if (recordAbleEvent.getRecordedValues().size() > 1) {
+					String statement = "    for expected in [";
+					for (String expected : recordAbleEvent.getRecordedValues())
+						statement += "'" +expected+ "', ";
+					statement = statement.substring(0, statement.length() - 2);
+					statement += "]:";
+					statements.add(statement);
+					statements.add("        vista.wait(expected)");
+				}
 			} else if (recordAbleEvent.getType() == RecordableEventType.SEND) {
 				statements.add("    vista.write('" +escapeSpecials(
-						recordAbleEvent.getRecordedValue())+"')"); 
+						recordAbleEvent.getRecordedValues().get(0))+"')"); //TODO: can look into pulling this in a more generalized way 
 			}
 		}
 		statements.add("");

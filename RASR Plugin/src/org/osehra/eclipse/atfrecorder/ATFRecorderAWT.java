@@ -477,12 +477,11 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 			}
 			
 			if (recordingEnabled && avCodeState == AVCodeStateEnum.NO_PROMPT || avCodeState == AVCodeStateEnum.PROMPT_PASSED) {
-				for (String selected : currentSelectedExpect)
-					testRecording.getEvents().add(new RecordedExpectEvent(selected));
-				testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
+				testRecording.getEvents().add(new RecordedExpectEvent(new ArrayList<String>(currentSelectedExpect)));
+				List<String> commands = new ArrayList<String>();
+				commands.add(currentCommand);
+				testRecording.getEvents().add(new RecordedSendEvent(commands));
 			}
-			
-			//TODO: reset current expect list?
 
 			currentScreen = ""; // reset current screen buffer
 			disableScreenRecording = false;

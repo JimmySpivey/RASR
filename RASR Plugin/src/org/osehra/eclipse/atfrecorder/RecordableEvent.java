@@ -1,5 +1,7 @@
 package org.osehra.eclipse.atfrecorder;
 
+import java.util.List;
+
 /**
  * This abstract class reprsents an object which will eventually be written 
  * into a python statement for Automated Testing purposes.
@@ -11,6 +13,6 @@ public abstract class RecordableEvent {
 	
 	public abstract RecordableEventType getType();
 	
-	public abstract String getRecordedValue();
+	public abstract List<String> getRecordedValues();
 	
 }
