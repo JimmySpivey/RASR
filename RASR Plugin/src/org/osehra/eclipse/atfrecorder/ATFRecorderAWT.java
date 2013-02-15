@@ -15,6 +15,8 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -29,7 +31,6 @@ import com.jcraft.jcterm.Emulator;
 import com.jcraft.jcterm.EmulatorVT100;
 import com.jcraft.jcterm.Splash;
 import com.jcraft.jcterm.Term;
-import com.sun.nio.sctp.InvalidStreamException;
 
 public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 		ISourceProviderListener {
@@ -91,7 +92,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 													// echoing commands into
 													// screen
 	private String currentCommand = "";
-	private String currentSelectedExpect = "";
+	private List<String> currentSelectedExpect = new ArrayList<String>();
 	private TestRecording testRecording = new TestRecording();
 	private ScreenStateSourceProvider screenStateService;
 	private ScreenStateSourceProvider selectedTextService;
@@ -476,9 +477,12 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 			}
 			
 			if (recordingEnabled && avCodeState == AVCodeStateEnum.NO_PROMPT || avCodeState == AVCodeStateEnum.PROMPT_PASSED) {
-				testRecording.getEvents().add(new RecordedExpectEvent(currentSelectedExpect));
+				for (String selected : currentSelectedExpect)
+					testRecording.getEvents().add(new RecordedExpectEvent(selected));
 				testRecording.getEvents().add(new RecordedSendEvent(currentCommand));
 			}
+			
+			//TODO: reset current expect list?
 
 			currentScreen = ""; // reset current screen buffer
 			disableScreenRecording = false;
@@ -701,9 +705,7 @@ public class ATFRecorderAWT extends Panel implements KeyListener, Term,
 	@Override
 	public void sourceChanged(int arg0, String arg1, Object arg2) {
 		if (arg1.equals(ScreenStateSourceProvider.NAME_SELECTED)) {
-			//System.out.println("Term recieved selected text");
-			//System.out.println((String) arg2);
-			currentSelectedExpect = (String) arg2;
+			currentSelectedExpect = (List<String>) arg2;
 		}
 	}
 

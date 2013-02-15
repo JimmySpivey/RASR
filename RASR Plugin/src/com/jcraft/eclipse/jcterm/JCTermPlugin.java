@@ -105,5 +105,6 @@ public class JCTermPlugin extends AbstractUIPlugin {
 		createImageDescriptor(IUIConstants.IMG_LAYER_SELECT);
 		createImageDescriptor(IUIConstants.IMG_RECORDING);
 		createImageDescriptor(IUIConstants.IMG_STOP);
+		createImageDescriptor(IUIConstants.IMG_MULTI_SELECT);
 }
 }

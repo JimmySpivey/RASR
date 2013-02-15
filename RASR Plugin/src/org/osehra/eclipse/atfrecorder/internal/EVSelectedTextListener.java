@@ -1,33 +1,14 @@
 package org.osehra.eclipse.atfrecorder.internal;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 public class EVSelectedTextListener implements Listener {
 	
-	private ScreenStateSourceProvider screenStateService;
-
-	private String previousSelectedText;
-	private int previousStart;
-	private int previousEnd;
-	private boolean newTextSelected;
-
-	public EVSelectedTextListener(ScreenStateSourceProvider screenStateService) {
-		super();
-		System.out.println("creating EVSelcectedTextListener");
-		this.screenStateService = screenStateService;
-	}
-	
-	public String getPreviousSelectedText() {
-		return previousSelectedText;
-	}
-
-	public void setPreviousSelectedText(String previousSelectedText) {
-		this.previousSelectedText = previousSelectedText;
-	}
-
 	public int getPreviousStart() {
 		return previousStart;
 	}
@@ -44,70 +25,97 @@ public class EVSelectedTextListener implements Listener {
 		this.previousEnd = previousEnd;
 	}
 
-	public boolean isNewTextSelected() {
-		return newTextSelected;
+	public boolean isMultiSelectMode() {
+		return multiSelectMode;
+	}
+
+	public void setMultiSelectMode(boolean multiSelectMode) {
+		this.multiSelectMode = multiSelectMode;
+	}
+
+	private ScreenStateSourceProvider screenStateService;
+	private boolean multiSelectMode = false;
+	private int previousStart;
+	private int previousEnd;
+
+
+	public EVSelectedTextListener(ScreenStateSourceProvider screenStateService) {
+		super();
+		System.out.println("creating EVSelcectedTextListener");
+		this.screenStateService = screenStateService;
 	}
 
 	@Override
 	public void handleEvent(Event event) {
 		StyledText text = (StyledText) event.widget;
 		String selected = text.getSelectionText();
-		//determine if it is selected from left-right or right-left
+
+		//validations...
+		// did user deselect?
+		// is selected free of newlines?
+		if (selected.length() == 0 || selected.contains("\r")
+				|| selected.contains("\n")) {
+			text.setSelection(text.getCaretOffset(), text.getCaretOffset());
+			return;
+		}
 		
-//		int start = text.getCaretPosition() + text.getCaretPosition(); // TODO: get from text
-//		int end = text.getCaretPosition();
-//
-//		if (selected.equals(previousSelectedText) && start == previousStart
-//				&& end == previousEnd) {
-//			newTextSelected = false;
-//			return;
-//		} else {
-
-			// further validations...
-
-			// did user deselect?
-			// is selected free of newlines?
-			if (selected.length() == 0 || selected.contains("\r")
-					|| selected.contains("\n")) {
-				//override what the user selected
-				newTextSelected = false;
-				text.setSelection(previousStart, previousEnd);
-				text.showSelection();
-				return;
-			}
-			newTextSelected = true;
-			previousSelectedText = selected;
-			
-			
-			//need to determine if user selected from left-right or right-left
-			int caretPos = text.getCaretOffset();
-			int selLength = selected.length();
-			boolean leftToRight;
-			//check for out of bounds
-			if (caretPos - selLength < 0)
-				leftToRight = false;
-			else if (caretPos + selLength >= text.getCharCount())
+		int start, end;
+		//need to determine if user selected from left-right or right-left
+		int caretPos = text.getCaretOffset();
+		int selLength = selected.length();
+		boolean leftToRight;
+		//check for out of bounds
+		if (caretPos - selLength < 0)
+			leftToRight = false;
+		else if (caretPos + selLength >= text.getCharCount())
+			leftToRight = true;
+		else {
+			//check for left to right select
+			String leftRightText = text.getText(caretPos - selLength, caretPos - 1);
+			if (leftRightText.equals(selected))
 				leftToRight = true;
-			else {
-				//check for left to right select
-				String leftRightText = text.getText(caretPos - selLength, caretPos - 1);
-				if (leftRightText.equals(selected))
-					leftToRight = true;
-				else
-					leftToRight = false;
-			}
-			
-			if (leftToRight) {
-				previousStart = text.getCaretOffset() - selected.length();
-				previousEnd = text.getCaretOffset();
-			} else {
-				previousStart = text.getCaretOffset();
-				previousEnd = text.getCaretOffset() + selected.length();
-			}
+			else
+				leftToRight = false;
+		}
+		
+		if (leftToRight) {
+			start = text.getCaretOffset() - selected.length();
+			end = text.getCaretOffset();
+		} else {
+			start = text.getCaretOffset();
+			end = text.getCaretOffset() + selected.length();
+		}
+		
+		//validate the user isn't selecting into the current one 
+		//and that the current selection is after the previous
+		// + 1, do not want the next value to touch the previous one //TODO: note, would be easy to concatenate to the existing string value
+		if (multiSelectMode && Math.max(previousStart, previousEnd) + 1 > Math.min(start,end)) {
+			text.setSelection(text.getCaretOffset(), text.getCaretOffset());
+			return;
+		}
+		
+		if (!multiSelectMode) {
+			StyleRange[] ranges = {new StyleRange(0, text.getCharCount(), null, null) }; //clear previous			
+			text.setStyleRanges(ranges);
+		}
+		
+        StyleRange style = new StyleRange();
+        style.borderColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+        style.borderStyle = SWT.BORDER_SOLID;
+        style.start = start;
+        style.length = Math.max(start - end, end - start);
+        text.setStyleRange(style);
+        
+        previousStart = start;
+        previousEnd = end;
+        
+        //TODO: return to single value select mode after pressing enter? or disable selecting last 20 if in multi select mode
 
-			
-			screenStateService.setSelected(selected);
-//		}
+        text.setSelection(end, end);
+        
+        if (!multiSelectMode)
+        	screenStateService.resetSelected();
+		screenStateService.addSelected(selected);
 	}
 
 }

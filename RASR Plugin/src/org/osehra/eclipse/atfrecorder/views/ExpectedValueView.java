@@ -4,6 +4,7 @@ package org.osehra.eclipse.atfrecorder.views;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
@@ -12,10 +13,13 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISourceProvider;
 import org.eclipse.ui.ISourceProviderListener;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.ISourceProviderService;
+import org.osehra.eclipse.atfrecorder.ATFRecorderAWT;
+import org.osehra.eclipse.atfrecorder.actions.MultiSelectToggleAction;
 import org.osehra.eclipse.atfrecorder.internal.EVSelectedTextListener;
 import org.osehra.eclipse.atfrecorder.internal.ScreenStateSourceProvider;
 
@@ -66,16 +70,6 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 		FontData fd = new FontData("Courier New", 10, 0);
 		text.setFont(new Font(device, fd)); //TODO: add backup true type fonts/test for other supported OS'es
 		
-//		//create the top-bar for RASR
-//		Composite topBar = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
-//		GridData gridData = new GridData();
-//		gridData.horizontalAlignment = GridData.FILL;
-//		gridData.grabExcessHorizontalSpace = true;
-//		gridData.grabExcessVerticalSpace = false;
-//		topBar.setLayoutData(gridData);
-//		
-		
-
 		ISourceProviderService service = (ISourceProviderService)getSite().getService(ISourceProviderService.class);
 		ISourceProvider screenStateProvider = service.getSourceProvider(ScreenStateSourceProvider.NAME_SCREEN);
 		//register our Listener View (so it can get updates to the current screen)
@@ -86,6 +80,10 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 		
 		selectedListener = new EVSelectedTextListener(selectedTextProvider);
 	    text.addListener(SWT.MouseUp, selectedListener);
+	    
+		IActionBars bars = getViewSite().getActionBars();
+		MultiSelectToggleAction mutliSelectAction = new MultiSelectToggleAction(selectedListener, selectedTextProvider, text);
+		bars.getToolBarManager().add(mutliSelectAction);
 	}
 
 	/**
@@ -106,23 +104,23 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 		//it should always equals this since we just have 1 variable in our provider and we only listen to that one provider
 		if (providerVarName.equals(ScreenStateSourceProvider.NAME_SCREEN)) {
 			
-			//System.out.println("source changed");
-			//currentScreen = new String((String) providerVarValue);
-			//currentScreen = (String) providerVarValue; //might want to give it its own local copy of the string so that it isn't updated when it is modified.
 			final String threadString = (String) providerVarValue;
 			
 			//needed to put heavier work in a thread for UI performance. otherwise eclipse will throw an exception.
 			new Thread(new Runnable() {
 				public void run() {
-					//System.out.println(currentScreen);
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							String currentScreen = new String(threadString);
-							text.setText(currentScreen);
+							text.setText(currentScreen); //TODO: probably a thread sync issue here. should be (1) appending from the terminal buffer and/or (2) using synchronize
+							
+							if (selectedListener.isMultiSelectMode())
+								return;
+							
 							int offset = text.getCharCount() - currentScreen.length();
 							int start = offset+Math.max(1, currentScreen.length() - 21);
 							int end = offset+currentScreen.length();
-							String last20 = text.getText(start, end - 1); //for StyleText, end has to be -1
+							String last20 = text.getText(start, end - 1); //for StyleText, end has to be -1. maybe buggy. Perhaps better to use getTextRange(start,lenght)
 							for (int i = last20.length() - 1; i >= 0; i--) {
 								if (last20.charAt(i) == '\r' || last20.charAt(i) == '\n' || last20.charAt(i) == ' ')
 									end--;
@@ -135,34 +133,23 @@ public class ExpectedValueView extends ViewPart implements ISourceProviderListen
 									break;
 								}
 							}
-//							int firstCR = last20.indexOf("\r");
-//							int firstLF = last20.indexOf("\n");
-//							
-//							int lastCR = last20.lastIndexOf("\r");
-//							int lastLF = last20.lastIndexOf("\n");
-//							if (lastCR != -1 || lastLF != -1)
-//								start = Math.max(lastCR, lastLF) + 1;
-//								//last20 = last20.substring(Math.max(lastCR, lastLF) + 1);
 							
-							text.setSelection(start, end);
-							text.showSelection();
-							String selected = text.getSelectionText();
-							//System.out.println("setting start and end:" + start + " " + end);
-							selectedListener.setPreviousStart(start);
-							selectedListener.setPreviousEnd(end);
-							selectedListener.setPreviousSelectedText(selected);
-							selectedTextProvider.setSelected(text.getSelectionText());
-//						    while (!text.isDisposed()) {
-//						        if (!Display.getDefault().readAndDispatch())
-//						        	Display.getDefault().sleep();
-//						      }
+							text.setTopIndex(text.getLineCount() - 1); //causes the rolling text to automatically scroll down
+							
+					        StyleRange style = new StyleRange();
+					        style.borderColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+					        style.borderStyle = SWT.BORDER_SOLID;
+					        style.start = start;
+					        style.length = Math.max(start - end, end - start);
+					        text.setStyleRange(style);
+							
+							String selected = currentScreen.substring(start, end);
+							selectedTextProvider.resetSelected();
+							selectedTextProvider.addSelected(selected);
 						}
 					});
 				}
 			}).start();
-			
-
-			
 		}
 	}
 }

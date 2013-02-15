@@ -27,4 +27,5 @@ public interface IUIConstants {
 	public final String IMG_LAYER_SELECT = "layer_select.png";
 	public final String IMG_RECORDING = "control_record.png";
 	public final String IMG_STOP = "stop.png";
+	public final String IMG_MULTI_SELECT = "shapes_many.png";
 }
