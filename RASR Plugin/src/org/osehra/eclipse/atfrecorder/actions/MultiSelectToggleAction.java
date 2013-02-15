@@ -46,22 +46,17 @@ public class MultiSelectToggleAction extends Action {
 					
 					//TODO: Copy and pasted code, needs to be refactored...
 					String evContents = text.getText();
-					int offset = text.getCharCount() - evContents.length();
-					int start = offset+Math.max(1, evContents.length() - 21);
-					int end = offset+evContents.length();
-					String last20 = text.getText(start, end - 1); //for StyleText, end has to be -1. maybe buggy. Perhaps better to use getTextRange(start,lenght)
-					for (int i = last20.length() - 1; i >= 0; i--) {
-						if (last20.charAt(i) == '\r' || last20.charAt(i) == '\n' || last20.charAt(i) == ' ')
-							end--;
-						else
-							break;
+					//obtain last valid line's contents.
+					String lastLine = text.getLine(text.getLineCount() - 1).trim();
+					for (int i = text.getLineCount() - 1; lastLine.length() == 0; i--) {
+						if (i == -1)
+							return;
+						lastLine = text.getLine(i).trim();
 					}
-					for (int i = last20.length() - 2 - (text.getCharCount() - end); i >= 0; i--) {
-						if (last20.charAt(i) == '\r' || last20.charAt(i) == '\n'|| last20.charAt(i) == ' ') {
-							start += i + 1;
-							break;
-						}
-					}
+					
+					//search for this line starting from the end
+					int start = evContents.lastIndexOf(lastLine);
+					int length = lastLine.length();
 					
 					text.setTopIndex(text.getLineCount() - 1); //causes the rolling text to automatically scroll down
 					
@@ -69,10 +64,10 @@ public class MultiSelectToggleAction extends Action {
 			        style.borderColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
 			        style.borderStyle = SWT.BORDER_SOLID;
 			        style.start = start;
-			        style.length = Math.max(start - end, end - start);
+			        style.length = length; //Math.max(start - end, end - start);
 			        text.setStyleRange(style);
 					
-					String selected = evContents.substring(start, end);
+					String selected = evContents.substring(start, start+length);
 					selectedTextProvider.resetSelected();
 					selectedTextProvider.addSelected(selected);
 					//TODO: Copy and pasted code, needs to be refactored...
