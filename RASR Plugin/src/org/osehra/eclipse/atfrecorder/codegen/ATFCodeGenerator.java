@@ -87,13 +87,13 @@ public class ATFCodeGenerator {
 			String packageName, String testSuiteName, String testName, String atfLoc, boolean isNewPackage, boolean isNewTestSuite) throws FileNotFoundException, IOException, LineNotFoundException {
 
 		String sep = System.getProperty("file.separator");
-		String packageDir = atfLoc +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+ packageName +sep;
+		String packageDir = atfLoc +sep+"Packages"+sep+packageName+sep+"Testing"+sep+"RAS"+sep;
 		
 		if (isNewPackage) {
 			File dir = new File(packageDir);
 				// if the directory does not exist, create it
 				if (!dir.exists())
-					dir.mkdir();
+					dir.mkdirs();
 		}
 		
 		File driverFile = new File(packageDir + testSuiteName+"_test.py");
@@ -136,7 +136,7 @@ public class ATFCodeGenerator {
 		//2) insert method call to test in _driver.py file
 		PythonScriptEditor driverFileEditor = new PythonScriptEditor(driverFile);
 		//TODO: don't rely on comments regex, add it to the last test function call
-		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#End Tests$");
+		driverFileEditor.insertLine(testSuiteName+ "_suite." +testName+ "(test_suite_details)", "^\\s*#\\s*End Tests$");
 		
 		return packageDir;
 	}

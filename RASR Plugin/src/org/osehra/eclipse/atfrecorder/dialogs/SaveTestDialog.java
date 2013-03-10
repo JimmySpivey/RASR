@@ -152,7 +152,7 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 		} catch (FileNotFoundException e) {
 			preferences.saveValue(RASRPreferences.PACKAGE_NAME, "");
 			MessageDialog.openError(Display.getDefault().getActiveShell(),
-					"ATF Location not found",
+					"ATF Location not valid",
 					e.getMessage());
 			hadError = true;
 			return;
@@ -174,8 +174,9 @@ public class SaveTestDialog extends TrayDialog implements SelectionListener {
 			suiteList = populator.getSuiteNames(lastSelectedPkg);
 		} catch (FileNotFoundException e) {
 			preferences.saveValue(RASRPreferences.PACKAGE_NAME, "");
+			preferences.saveValue(RASRPreferences.TEST_SUITE_NAME, "");
 			MessageDialog.openError(Display.getDefault().getActiveShell(),
-					"ATF Location not found",
+					"ATF Location not valid",
 					e.getMessage());
 			hadError = true;
 			return;

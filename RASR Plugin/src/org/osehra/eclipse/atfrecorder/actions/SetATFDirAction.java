@@ -1,6 +1,8 @@
 package org.osehra.eclipse.atfrecorder.actions;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -11,7 +13,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.osehra.eclipse.atfrecorder.RASRPreferences;
 
-//this was a class for handling the "set ATF Location" menu item.
+//TODO: would be nice to move this to a rich preferences window
 public class SetATFDirAction extends Action {
 
 	private IAction prefAction;
@@ -31,27 +33,35 @@ public class SetATFDirAction extends Action {
 				
 				String directory = dd.open(); //null if the user fails to select a directory.
 				
-				if (directory != null) {
+				if (directory == null)
+					return;
 					
-					String sep = System.getProperty("file.separator");
-					File f = new File(directory +sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep);
-					
-					if (f.exists() && f.isDirectory()) {
-						preferences.saveValue(RASRPreferences.ATF_LOCATION, directory);
-						
-//						GenericNotificationPopup popup = new GenericNotificationPopup(display, "ATF Location set", "ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
-//						popup.create();
-//						popup.open();
-						MessageDialog.openInformation(Display.getDefault().getActiveShell(), 
-								"ATF Location set", 
-								"ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
-					} else {
-						MessageDialog.openWarning(shell, "Could not set ATF Location", "The location specified (" +directory+ ") is not a valid Automated Testing Framework directory.");
-					}
-					
-					
+				List<File> checkDirs = new ArrayList<File>(10);
+				checkDirs.add(getDirPath(directory, "Packages"));
+				checkDirs.add(getDirPath(directory, "Python", "vista"));
+				
+				boolean isValid = true;
+				for (File f : checkDirs) {
+					isValid = isValid && f.exists() && f.isDirectory();
 				}
 				
+				if (isValid) {
+					preferences.saveValue(RASRPreferences.ATF_LOCATION, directory);
+					MessageDialog.openInformation(Display.getDefault().getActiveShell(), 
+							"ATF Location set", 
+							"ATF location updated succesfully. RASR will create and modify tests at the specified ATF when the Save Test button is clicked.");
+				} else {
+					MessageDialog.openWarning(shell, "Could not set ATF Location", 
+							"The location specified (" +directory+ ") is not a valid Automated Testing Framework directory.");
+				}
+			}
+
+			private File getDirPath(String directory, String... dirs) {
+				String sep = System.getProperty("file.separator");
+				String path = sep;
+				for (String dir : dirs)
+					path += dir + sep;
+				return new File(directory+path);
 			}
 		};
 		prefAction.setText("Preferences");

@@ -16,7 +16,7 @@ public class SaveTestMenuPopulator {
 		List<String> result = new ArrayList<String>();
 		String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
 		String sep = System.getProperty("file.separator");
-		File packagesDir = new File(atfLoc+sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages");
+		File packagesDir = new File(atfLoc+sep+"Packages");
 		
 		if (!packagesDir.exists()) {
 			//they are not currently linked to a valid ATF location
@@ -26,6 +26,10 @@ public class SaveTestMenuPopulator {
 		File[] packages = packagesDir.listFiles();		
 		for (int i = 0; i < packages.length; i++) {
 			if (!packages[i].isDirectory())
+				continue;
+			
+			File isDir = new File(packages[i], "Testing"+sep+"RAS"+sep);
+			if (!isDir.exists() || !isDir.isDirectory())
 				continue;
 			
 			result.add(packages[i].getName());
@@ -44,9 +48,13 @@ public class SaveTestMenuPopulator {
 	 */
 	public List<String> getSuiteNames(String packageName) throws FileNotFoundException {
 		List<String> result = new ArrayList<String>();
+		
+		if (packageName == null || packageName.isEmpty())
+			return result;
+		
 		String atfLoc = preferences.getValue(RASRPreferences.ATF_LOCATION);
 		String sep = System.getProperty("file.separator");
-		File suitesDirectory = new File(atfLoc+sep+ "FunctionalTest"+sep+"RAS"+sep+"VistA-FOIA"+sep+"Packages"+sep+packageName);
+		File suitesDirectory = new File(atfLoc+sep+"Packages"+sep+packageName+sep+"Testing"+sep+"RAS"+sep);
 
 		if (!suitesDirectory.exists()) {
 			throw new FileNotFoundException("The selected package " +packageName+ " does not exist at " +atfLoc);
