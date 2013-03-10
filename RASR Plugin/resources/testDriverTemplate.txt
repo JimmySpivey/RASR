@@ -1,8 +1,5 @@
-import os
 import sys
-#apparently these are not needed... at least not on windows. Will need to retest this on linux
-#sys.path = ['./FunctionalTest/RAS/lib'] + ['./lib/vista'] + sys.path
-#sys.path = ['./'] + ['../lib/vista'] + sys.path
+sys.path = ['./Python/vista'] + sys.path
 
 import ${testSuite.name}_suite
 import TestHelper
