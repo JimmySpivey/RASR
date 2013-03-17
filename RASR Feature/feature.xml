@@ -18,12 +18,11 @@
    </license>
 
    <requires>
-      <import plugin="com.jcraft.jsch" version="0.1.31" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jsch.core" version="1.1.300" match="greaterOrEqual"/>
-      <import plugin="com.jcraft.eclipse.jsch.core"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jsch.core" version="1.1.300" match="greaterOrEqual"/>
+      <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -32,5 +31,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="com.jcraft.eclipse.jsch.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

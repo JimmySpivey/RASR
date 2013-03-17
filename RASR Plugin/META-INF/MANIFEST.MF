@@ -6,10 +6,10 @@ Bundle-Version: 0.0.512
 Bundle-Activator: com.jcraft.eclipse.jcterm.JCTermPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- com.jcraft.jsch;bundle-version="0.1.31",
  org.eclipse.core.resources;bundle-version="3.7.101",
+ com.jcraft.eclipse.jsch.core,
  org.eclipse.jsch.core;bundle-version="1.1.300",
- com.jcraft.eclipse.jsch.core
+ com.jcraft.jsch;bundle-version="0.1.44"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: OSEHRA
