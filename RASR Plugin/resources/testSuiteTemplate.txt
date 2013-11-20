@@ -1,5 +1,6 @@
 import sys
-sys.path = ['./Python/vista'] + sys.path
+sys.path = ['../Python/vista'] + sys.path
 
 import TestHelper
+from OSEHRAHelper import PROMPT
 

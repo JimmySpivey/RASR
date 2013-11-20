@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Roll and Scroll Recorder
 Bundle-SymbolicName: ATF_Recorder_Plugin;singleton:=true
-Bundle-Version: 0.0.513
+Bundle-Version: 0.0.516
 Bundle-Activator: com.jcraft.eclipse.jcterm.JCTermPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -15,3 +15,17 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: OSEHRA
 Bundle-ClassPath: lib/ini4j-0.5.2-SNAPSHOT.jar,
  .
+Export-Package: com.jcraft.eclipse.jcterm,
+ com.jcraft.eclipse.jcterm.internal;x-internal:=true,
+ com.jcraft.jcterm,
+ org.ini4j,
+ org.ini4j.spi,
+ org.opensource.eclipse.widgets.internal;x-internal:=true,
+ org.osehra.eclipse.atfrecorder,
+ org.osehra.eclipse.atfrecorder.actions,
+ org.osehra.eclipse.atfrecorder.codegen,
+ org.osehra.eclipse.atfrecorder.dialogs,
+ org.osehra.eclipse.atfrecorder.internal;x-internal:=true,
+ org.osehra.eclipse.atfrecorder.views,
+ org.osehra.python.codegen,
+ org.osehra.templating
