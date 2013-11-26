@@ -1,5 +1,5 @@
 import sys
-sys.path = ['./Python/vista'] + sys.path
+sys.path = ['../Python/vista'] + sys.path
 
 import ${testSuite.name}_suite
 import TestHelper

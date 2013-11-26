@@ -1,5 +1,5 @@
 [RemoteDetails]
-RemoteConnect=1
+RemoteConnect=0
 ServerLocation=vista.vainnovation.us
 SSHUsername=
 SSHPassword=

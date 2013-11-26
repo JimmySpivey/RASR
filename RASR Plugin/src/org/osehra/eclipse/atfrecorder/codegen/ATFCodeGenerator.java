@@ -195,7 +195,7 @@ public class ATFCodeGenerator {
 		statements.add("test_driver.pre_test_run(test_suite_details)");
 		statements.add("");
 		statements.add("try:");
-		statements.add("    vista = test_driver.connect_VistA(test_suite_details, testname)");
+		statements.add("    vista = test_driver.connect_VistA(test_suite_details)");
 		for (RecordableEvent recordAbleEvent : recordableEvents) {
 			if (recordAbleEvent.getType() == RecordableEventType.EXPECT) {
 				
@@ -219,7 +219,7 @@ public class ATFCodeGenerator {
 		statements.add("");
 		statements.add("    test_driver.post_test_run(test_suite_details)");
 		statements.add("except TestHelper.TestError, e:");
-		statements.add("    test_driver.exception_handling(e)");
+		statements.add("    test_driver.exception_handling(test_suite_details,e)");
 		statements.add("else:");
 		statements.add("    test_driver.try_else_handling(test_suite_details)");
 		statements.add("finally:");

@@ -2,7 +2,7 @@
 <feature
       id="RASR_Feature"
       label="Roll and Scroll Recorder"
-      version="0.0.513"
+      version="0.0.516"
       provider-name="OSEHRA">
 
    <description>
